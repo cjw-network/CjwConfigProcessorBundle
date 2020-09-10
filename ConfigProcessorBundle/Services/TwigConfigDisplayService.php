@@ -5,8 +5,11 @@ namespace App\CJW\ConfigProcessorBundle\Services;
 
 
 use App\CJW\ConfigProcessorBundle\src\ConfigProcessor;
-use App\CJW\TestFrozenBag;
+use App\CJW\ConfigProcessorBundle\ParameterAccessBag;
+use App\CJW\ConfigProcessorBundle\src\ProcessedParamModel;
 use Exception;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -32,12 +35,29 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
     private $configResolver;
 
     /**
-     * Contains all the processed parameters sorted after the corresponding site-accesses / scopes and also their
-     * overall allegiance.
+     * Holds the current request for further processing.
+     *
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * Contains all the processed parameters categorized after their namespaces and other keys within their name
+     * down to the actual parameter.
      *
      * @var array
      */
     private $processedParameters;
+
+    /**
+     * Contains all parameters that have been matched to the site access of the current request.
+     * These mostly resort to parameters already present in the processedParameters, but only the ones
+     * specific to the current site access.
+     * @see $processedParameters
+     *
+     * @var array
+     */
+    private $siteAccessParameters;
 
     /**
      * Contains an instance of a configProcessor which is responsible for
@@ -49,19 +69,27 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
 
     public function __construct(
         ContainerInterface $symContainer,
-        ConfigResolverInterface $ezConfigResolver
+        ConfigResolverInterface $ezConfigResolver,
+        RequestStack $symRequestStack
     ) {
         $this->container = $symContainer;
         $this->configResolver = $ezConfigResolver;
         $this->configProcessor = new ConfigProcessor();
+
         try {
+            $this->request = $symRequestStack->getCurrentRequest();
             $this->processedParameters = $this->parseContainerParameters();
+            if ($this->request) {
+                $this->siteAccessParameters = $this->getParametersForSiteAccess();
+            }
         } catch (Exception $error) {
             print(`Something went wrong while trying to parse the parameters: ${$error}.`);
         }
-//        $this->processedParameters = array();
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getFunctions()
     {
         return array(
@@ -73,10 +101,14 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         );
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getGlobals(): array
     {
         return array(
             "cjw_formatted_parameters" => $this->processedParameters,
+            "cjw_siteaccess_parameters" => $this->siteAccessParameters,
         );
     }
 
@@ -90,12 +122,16 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         return 'cjw_config_processor.twig.display';
     }
 
+    /**
+     * Parses the internal symfony parameters and provides the formatted parameters and options
+     * as an array to the class.
+     *
+     * @return array
+     * @throws Exception
+     */
     private function parseContainerParameters() {
-        $parameters = $this->container->getParameterBag();
-
-        $parameters = new TestFrozenBag($this->container);
-
-        $parameters = $parameters->repurposeParameters();
+        $parameters = new ParameterAccessBag($this->container);
+        $parameters = $parameters->getParameters();
 
         if ($parameters && is_array($parameters)) {
             $this->processedParameters = $this->configProcessor->processParameters($parameters);
@@ -106,5 +142,37 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         return $this->processedParameters;
 
 //        return $parameters = array("Something", "Something else");
+    }
+
+    /**
+     * Takes the processed parameters and searches for all parameters and their values that
+     * belong to the current site access.
+     *
+     * @return array Returns a formatted array that can be displayed in twig templates.
+     */
+    private function getParametersForSiteAccess() {
+        $resultArray = [];
+
+        try {
+            $siteAccess = $this->request->get("siteaccess");
+
+            if (isset($siteAccess->name)) {
+                foreach ($this->processedParameters as $parameter) {
+//                    if ($parameter instanceof ProcessedParamModel) {
+//                        array_push($resultArray, $parameter->getSiteAccessVariables($siteAccess->name));
+//                    }
+
+                    foreach(array_keys($parameter) as $key) {
+                        if ($key === $siteAccess) {
+                            array_push($resultArray,$parameter[$key]);
+                        }
+                    }
+                }
+            }
+        } catch (Exception $error) {
+            printf(`Something went wrong while trying to access the current site access of the request ${error}.`);
+        }
+
+        return $resultArray;
     }
 }

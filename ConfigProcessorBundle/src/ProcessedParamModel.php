@@ -89,15 +89,35 @@ class ProcessedParamModel
         return $outputArray;
     }
 
+//    /**
+//     * Checks the direct children of the model whether their key matches the given siteaccess.
+//     * If there is a match, the matching parameter is slotted into an array and eventually the array is
+//     * returned.
+//     *
+//     * @param string $siteAccess The siteaccess to search for in the keys of the models.
+//     * @return array Returns an array that includes all parameters who's key has matched the siteaccess.
+//     */
+//    public function getSiteAccessVariables(string $siteAccess)
+//    {
+//        $resultArray = [];
+//
+//        foreach ($this->parameters as $parameter) {
+//            if ($parameter instanceof ProcessedParamModel && $parameter->getKey() === $siteAccess) {
+//                array_push($resultArray, $parameter);
+//            }
+//        }
+//        return $resultArray;
+//    }
+
     /**
      * Takes an array of keys and processes them. Constructs a sort of tree based on the keys.
      * If all keys already exist in its list, nothing will be done to the objects.
      *
      * @param array $keys Given list of keys after which to construct the "key-list" tree-like structure in the parameters.
-     * @returns ProcessedParamModel Returns the model where the last key of the given list is stored.
+     * @return ProcessedParamModel Returns the model where the last key of the given list is stored.
      */
     private function constructByKeys(array $keys) {
-        $paramCarrier = $this->determineIfKeyIsPresent($keys, 1);
+        $paramCarrier = $this->determineIfKeyIsPresent($keys);
         $foundOnLevel = array_search($paramCarrier->key,$keys);
 
         if ($foundOnLevel >= 0) {
@@ -118,7 +138,7 @@ class ProcessedParamModel
      * @param int $level Number that states what key to search for in the array in the next run of the function.
      * @return $this Returns the object the function has last been called unsuccessfully on. That means the object where the last key was found is returned.
      */
-    private function determineIfKeyIsPresent(array $keys, int $level)
+    private function determineIfKeyIsPresent(array $keys, int $level = 1)
     {
         if ($level < count($keys)) {
             foreach ($this->parameters as $entry) {

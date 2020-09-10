@@ -71,13 +71,13 @@ class ConfigProcessor
                 $namespaceAndRest = $this->parseIntoParts($key);
                 $parameterValue = $parameters[$key];
 
-                try {
-                    $this->processedParameters[$namespaceAndRest[0]];
-                } catch (\Exception $error) {
+                // check whether the parameter key (namespace) already exists in the application
+                if(!isset($this->processedParameters[$namespaceAndRest[0]])) {
                     $this->processedParameters[$namespaceAndRest[0]] = new ProcessedParamModel($namespaceAndRest[0]);
-                } finally {
-                    $this->processedParameters[$namespaceAndRest[0]]->addParameter($namespaceAndRest, (array) $parameterValue);
                 }
+
+                $this->processedParameters[$namespaceAndRest[0]]->addParameter($namespaceAndRest, (array) $parameterValue);
+
             }
         }
 
@@ -113,6 +113,7 @@ class ConfigProcessor
         foreach($this->processedParameters as $parameter) {
             $formattedOutput[$parameter->getKey()] = $parameter->reformatForOutput();
         }
+        ksort($formattedOutput,SORT_STRING);
         return $formattedOutput;
     }
 

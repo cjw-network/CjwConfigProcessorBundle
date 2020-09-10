@@ -1,13 +1,13 @@
 <?php
 
 
-namespace App\CJW;
+namespace App\CJW\ConfigProcessorBundle;
 
 
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 
-class TestFrozenBag extends FrozenParameterBag
+class ParameterAccessBag extends FrozenParameterBag
 {
 
     private $container;
@@ -19,7 +19,7 @@ class TestFrozenBag extends FrozenParameterBag
         parent::__construct($container->getParameterBag()->parameters);
     }
 
-    public function repurposeParameters() {
+    public function getParameters() {
         return $this->parameters;
     }
 

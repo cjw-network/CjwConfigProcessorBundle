@@ -1,11 +1,16 @@
 # eZPlatform Config-Formatter-Extension
 
-ez-config variablen sind unter folgender Route einsehbar: `$_GLOBALS:kernel:container:parameters`
+eZ-config variablen sind unter folgender Route einsehbar: `$GLOBALS:kernel:container:parameters`
+
+eZ-siteaccesse sind unter folgender Route einsehbar: `$GLOBALS:kernel:container:privates:eZ\Bundle\EzPublishCoreBundle\DependencyInjection\Configuration\ConfigResolver\SiteAccessGroupConfigResolver:valueHolder`
+
+Der aktuelle eZ-siteaccess kann aber viel leichter eingesehen werden: `$GLOBALS:request:attributes:parameters:siteaccess `
+
 <br/>
-<br/>
+
 **Symfony / eZ-Container und ConfigResolver werden eventuell zum Auslesen benötigt.**
 
-**Pfad:** `/mnt/data/htdocs/bicycleLearning/ezplatform/vendor/symfony/dependency-injection/Container.php`
+**Pfad:** `{ezinstallation}/vendor/symfony/dependency-injection/Container.php`
 
 **Vorgehensweise und Geplantes:**
 * Zuerst einmal das Array nehmen und in einem eigenen Bundle sortieren / parsen und dann in einem Twig-Template ausgeben / zur Verfügung stellen
@@ -33,23 +38,23 @@ ez-config variablen sind unter folgender Route einsehbar: `$_GLOBALS:kernel:cont
 => refer to Symfony documentation for more info on the matter:
 
 ```php
-Bundles allgemein:
-	https://symfony.com/doc/current/bundles.html
-Beste Praktiken bezüglich Bundles:
-	https://symfony.com/doc/current/bundles/best_practices.html
-Konfiguration für Bundles:
-	https://symfony.com/doc/current/bundles/configuration.html 
+// Bundles allgemein:
+	$url1 = "https://symfony.com/doc/current/bundles.html";
+// Beste Praktiken bezüglich Bundles:
+	$url2 = "https://symfony.com/doc/current/bundles/best_practices.html";
+// Konfiguration für Bundles:
+	$url3 = "https://symfony.com/doc/current/bundles/configuration.html"; 
 ```
 
 ## Notiz!!
 
 In dem Vendor-Verzeichnis unter symfony kann man den config-Ordner finden, in dem sich die File-Loader befinden und vermutlich auch die Parser selbst, die dann dafür herangezogen werden!
 
-**Pfad:** `mnt/data/htdocs/bicycleLearning/ezplatform/vendor/symfony/config`
+**Pfad:** `{ezinstallation}/vendor/symfony/config`
 
 Unter "Var"-Verzeichnis verbirgt sich das cache-Verzeichnis, dass gelöscht werden muss, damit er in den Config-Loader und ähnliches hineingeht.
 
-**Pfad:** `/mnt/data/htdocs/bicycleLearning/ezplatform/var/cache`
+**Pfad:** `{ezinstallation}/var/cache`
 
 !! Der Parameterbag selbst kann durch den Container abgerufen werden!!!! 
 * mit der Methode: "getParameterBag()", 
@@ -62,3 +67,25 @@ diese gibt einen "Frozenparameterbag" zurück. Dieser beinhaltet zwar die Parame
 * Erzeugung einer eigenen Klasse, welche die ursprüngliche Frozen-Parameter-Bag-Klasse beerbt
 * Weiterreichung des Containers mit dem Bag an den Konstruktor dieser eigenen Klasse
 * Hinzufügen einer Funktion `getParameters()`, welche das Parameter-Array zurückgibt
+
+## Ziel: Siteaccess-aware sein
+
+**Das eigentliche Ziel dabei:**
+
+* Die geparsten Variablen nach site-access dependency sortieren können und basierend
+auf dem aktuellen site-access nur die Variablen in einem Array zeigen, welche zu dem site-access gehören.
+
+* Potenziell darauf aufbauend dann vergleichende Arrays, in denen verschiedene site-accesse zu den gleichen
+Seiten betrachtet werden können 
+
+**Voraussetzung:**
+
+* Der aktuelle site-access muss erkannt werden können und twig muss das entsprechende Array übergeben werden.
+* Dafür müssen die Inhalte der Parameter-Speicherung nach site-access durchsuchbar sein.
+
+```php
+// Siteaccesse werden von den Klassen des Pfades:
+$path = "{ezinstallation}/vendor/ezsystems/ezplatform-kernel/eZ/Publish/Core/MVC/Symfony";
+/* verarbeitet und unter dem Ordner "SiteAccess" in dem Verzeichnis finden sich Klassen, 
+die direkt für das Matchen und Ähnliches zuständig sind. */
+``` 
