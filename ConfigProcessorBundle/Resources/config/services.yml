@@ -1,0 +1,6 @@
+services:
+  cjw_config_processor.twig.display:
+    class: App\CJW\ConfigProcessorBundle\Services\TwigConfigDisplayService
+    arguments: [ '@service_container', '@ezpublish.config.resolver' ]
+    tags:
+      - { name: twig.extension }
