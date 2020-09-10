@@ -26,6 +26,38 @@ class ProcessedParamModel
     }
 
     /**
+     * @return string
+     */
+    public function getKey(): string
+    {
+        return $this->key;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameters(): array
+    {
+        return $this->parameters;
+    }
+
+    /**
+     * @param string $key
+     */
+    public function setKey(string $key): void
+    {
+        $this->key = $key;
+    }
+
+    /**
+     * @param array $parameters
+     */
+    public function setParameters(array $parameters): void
+    {
+        $this->parameters = $parameters;
+    }
+
+    /**
      * Takes a given parameter and adds it to the parameter list in the object.
      * @param array $keys
      * @param array $valueArray
@@ -35,10 +67,26 @@ class ProcessedParamModel
 
         // Is there anything to add? If so, is it just one value or an entire array?
         if(count($valueArray) > 0) {
-            (count($valueArray)>1) ?
-                array_push($modelToAddTo->parameters, reset($valueArray)) :
-                array_push($modelToAddTo->parameters, $valueArray);
+            array_push($modelToAddTo->parameters, $valueArray);
         }
+    }
+
+    /**
+     * Recursive function to go through all gathered parameters and reformat the internal values as well as the keys
+     * into an associative array.
+     *
+     * @return array
+     */
+    public function reformatForOutput() {
+        $outputArray = [];
+        foreach($this->parameters as $parameter) {
+
+            if (!$parameter instanceof ProcessedParamModel) {
+                return $parameter;
+            }
+            $outputArray[$parameter->getKey()] = $parameter->reformatForOutput();
+        }
+        return $outputArray;
     }
 
     /**
@@ -81,38 +129,6 @@ class ProcessedParamModel
         }
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getKey(): string
-    {
-        return $this->key;
-    }
-
-    /**
-     * @return array
-     */
-    public function getParameters(): array
-    {
-        return $this->parameters;
-    }
-
-    /**
-     * @param string $key
-     */
-    public function setKey(string $key): void
-    {
-        $this->key = $key;
-    }
-
-    /**
-     * @param array $parameters
-     */
-    public function setParameters(array $parameters): void
-    {
-        $this->parameters = $parameters;
     }
 
     /**

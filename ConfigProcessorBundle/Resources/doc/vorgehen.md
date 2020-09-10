@@ -55,4 +55,10 @@ Unter "Var"-Verzeichnis verbirgt sich das cache-Verzeichnis, dass gelöscht werd
 * mit der Methode: "getParameterBag()", 
 diese gibt einen "Frozenparameterbag" zurück. Dieser beinhaltet zwar die Parameter und erlaubt sowohl das Hinzufügen, als auch das Entfernen bestimmter Parameter, aber er hat ebenfalls eine protected Eigenschaft in "parameters"
 
-=> Das bedeutet, dass man die Parameter daraus nicht direkt einlesen darf
+=> Das bedeutet, dass man die Parameter daraus nicht direkt einlesen kann
+
+**Meine Lösung dafür:**
+
+* Erzeugung einer eigenen Klasse, welche die ursprüngliche Frozen-Parameter-Bag-Klasse beerbt
+* Weiterreichung des Containers mit dem Bag an den Konstruktor dieser eigenen Klasse
+* Hinzufügen einer Funktion `getParameters()`, welche das Parameter-Array zurückgibt

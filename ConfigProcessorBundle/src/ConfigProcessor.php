@@ -81,25 +81,39 @@ class ConfigProcessor
             }
         }
 
-        return $this->processedParameters;
+        return $this->reformatParametersForOutput();
     }
 
     /**
-     * Takes a given parameter and processes it to determine the key / namespace attached to that parameter.
-     * @param string $parameter
+     * Takes a given key and splits it into the different segments that are present in it
+     * (namespace, (with eZ) siteaccess, actual parameter etc).
+     *
+     * @param string $key
      * @return array | false
      */
-    private function parseIntoParts (string $parameter) {
-        if ($parameter && strlen($parameter) > 0) {
-            $splitStringCarrier = explode(".",$parameter);
+    private function parseIntoParts (string $key) {
+        if ($key && strlen($key) > 0) {
+            $splitStringCarrier = explode(".",$key);
 
             if ($splitStringCarrier) {
                 return $splitStringCarrier;
             }
 
-            return $parameter;
+            return $key;
         }
         return false;
+    }
+
+
+    /**
+     * Turns the array of ProcessedParamModel-Objects into an associative array with the keys and the values attached to them.
+     */
+    private function reformatParametersForOutput() {
+        $formattedOutput = [];
+        foreach($this->processedParameters as $parameter) {
+            $formattedOutput[$parameter->getKey()] = $parameter->reformatForOutput();
+        }
+        return $formattedOutput;
     }
 
 //    /**
