@@ -20,41 +20,6 @@ class ConfigProcessor
         $this->processedParameters = array();
     }
 
-//
-//    /**
-//     * Takes an array of given parameters and processes them.
-//     * @param array $parameters
-//     * @return array
-//     */
-//    public function processParameters(array $parameters) {
-//        if ($parameters && is_array($parameters)) {
-//            $keys = array_keys($parameters);
-//            foreach ($parameters as $parameter) {
-//                $namespace = $this->parameterParser($parameter);
-//                if ($namespace) {
-//                    try {
-//                        $this->processedParameters[$namespace];
-//                    } catch (\Exception $error) {
-//                        $this->processedParameters[$namespace] = new ProcessedParamModel($namespace);
-//                    } finally {
-////                        $this->processedParameters[$namespace]->addParameter(array_splice($parameter, 1));
-//                        $paramExploded = explode(".",$parameter);
-//                        $this->processedParameters[$namespace]->addParameter(array_splice($paramExploded, 1));
-//                    }
-////                    if (!$this->processedParameters[$namespace]) {
-////                        $this->processedParameters[$namespace] = new ProcessedParamModel($namespace);
-////                    }
-////
-////                    $this->processedParameters[$namespace]->addParameter(array_splice($parameter, 1));
-//                }
-//            }
-//        } else {
-//            throw new InvalidArgumentException("The given parameters are not of type array and thus can not be processed by the function.");
-//        }
-//
-//        return $this->processedParameters;
-//    }
-
     /**
      * Function to parse all the parameters of the symfony service container in order to reformat them into a more
      * readable structure.

@@ -6,7 +6,7 @@ namespace App\CJW\ConfigProcessorBundle\Services;
 
 use App\CJW\ConfigProcessorBundle\src\ConfigProcessor;
 use App\CJW\ConfigProcessorBundle\ParameterAccessBag;
-use App\CJW\ConfigProcessorBundle\src\ProcessedParamModel;
+use App\CJW\ConfigProcessorBundle\src\SiteAccessParamProcessor;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -60,12 +60,21 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
     private $siteAccessParameters;
 
     /**
-     * Contains an instance of a configProcessor which is responsible for
+     * Contains an instance of a ConfigProcessor which is responsible for
      * transforming and processing the config information given to it.
      *
      * @var ConfigProcessor
      */
     private $configProcessor;
+
+    /**
+     * Contains an instance of a SiteAccessParamProcessor which is responsible for
+     * filtering a given list of parameters for a given list of siteaccesses and resolve
+     * the resolve the current values of said parameters.
+     *
+     * @var SiteAccessParamProcessor
+     */
+    private $siteAccessParamProcessor;
 
     public function __construct(
         ContainerInterface $symContainer,
@@ -75,6 +84,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         $this->container = $symContainer;
         $this->configResolver = $ezConfigResolver;
         $this->configProcessor = new ConfigProcessor();
+        $this->siteAccessParamProcessor = new SiteAccessParamProcessor($this->configResolver);
 
         try {
             $this->request = $symRequestStack->getCurrentRequest();
@@ -147,32 +157,11 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
     /**
      * Takes the processed parameters and searches for all parameters and their values that
      * belong to the current site access.
+     *TODO: Get list of site access parameters!!!! To give.
      *
      * @return array Returns a formatted array that can be displayed in twig templates.
      */
     private function getParametersForSiteAccess() {
-        $resultArray = [];
-
-        try {
-            $siteAccess = $this->request->get("siteaccess");
-
-            if (isset($siteAccess->name)) {
-                foreach ($this->processedParameters as $parameter) {
-//                    if ($parameter instanceof ProcessedParamModel) {
-//                        array_push($resultArray, $parameter->getSiteAccessVariables($siteAccess->name));
-//                    }
-
-                    foreach(array_keys($parameter) as $key) {
-                        if ($key === $siteAccess) {
-                            array_push($resultArray,$parameter[$key]);
-                        }
-                    }
-                }
-            }
-        } catch (Exception $error) {
-            printf(`Something went wrong while trying to access the current site access of the request ${error}.`);
-        }
-
-        return $resultArray;
+        return $this->siteAccessParamProcessor->processSiteAccessBased(["default","site","admin","global"],$this->processedParameters);
     }
 }

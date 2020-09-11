@@ -89,3 +89,21 @@ $path = "{ezinstallation}/vendor/ezsystems/ezplatform-kernel/eZ/Publish/Core/MVC
 /* verarbeitet und unter dem Ordner "SiteAccess" in dem Verzeichnis finden sich Klassen, 
 die direkt für das Matchen und Ähnliches zuständig sind. */
 ``` 
+
+**Neue Entwicklung dazu:**
+
+* _Bisheriges Vorgehen_: Das durch mich erstellte Array durchgehen und in dem Array alle herausnehmen,
+die einen Key haben, der zu dem siteaccess passt, herauszunehmen und in ein eigenes Array zu packen.
+
+    * Das Problem dabei ist allerdings, dass ich nicht wusste, wie ich denn nur die bekomme, die auch wirklich
+    von site-accesses abhängen und nicht nur einfach den string im Namen haben
+    * Weiteres Problem, dass mir nicht bewusst war: Ist nur die halbe Miete, denn eigentlich
+    ist eher wichtig, welchen Wert die Parameter tatsächlich haben (da durch die vielen Ebenen der
+    site-accesse auch die gleichen Parameter auftauchen können, aber überschrieben werden).
+
+* _Neu_: Das Heraussuchen bleibt bestehen, aber es werden nur einzigartige Einträge beibehalten,
+ der nächste Schritt ist deutlich mehr ausgearbeitet:
+    
+    * Mit der Hilfe des eZ-Config-Resolvers wird jeder der Werte des Arrays durchgegangen und sein tatsächlicher
+    Wert ermittelt. Dieser wird dann zusammen mit dem Wert gespeichert
+    * Eventuell noch Darstellung welchen Wert das Ding laut anderen Accesses haben sollte?
