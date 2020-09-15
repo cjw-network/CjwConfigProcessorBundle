@@ -155,13 +155,26 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
     }
 
     /**
+     * Simply goes into the ezpublish parameter to get the list of current site accesses there are
+     * @return array
+     */
+    private function getSiteAccesses(): array {
+        $sa = $this->processedParameters["ezpublish"]["siteaccess"]["list"];
+        array_push($sa,"default","global");
+
+        return $sa;
+    }
+
+    /**
      * Takes the processed parameters and searches for all parameters and their values that
      * belong to the current site access.
-     *TODO: Get list of site access parameters!!!! To give.
      *
      * @return array Returns a formatted array that can be displayed in twig templates.
      */
-    private function getParametersForSiteAccess() {
-        return $this->siteAccessParamProcessor->processSiteAccessBased(["default","site","admin","global"],$this->configProcessor->getProcessedParameters());
+    private function getParametersForSiteAccess(): array {
+        return $this->siteAccessParamProcessor->processSiteAccessBased(
+            $this->getSiteAccesses(),
+            $this->configProcessor->getProcessedParameters()
+        );
     }
 }

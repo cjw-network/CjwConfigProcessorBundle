@@ -79,8 +79,6 @@ class SiteAccessParamProcessor
      * @return array Returns an array that possesses only unique parameters and their current value.
      */
     public function processSiteAccessBased(array $siteAccesses, array $parameters) {
-        // TODO Erst alle Parameter in ein Array parsen, die irgendwie siteaccess abhängig sein könnten
-        // TODO FINISH alles umstellen auf Klasse ParamProcessModel!!!!!!!!!
         $this->siteAccessParameters = $this->filterForSiteAccess($siteAccesses,$parameters);
         $this->uniqueSiteAccessParameters = $this->provideUniqueParameters($this->siteAccessParameters);
         try {
@@ -94,12 +92,12 @@ class SiteAccessParamProcessor
 
     /**
      * Takes a given list of siteaccesses and searches in the given parameters array for every
-     * parameter who features at least one of the accesses. If one or more are found, than these
+     * parameter that features at least one of the accesses. If one or more are found, than these
      * parts of the parameter are being pushed onto the result.
      *
-     * @param array $siteAccesses The list of siteaccess to search with.
+     * @param array $siteAccesses The list of siteaccesses to search for.
      * @param array $parameters The array of parameters in which to search.
-     * @return array Returns the resulting array which consists of all found paramter parts.
+     * @return array Returns the resulting array which consists of all found parameter parts.
      */
     private function filterForSiteAccess (array $siteAccesses, array $parameters) {
         $resultArray = [];
@@ -178,14 +176,4 @@ class SiteAccessParamProcessor
 
         return $filteredParameters;
     }
-
-//    private function getFullParameterName(string $paramname, array $param) {
-//        $fullParameterNames = [];
-//
-//        foreach(array_keys($param) as $key) {
-//            if ($param[$key]) {
-//
-//            }
-//        }
-//    }
 }
