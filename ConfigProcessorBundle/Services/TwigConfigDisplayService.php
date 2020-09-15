@@ -90,7 +90,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
             $this->request = $symRequestStack->getCurrentRequest();
             $this->processedParameters = $this->parseContainerParameters();
             if ($this->request) {
-                $this->siteAccessParameters = $this->getParametersForCurrentSiteAccess();
+                $this->siteAccessParameters = $this->getParametersForSiteAccess();
             }
         } catch (Exception $error) {
             print(`Something went wrong while trying to parse the parameters: ${$error}.`);
@@ -112,7 +112,9 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
     }
 
     /**
-     * @inheritDoc
+     * Provides all global variables for the twig template.
+     *
+     * @return array
      */
     public function getGlobals(): array
     {
@@ -136,8 +138,8 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
      * Parses the internal symfony parameters and provides the formatted parameters and options
      * as an array to the class.
      *
-     * @return array
-     * @throws Exception
+     * @return array Returns a hierarchical associative array that features every parameter sorted after their keys.
+     * @throws Exception Throws an error if something went wrong while trying to parse the parameters.
      */
     private function parseContainerParameters() {
         $parameters = new ParameterAccessBag($this->container);
@@ -150,18 +152,22 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         }
 
         return $this->processedParameters;
-
-//        return $parameters = array("Something", "Something else");
     }
 
     /**
-     * Simply goes into the ezpublish parameter to get the list of current site accesses there are
-     * @return array
+     * Simply goes into the ezpublish parameter to get the list of current site accesses that exist in the
+     * parameter.
+     *
+     * @return array Returns all found siteAccesses in an array.
      */
     private function getSiteAccesses(): array {
-        $sa = $this->processedParameters["ezpublish"]["siteaccess"]["list"];
-        array_push($sa,"default","global");
-
+        try {
+            $sa = $this->processedParameters["ezpublish"]["siteaccess"]["list"];
+            array_push($sa, "default", "global");
+        } catch (Exception $error) {
+            // Fallback SAs if the others are not accessible via the array route
+            $sa = array("default","global");
+        }
         return $sa;
     }
 
@@ -171,7 +177,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
      *
      * @return array Returns a formatted array that can be displayed in twig templates.
      */
-    private function getParametersForCurrentSiteAccess(): array {
+    private function getParametersForSiteAccess(): array {
         return $this->siteAccessParamProcessor->processSiteAccessBased(
             $this->getSiteAccesses(),
             $this->configProcessor->getProcessedParameters()
