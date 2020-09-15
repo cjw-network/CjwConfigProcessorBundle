@@ -90,7 +90,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
             $this->request = $symRequestStack->getCurrentRequest();
             $this->processedParameters = $this->parseContainerParameters();
             if ($this->request) {
-                $this->siteAccessParameters = $this->getParametersForSiteAccess();
+                $this->siteAccessParameters = $this->getParametersForCurrentSiteAccess();
             }
         } catch (Exception $error) {
             print(`Something went wrong while trying to parse the parameters: ${$error}.`);
@@ -171,7 +171,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
      *
      * @return array Returns a formatted array that can be displayed in twig templates.
      */
-    private function getParametersForSiteAccess(): array {
+    private function getParametersForCurrentSiteAccess(): array {
         return $this->siteAccessParamProcessor->processSiteAccessBased(
             $this->getSiteAccesses(),
             $this->configProcessor->getProcessedParameters()

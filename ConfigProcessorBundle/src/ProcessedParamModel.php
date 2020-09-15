@@ -59,8 +59,9 @@ class ProcessedParamModel
 
     /**
      * Takes a given parameter and adds it to the parameter list in the object.
-     * @param array $keys
-     * @param array $valueArray
+     *
+     * @param array $keys A list of keys which describe the path through the data structure and to which node to add the values
+     * @param array $valueArray A list of values the final node will be passed as parameters.
      */
     public function addParameter(array $keys,array $valueArray = []) {
         $modelToAddTo = $this->constructByKeys($keys);
@@ -75,15 +76,18 @@ class ProcessedParamModel
      * Recursive function to go through all gathered parameters and reformat the internal values as well as the keys
      * into an associative array.
      *
-     * @return array
+     * @return array Returns an array that contains all parameters and their values
      */
     public function reformatForOutput() {
         $outputArray = [];
         foreach($this->parameters as $parameter) {
 
+            // If there is no more Object as a parameter, then the end of the "branch" has been reached and the actual value can be returned
             if (!$parameter instanceof ProcessedParamModel) {
                 return $parameter;
             }
+
+            // Otherwise the returned value of the children (parameters) of the object are being slotted into an associative array
             $outputArray[$parameter->getKey()] = $parameter->reformatForOutput();
         }
         return $outputArray;
@@ -143,19 +147,19 @@ class ProcessedParamModel
     public function getAllFullParameterNames()
     {
         $parameterNameArray = [];
-        $fullName = $this->key;
 
         foreach ($this->parameters as $parameter) {
             if ($parameter instanceof ProcessedParamModel) {
                 $restNameArray = $parameter->getAllFullParameterNames();
 
                 foreach ($restNameArray as $restName) {
-                    array_push($parameterNameArray, "$fullName.$restName");
+                    array_push($parameterNameArray, "$this->key.$restName");
                 }
             }
         }
 
-        return (count($parameterNameArray)>0)? $parameterNameArray : (array) $fullName;
+        // If there is nothing in the parameterNameArray (meaning that this object did not have object children / parameters) the key of this object is returned as an array
+        return (count($parameterNameArray)>0)? $parameterNameArray : (array) $this->key;
     }
 
     /**

@@ -120,3 +120,16 @@ in ein Array ausgelagert.
      durchgegangen und sein tatsächlicher Wert ermittelt. Dieser wird dann unter dem Parameternamen-Key unter dem
      zugehörigen Namespace gespeichert
         * Dabei werden alle Werte, die mit dem Resolver nicht aufgelöst werden können, aus dem Array entfernt
+
+**Performance:**
+
+* Für das Verarbeiten der Parameter selbst werden laut Symfony-Stopwatch ungefähr 20 Millisekunden gebraucht
+* Für das site-access-spezifische Verarbeiten werden in etwa 40 bis 50 Millisekunden veranschlagt
+einer kurzen Folge von Messungen zur Folge verbrauchen die Schritte wie folgt Zeit:
+    * Das Heraussuchen aller möglichen Siteaccess-Parameter: ca. 0.6 Millisekunden
+    * Das Entfernen von Parameter-Duplikaten und das Zusammenbauen der vollständigen Parameternamen: ca. 0.5 Millisekunden
+    * Das Auflösen der Parameter-Werte mit dem eZConfigResolver: ca. 50 Millisekunden
+    
+Es ist davon auszugehen, dass der ConfigResolver die hohen Zeitkosten durch seine Logik verantwortet. Welcher Teil der Logik dabei
+so hohe Kosten verursacht müsste durch Untersuchungen geklärt werden, man kann aber davon ausgehen, dass das Durchsuchen seiner
+Parameter und das Herausfinden der aktuell-geltenden Werte die meiste Zeit in Anspruch nimmt.
