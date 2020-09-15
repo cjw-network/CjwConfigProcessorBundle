@@ -162,6 +162,6 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
      * @return array Returns a formatted array that can be displayed in twig templates.
      */
     private function getParametersForSiteAccess() {
-        return $this->siteAccessParamProcessor->processSiteAccessBased(["default","site","admin","global"],$this->processedParameters);
+        return $this->siteAccessParamProcessor->processSiteAccessBased(["default","site","admin","global"],$this->configProcessor->getProcessedParameters());
     }
 }

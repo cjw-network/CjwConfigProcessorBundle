@@ -65,7 +65,7 @@ class ProcessedParamModel
     public function addParameter(array $keys,array $valueArray = []) {
         $modelToAddTo = $this->constructByKeys($keys);
 
-        // Is there anything to add? If so, is it just one value or an entire array?
+        // Is there anything to add?
         if(count($valueArray) > 0) {
             array_push($modelToAddTo->parameters, $valueArray);
         }
@@ -89,25 +89,74 @@ class ProcessedParamModel
         return $outputArray;
     }
 
-//    /**
-//     * Checks the direct children of the model whether their key matches the given siteaccess.
-//     * If there is a match, the matching parameter is slotted into an array and eventually the array is
-//     * returned.
-//     *
-//     * @param string $siteAccess The siteaccess to search for in the keys of the models.
-//     * @return array Returns an array that includes all parameters who's key has matched the siteaccess.
-//     */
-//    public function getSiteAccessVariables(string $siteAccess)
-//    {
-//        $resultArray = [];
-//
-//        foreach ($this->parameters as $parameter) {
-//            if ($parameter instanceof ProcessedParamModel && $parameter->getKey() === $siteAccess) {
-//                array_push($resultArray, $parameter);
-//            }
-//        }
-//        return $resultArray;
-//    }
+    /**
+     * Searches for a child who's key matches the siteaccess if one is found then it will be returned. In any
+     * other case false is given back.
+     *
+     * @param string $siteaccess The access to search for in the key.
+     * @return ProcessedParamModel|false Returns either the object that matches or false if nothing matches.
+     */
+    public function filterForSiteAccess(string $siteaccess) {
+        foreach ($this->parameters as $parameter) {
+            if ($parameter instanceof ProcessedParamModel && $parameter->getKey() === $siteaccess) {
+                return $parameter;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Recursively looks through the parameters of the model and tries to find the model with the given key.
+     * When found, the model will be removed and returned. If not, false is returned.
+     *
+     * @param string $key The key
+     * @return array | false;
+     */
+    public function removeParamModel(string $key) {
+        for ($i = 0; $i < count($this->parameters); ++$i) {
+            if ($this->parameters[$i] instanceof ProcessedParamModel) {
+
+                if (count($this->parameters[$i]->getParameters()) === 0) {
+                    array_splice($this->parameters,$i,1);
+                    return false;
+                }
+
+                if ($this->parameters[$i]->getKey() === $key) {
+                    return array_splice($this->parameters, $i, 1);
+                }
+
+                return $this->parameters[$i]->removeParamModel($key);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Starting from where it is called, recursively goes through every one of its parameters and adds their keys to the
+     * full name of that parameter then adds every built full name into an array of
+     * parameter names.
+     *
+     * @return array Returns an array of strings which represent the full parameter names of every one of the object's parameters.
+     */
+    public function getAllFullParameterNames()
+    {
+        $parameterNameArray = [];
+        $fullName = $this->key;
+
+        foreach ($this->parameters as $parameter) {
+            if ($parameter instanceof ProcessedParamModel) {
+                $restNameArray = $parameter->getAllFullParameterNames();
+
+                foreach ($restNameArray as $restName) {
+                    array_push($parameterNameArray, "$fullName.$restName");
+                }
+            }
+        }
+
+        return (count($parameterNameArray)>0)? $parameterNameArray : (array) $fullName;
+    }
 
     /**
      * Takes an array of keys and processes them. Constructs a sort of tree based on the keys.

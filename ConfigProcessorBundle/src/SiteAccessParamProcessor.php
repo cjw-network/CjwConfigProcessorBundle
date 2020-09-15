@@ -80,8 +80,9 @@ class SiteAccessParamProcessor
      */
     public function processSiteAccessBased(array $siteAccesses, array $parameters) {
         // TODO Erst alle Parameter in ein Array parsen, die irgendwie siteaccess abhängig sein könnten
+        // TODO FINISH alles umstellen auf Klasse ParamProcessModel!!!!!!!!!
         $this->siteAccessParameters = $this->filterForSiteAccess($siteAccesses,$parameters);
-        $this->uniqueSiteAccessParameters = $this->removeDuplicateParameters($this->siteAccessParameters);
+        $this->uniqueSiteAccessParameters = $this->provideUniqueParameters($this->siteAccessParameters);
         try {
             $this->uniqueSiteAccessParameters = $this->resolveParameters($this->uniqueSiteAccessParameters);
         } catch (Exception $error) {
@@ -103,10 +104,13 @@ class SiteAccessParamProcessor
     private function filterForSiteAccess (array $siteAccesses, array $parameters) {
         $resultArray = [];
 
-        foreach (array_keys($parameters) as $key) {
+        foreach ($parameters as $parameter) {
             foreach($siteAccesses as $siteAccess) {
-                if (isset($parameters[$key][$siteAccess])) {
-                    $resultArray[$key][$siteAccess] = $parameters[$key][$siteAccess];
+                if ($parameter instanceof ProcessedParamModel) {
+                    $result = $parameter->filterForSiteAccess($siteAccess);
+                    if ($result) {
+                        $resultArray[$parameter->getKey()][$result->getKey()] = $result;
+                    }
                 }
             }
         }
@@ -121,31 +125,32 @@ class SiteAccessParamProcessor
      * @param array $siteAccessParameters The parameters to be processed.
      * @return array Returns an array that includes only unique parameters.
      */
-    private function removeDuplicateParameters(array $siteAccessParameters) {
+    private function provideUniqueParameters(array $siteAccessParameters) {
         $uniqueParameters = $siteAccessParameters;
         $encounteredParamNames = [];
 
-        foreach(array_keys($uniqueParameters) as $namespace) {
-            foreach(array_keys($uniqueParameters[$namespace]) as $scope) {
-                foreach(array_keys($uniqueParameters[$namespace][$scope]) as $paramName) {
-                    if (!in_array($paramName,$encounteredParamNames)) {
-                        array_push($encounteredParamNames,$paramName);
-                    } else {
-                        unset($uniqueParameters[$namespace][$scope][$paramName]);
+        foreach (array_keys($uniqueParameters) as $namespace) {
+            foreach ($uniqueParameters[$namespace] as $siteaccess) {
+                foreach ($siteaccess->getParameters() as $parameter) {
+                    if ($parameter instanceof ProcessedParamModel) {
+                        $fullnames = $parameter->getAllFullParameterNames();
+
+                        foreach ($fullnames as $fullname) {
+
+                            if (!isset($encounteredParamNames[$namespace])) {
+                                $encounteredParamNames[$namespace] = [];
+                            }
+
+                            if (!in_array($fullname, array_keys($encounteredParamNames[$namespace]))) {
+                                $encounteredParamNames[$namespace][$fullname] = "";
+                            }
+                        }
                     }
                 }
-
-                if(count($uniqueParameters[$namespace][$scope]) <= 0) {
-                    unset($uniqueParameters[$namespace][$scope]);
-                }
-            }
-
-            if(count($uniqueParameters[$namespace]) <= 0) {
-                unset($uniqueParameters[$namespace]);
             }
         }
 
-        return $uniqueParameters;
+        return $encounteredParamNames;
     }
 
     /**
@@ -162,10 +167,11 @@ class SiteAccessParamProcessor
         }
 
         foreach(array_keys($filteredParameters) as $namespace) {
-            foreach(array_keys($filteredParameters[$namespace]) as $scope) {
-                foreach(array_keys($filteredParameters[$namespace][$scope]) as $paramName) {
-                    $filteredParameters[$namespace][$scope][$paramName] = $this->ezConfigResolver->getParameter($paramName,$namespace);
-//                    $test = $this->ezConfigResolver->getParameter("fieldtypes.ezimageasset.mappings",$namespace);
+            foreach(array_keys($filteredParameters[$namespace]) as $parameterName) {
+                try {
+                    $filteredParameters[$namespace][$parameterName] = $this->ezConfigResolver->getParameter($parameterName,$namespace);
+                } catch (Exception $error) {
+                    unset($filteredParameters[$namespace][$parameterName]);
                 }
             }
         }

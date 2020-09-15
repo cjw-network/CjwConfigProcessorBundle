@@ -21,6 +21,14 @@ class ConfigProcessor
     }
 
     /**
+     * @return array
+     */
+    public function getProcessedParameters(): array
+    {
+        return $this->processedParameters;
+    }
+
+    /**
      * Function to parse all the parameters of the symfony service container in order to reformat them into a more
      * readable structure.
      *
@@ -81,19 +89,4 @@ class ConfigProcessor
         ksort($formattedOutput,SORT_STRING);
         return $formattedOutput;
     }
-
-//    /**
-//     * Takes a given parameter and processes it to determine the key / namespace attached to that parameter.
-//     * @param string $parameter
-//     * @return string | false
-//     */
-//    private function parseForNamespace (string $parameter) {
-//        if ($parameter && strlen($parameter) > 0) {
-//            $splitStringCarrier = explode(".",$parameter);
-//
-//            return $splitStringCarrier[0];
-//        }
-//
-//        return false;
-//    }
 }

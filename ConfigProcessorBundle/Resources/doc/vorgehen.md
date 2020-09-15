@@ -12,19 +12,26 @@ Der aktuelle eZ-siteaccess kann aber viel leichter eingesehen werden: `$GLOBALS:
 
 **Pfad:** `{ezinstallation}/vendor/symfony/dependency-injection/Container.php`
 
-**Vorgehensweise und Geplantes:**
-* Zuerst einmal das Array nehmen und in einem eigenen Bundle sortieren / parsen und dann in einem Twig-Template ausgeben / zur Verfügung stellen
+### Vorgehensweise und Geplantes:
+* [x] Zuerst einmal das Array nehmen und in einem eigenen Bundle sortieren / parsen und dann in einem Twig-Template ausgeben / zur Verfügung stellen
 
-* eventuell direkt Array parsen nach Werten (zuerst dem ersten vor dem ersten Punkt) als Zuordnung 
+* [x] eventuell direkt Array parsen nach Werten (zuerst dem ersten vor dem ersten Punkt) als Zuordnung 
 (zum Beispiel ezsettings in ein eigenes Ding parsen, sowie platform und publish)
 
-* Eventuell sortieren nach Standard-Symfony und eZ-Werten in unterschiedliche Arrays
+* [x] Außerdem filtern nach site_access abhängige Werte (in unterschiedliches Arrays)
 
-* Außerdem sortieren in site_access abhängige und nicht-site_access abhängige Werte (in unterschiedliche Arrays)
+* [ ] Im Backend Möglichkeit für Vergleich zwischen Site-Access-Werten verschaffen:
+    * [ ] Site-Accesse vergleichen können (dafür Auswahl von verschiedenen und Schöpfung von Arrays mit zugehörigen Werten)
+    * [ ] Spezielles Filtern nach gleichen Parametern mit unterschiedlichen Werten zwischen den SAs
+    * [ ] Möglicherweise auch gleiche Werte zu den Parametern anzeigen können
+    * [ ] Nicht von den verglichenen SAs abhängige Werte rausfiltern oder gesondert darstellen
 
-* Eventuell prüfen, wann und von wo die Werte eingelesen und verarbeitet werden (aus den YAMLs in den Config-Resolver von eZ / Symfony) => ableiten wo die Werte und in welcher Reihenfolge die Werte gelesen werden und verarbeitet werden => aus welchen Dateien stammen die Werte 
+* [ ] Eventuell prüfen, wann und von wo die Werte eingelesen und verarbeitet werden (aus den YAMLs in den Config-Resolver von eZ / Symfony) 
+    * ableiten wo die Werte und in welcher Reihenfolge die Werte gelesen werden und verarbeitet werden 
+    * aus welchen Dateien stammen die Werte 
+    * in welcher Reihenfolge werden die Dateien eingelesen / aus welcher Datei stammt der dortige Wert
 
-* Irgendwie im Backend anzeigen und verarbeiten lassen (eventuell Werte verändern können? (Änderungen cachen?), außerdem mitbekommen wann der Cach geändert wird und dann darstellen)
+* [ ] Irgendwie im Backend anzeigen und verarbeiten lassen (eventuell Werte verändern können? (Änderungen cachen?), außerdem mitbekommen wann der Cach geändert wird und dann darstellen)
 
 # Erste Schritte:
 
@@ -101,9 +108,15 @@ die einen Key haben, der zu dem siteaccess passt, herauszunehmen und in ein eige
     ist eher wichtig, welchen Wert die Parameter tatsächlich haben (da durch die vielen Ebenen der
     site-accesse auch die gleichen Parameter auftauchen können, aber überschrieben werden).
 
-* _Neu_: Das Heraussuchen bleibt bestehen, aber es werden nur einzigartige Einträge beibehalten,
- der nächste Schritt ist deutlich mehr ausgearbeitet:
+* _Neu_: Die ganze Operation nutzt nun die Objekte, mit denen schon beim Config-Processen gearbeitet wurde.
+Das heißt, dass die Liste der ProcessedParamModel für diesen Prozess herangezogen wird. Anschließend werden
+diese nach den SAs durchsucht und nur solche, welche die SAs in sich tragen und auch nur die SAs werden dann
+in ein Array ausgelagert.
     
-    * Mit der Hilfe des eZ-Config-Resolvers wird jeder der Werte des Arrays durchgegangen und sein tatsächlicher
-    Wert ermittelt. Dieser wird dann zusammen mit dem Wert gespeichert
-    * Eventuell noch Darstellung welchen Wert das Ding laut anderen Accesses haben sollte?
+    * Die vorhandenen Werte (als ProcessedParamModel) werden zu ihren vollständigen Parameternamen aufgelöst und diese werden
+    nach den Namespaces gruppiert in ein Array als Key eingefügt
+    * Es werden keine Duplikat-Parameternamen in das Array aufgenommen
+    * Mit der Hilfe des eZ-Config-Resolvers wird jeder der Parameterwerte, die als Schlüssel im Array liegen,
+     durchgegangen und sein tatsächlicher Wert ermittelt. Dieser wird dann unter dem Parameternamen-Key unter dem
+     zugehörigen Namespace gespeichert
+        * Dabei werden alle Werte, die mit dem Resolver nicht aufgelöst werden können, aus dem Array entfernt
