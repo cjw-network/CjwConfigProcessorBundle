@@ -25,6 +25,7 @@ Der aktuelle eZ-siteaccess kann aber viel leichter eingesehen werden: `$GLOBALS:
     * [ ] Spezielles Filtern nach gleichen Parametern mit unterschiedlichen Werten zwischen den SAs
     * [ ] Möglicherweise auch gleiche Werte zu den Parametern anzeigen können
     * [ ] Nicht von den verglichenen SAs abhängige Werte rausfiltern oder gesondert darstellen
+    * [ ] Dynamische Suche in den Parametern (nach bestimmten Schlüsselworten oder Teilen der Parameter) und Anzeige aller möglichen Treffer mit Hierarchie (wo sie drin liegen (ezsettings -> Treffer oder so)).
 
 * [ ] Eventuell prüfen, wann und von wo die Werte eingelesen und verarbeitet werden (aus den YAMLs in den Config-Resolver von eZ / Symfony) 
     * ableiten wo die Werte und in welcher Reihenfolge die Werte gelesen werden und verarbeitet werden 
@@ -118,7 +119,7 @@ in ein Array ausgelagert.
     * Es werden keine Duplikat-Parameternamen in das Array aufgenommen
     * Mit der Hilfe des eZ-Config-Resolvers wird jeder der Parameterwerte, die als Schlüssel im Array liegen,
      durchgegangen und sein tatsächlicher Wert ermittelt. Dieser wird dann unter dem Parameternamen-Key unter dem
-     zugehörigen Namespace gespeichert
+     zugehörigen Namespace gespeichert.
         * Dabei werden alle Werte, die mit dem Resolver nicht aufgelöst werden können, aus dem Array entfernt
 
 **Performance:**

@@ -70,7 +70,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
     /**
      * Contains an instance of a SiteAccessParamProcessor which is responsible for
      * filtering a given list of parameters for a given list of siteaccesses and resolve
-     * the resolve the current values of said parameters.
+     * the current values of said parameters.
      *
      * @var SiteAccessParamProcessor
      */
@@ -112,7 +112,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
     }
 
     /**
-     * Provides all global variables for the twig template.
+     * Provides all global variables for the twig template that stem from this bundle.
      *
      * @return array
      */
@@ -164,6 +164,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         try {
             $sa = $this->processedParameters["ezpublish"]["siteaccess"]["list"];
             array_push($sa, "default", "global");
+            array_push($sa, ...array_keys($this->processedParameters["ezpublish"]["siteaccess"]["groups"]));
         } catch (Exception $error) {
             // Fallback SAs if the others are not accessible via the array route
             $sa = array("default","global");

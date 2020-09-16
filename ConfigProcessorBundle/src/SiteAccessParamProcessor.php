@@ -87,6 +87,7 @@ class SiteAccessParamProcessor
             sprintf(`Something went wrong while trying to resolve the parameter values. ${$error}`);
         }
 
+        $this->reformatForOutput();
         return $this->uniqueSiteAccessParameters;
     }
 
@@ -175,5 +176,16 @@ class SiteAccessParamProcessor
         }
 
         return $filteredParameters;
+    }
+
+    /**
+     * Rearranges the array's keys in alphabetical order for easier navigation.
+     */
+    private function reformatForOutput() {
+        ksort($this->uniqueSiteAccessParameters,SORT_STRING);
+
+        foreach (array_keys($this->uniqueSiteAccessParameters) as $namespace) {
+            ksort($this->uniqueSiteAccessParameters[$namespace],SORT_STRING);
+        }
     }
 }
