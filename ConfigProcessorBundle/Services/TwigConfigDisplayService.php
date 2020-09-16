@@ -121,6 +121,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         return array(
             "cjw_formatted_parameters" => $this->processedParameters,
             "cjw_siteaccess_parameters" => $this->siteAccessParameters,
+            "cjw_test" => $this->getParametersForSpecificSiteAccess("admin"),
         );
     }
 
@@ -158,13 +159,20 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
      * Simply goes into the ezpublish parameter to get the list of current site accesses that exist in the
      * parameter.
      *
+     * @param string|null $siteAccess Optional parameter which dictates whether only the default SiteAccesses and the given one will be added or all available ones are added.
      * @return array Returns all found siteAccesses in an array.
      */
-    private function getSiteAccesses(): array {
+    private function getSiteAccesses(string $siteAccess = null): array {
         try {
-            $sa = $this->processedParameters["ezpublish"]["siteaccess"]["list"];
+            if (!$siteAccess) {
+                $sa = $this->processedParameters["ezpublish"]["siteaccess"]["list"];
+                array_push($sa, ...array_keys($this->processedParameters["ezpublish"]["siteaccess"]["groups"]));
+            } else {
+                $sa = array($siteAccess);
+                array_push($sa,...$this->processedParameters["ezpublish"]["siteaccess"]["groups_by_siteaccess"][$siteAccess]);
+            }
+
             array_push($sa, "default", "global");
-            array_push($sa, ...array_keys($this->processedParameters["ezpublish"]["siteaccess"]["groups"]));
         } catch (Exception $error) {
             // Fallback SAs if the others are not accessible via the array route
             $sa = array("default","global");
@@ -182,6 +190,18 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         return $this->siteAccessParamProcessor->processSiteAccessBased(
             $this->getSiteAccesses(),
             $this->configProcessor->getProcessedParameters()
+        );
+    }
+
+    /**
+     * @param string $siteAccess
+     * @return array
+     */
+    private function getParametersForSpecificSiteAccess(string $siteAccess): array {
+        return $this->siteAccessParamProcessor->processSiteAccessBased(
+            $this->getSiteAccesses($siteAccess),
+            $this->configProcessor->getProcessedParameters(),
+            $siteAccess
         );
     }
 }

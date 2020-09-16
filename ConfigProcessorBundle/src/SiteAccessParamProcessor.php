@@ -9,26 +9,26 @@ use eZ\Publish\Core\MVC\ConfigResolverInterface;
 
 class SiteAccessParamProcessor
 {
-    /**
-     * Contains the site access the processor is supposed to work for / work with and display it's content.
-     * @var string
-     */
-    private $workingSiteAccess;
+//    /**
+//     * Contains the site access the processor is supposed to work for / work with and display it's content.
+//     * @var string
+//     */
+//    private $workingSiteAccess;
 
-    /**
-     * Stores all the parameters only once with their actual current value and does not feature any duplicates
-     * of the same parameter from a different siteaccess.
-     *
-     * @var array
-     */
-    private $uniqueSiteAccessParameters;
-
-    /**
-     * Stores all the parameters that are siteaccess dependent including their values as set for their scope.
-     *
-     * @var array
-     */
-    private $siteAccessParameters;
+//    /**
+//     * Stores all the parameters only once with their actual current value and does not feature any duplicates
+//     * of the same parameter from a different siteaccess.
+//     *
+//     * @var array
+//     */
+//    private $uniqueSiteAccessParameters;
+//
+//    /**
+//     * Stores all the parameters that are siteaccess dependent including their values as set for their scope.
+//     *
+//     * @var array
+//     */
+//    private $siteAccessParameters;
 
     /**
      * Holds the ezplatform / -systems config resolver with which to work out the values for the parameters.
@@ -40,8 +40,8 @@ class SiteAccessParamProcessor
     public function __construct(ConfigResolverInterface $resolver)
     {
         $this->ezConfigResolver = $resolver;
-        $this->siteAccessParameters = [];
-        $this->uniqueSiteAccessParameters = [];
+//        $this->siteAccessParameters = [];
+//        $this->uniqueSiteAccessParameters = [];
     }
 
     /**
@@ -52,21 +52,21 @@ class SiteAccessParamProcessor
         $this->ezConfigResolver = $ezConfigResolver;
     }
 
-    /**
-     * @return array
-     */
-    public function getSiteAccessParameters(): array
-    {
-        return $this->siteAccessParameters;
-    }
-
-    /**
-     * @return array
-     */
-    public function getUniqueSiteAccessParameters(): array
-    {
-        return $this->uniqueSiteAccessParameters;
-    }
+//    /**
+//     * @return array
+//     */
+//    public function getSiteAccessParameters(): array
+//    {
+//        return $this->siteAccessParameters;
+//    }
+//
+//    /**
+//     * @return array
+//     */
+//    public function getUniqueSiteAccessParameters(): array
+//    {
+//        return $this->uniqueSiteAccessParameters;
+//    }
 
     /**
      * Function to filter and resolve all parameters given to the function via a list of siteaccesses.
@@ -76,20 +76,50 @@ class SiteAccessParamProcessor
      *
      * @param array $siteAccesses The list of siteaccesses to filter for in the parameters.
      * @param array $parameters The parameters to be filtered and processed.
+     * @param string|null $scope Optional parameter which determines whether a specific scope should be used for determining the parameter values or simply the current one.
      * @return array Returns an array that possesses only unique parameters and their current value.
      */
-    public function processSiteAccessBased(array $siteAccesses, array $parameters) {
-        $this->siteAccessParameters = $this->filterForSiteAccess($siteAccesses,$parameters);
-        $this->uniqueSiteAccessParameters = $this->provideUniqueParameters($this->siteAccessParameters);
+    public function processSiteAccessBased(array $siteAccesses, array $parameters, string $scope = null)
+    {
+        $siteAccessParameters = $this->filterForSiteAccess($siteAccesses, $parameters);
+        $uniqueSiteAccessParameters =  $this->provideUniqueParameters($siteAccessParameters);
+
         try {
-            $this->uniqueSiteAccessParameters = $this->resolveParameters($this->uniqueSiteAccessParameters);
+            if (!$scope) {
+                $uniqueSiteAccessParameters = $this->resolveParameters($uniqueSiteAccessParameters);
+            } else {
+                $uniqueSiteAccessParameters = $this->resolveParametersWithScope($uniqueSiteAccessParameters,$scope);
+            }
         } catch (Exception $error) {
             sprintf(`Something went wrong while trying to resolve the parameter values. ${$error}`);
         }
 
-        $this->reformatForOutput();
-        return $this->uniqueSiteAccessParameters;
+        $uniqueSiteAccessParameters = $this->reformatForOutput($uniqueSiteAccessParameters);
+        return $uniqueSiteAccessParameters;
     }
+
+//    /**
+//     *
+//     * @param array $siteAccesses
+//     * @param array $parameters
+//     * @return array
+//     * @throws Exception
+//     */
+//    public function processForSpecificSiteAccess(array $siteAccesses, array $parameters)
+//    {
+//        $scope = $siteAccesses[0];
+//
+//        $uniqueSiteAccessParameters = $this->filterSiteAccess($siteAccesses,$parameters);
+//
+//        try {
+//            $uniqueSiteAccessParameters = $this->resolveParametersWithScope($uniqueSiteAccessParameters, $scope);
+//        } catch (Exception $error) {
+//            sprintf(`Something went wrong while trying to resolve the parameter values. ${$error}`);
+//        }
+//
+//        $uniqueSiteAccessParameters = $this->reformatForOutput($uniqueSiteAccessParameters);
+//        return $uniqueSiteAccessParameters;
+//    }
 
     /**
      * Takes a given list of siteaccesses and searches in the given parameters array for every
@@ -100,11 +130,12 @@ class SiteAccessParamProcessor
      * @param array $parameters The array of parameters in which to search.
      * @return array Returns the resulting array which consists of all found parameter parts.
      */
-    private function filterForSiteAccess (array $siteAccesses, array $parameters) {
+    private function filterForSiteAccess(array $siteAccesses, array $parameters)
+    {
         $resultArray = [];
 
         foreach ($parameters as $parameter) {
-            foreach($siteAccesses as $siteAccess) {
+            foreach ($siteAccesses as $siteAccess) {
                 if ($parameter instanceof ProcessedParamModel) {
                     $result = $parameter->filterForSiteAccess($siteAccess);
                     if ($result) {
@@ -124,7 +155,8 @@ class SiteAccessParamProcessor
      * @param array $siteAccessParameters The parameters to be processed.
      * @return array Returns an array that includes only unique parameters.
      */
-    private function provideUniqueParameters(array $siteAccessParameters) {
+    private function provideUniqueParameters(array $siteAccessParameters)
+    {
         $uniqueParameters = $siteAccessParameters;
         $encounteredParamNames = [];
 
@@ -160,15 +192,35 @@ class SiteAccessParamProcessor
      *
      * @throws Exception Throws an exception if there hasn't been a valid configResolver set for the object.
      */
-    private function resolveParameters(array $filteredParameters) {
+    private function resolveParameters(array $filteredParameters)
+    {
         if (!$this->ezConfigResolver) {
             throw new Exception("No configResolver has been set for this object.");
         }
 
-        foreach(array_keys($filteredParameters) as $namespace) {
-            foreach(array_keys($filteredParameters[$namespace]) as $parameterName) {
+        foreach (array_keys($filteredParameters) as $namespace) {
+            foreach (array_keys($filteredParameters[$namespace]) as $parameterName) {
                 try {
-                    $filteredParameters[$namespace][$parameterName] = $this->ezConfigResolver->getParameter($parameterName,$namespace);
+                    $filteredParameters[$namespace][$parameterName] = $this->ezConfigResolver->getParameter($parameterName, $namespace);
+                } catch (Exception $error) {
+                    unset($filteredParameters[$namespace][$parameterName]);
+                }
+            }
+        }
+
+        return $filteredParameters;
+    }
+
+    private function resolveParametersWithScope(array $filteredParameters, string $scope)
+    {
+        if (!$this->ezConfigResolver) {
+            throw new Exception("No configResolver has been set for this object.");
+        }
+
+        foreach (array_keys($filteredParameters) as $namespace) {
+            foreach (array_keys($filteredParameters[$namespace]) as $parameterName) {
+                try {
+                    $filteredParameters[$namespace][$parameterName] = $this->ezConfigResolver->getParameter($parameterName, $namespace, $scope);
                 } catch (Exception $error) {
                     unset($filteredParameters[$namespace][$parameterName]);
                 }
@@ -180,12 +232,44 @@ class SiteAccessParamProcessor
 
     /**
      * Rearranges the array's keys in alphabetical order for easier navigation.
+     *
+     * @param array $processedSiteAccessParameters Parameters to be sorted.
+     * @return array Returns the reformatted array.
      */
-    private function reformatForOutput() {
-        ksort($this->uniqueSiteAccessParameters,SORT_STRING);
+    private function reformatForOutput(array $processedSiteAccessParameters)
+    {
+        ksort($processedSiteAccessParameters, SORT_STRING);
 
-        foreach (array_keys($this->uniqueSiteAccessParameters) as $namespace) {
-            ksort($this->uniqueSiteAccessParameters[$namespace],SORT_STRING);
+        foreach (array_keys($processedSiteAccessParameters) as $namespace) {
+            ksort($processedSiteAccessParameters[$namespace], SORT_STRING);
         }
+
+        return $processedSiteAccessParameters;
     }
+
+//    /**
+//     * @param array $uniqueParamArray
+//     * @param array $siteAccessObjects
+//     * @return array
+//     */
+//    private function retrieveParameterValues(array $uniqueParamArray, array $siteAccessObjects)
+//    {
+//        foreach ($siteAccessObjects as $namespace) {
+//            foreach ($namespace as $siteAccess) {
+//
+//                foreach (array_keys($uniqueParamArray) as $arrayNamespace) {
+//                    foreach (array_keys($uniqueParamArray[$arrayNamespace]) as $paramKeys) {
+//                        $keys = explode(".", $paramKeys);
+//
+//                        $result = $siteAccess->getParameterValue($keys);
+//
+//                        if ($result) {
+//                            $uniqueParamArray[$arrayNamespace][$paramKeys] = $result;
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        return $uniqueParamArray;
+//    }
 }

@@ -161,6 +161,55 @@ class ProcessedParamModel
         // If there is nothing in the parameterNameArray (meaning that this object did not have object children / parameters) the key of this object is returned as an array
         return (count($parameterNameArray)>0)? $parameterNameArray : (array) $this->key;
     }
+//
+//    /**
+//     * Function recursively looks through the objects parameters through the given
+//     * key array and returns either the found value, once all keys have been successfully
+//     * gone through, or returns nothing if no parameter could be matched to the keys.
+//     *
+//     * @param array $keys The given list of keys to look for in the branch of parameters.
+//     * @return mixed|void Either the result values of the parameter or nothing if no parameter could be found.
+//     */
+//    public function getParameterValue(array $keys) {
+//        $result = "";
+//
+//        foreach($this->parameters as $parameter) {
+//            if ($parameter instanceof ProcessedParamModel) {
+//                $result = $parameter->retrieveParameterValue($keys)?? $result;
+//            }
+//        }
+//
+//        return $result;
+//    }
+//
+//    /**
+//     * @param array $keys
+//     * @return mixed|void
+//     */
+//    protected function retrieveParameterValue(array $keys) {
+//        if (reset($keys) === $this->key) {
+//
+//            if ((count($keys) <= 1) && !($this->parameters instanceof ProcessedParamModel)) {
+//                $value = $this->parameters;
+//
+//                while (is_array($value) && count($value) === 1) {
+//                    $value = reset($value);
+//                }
+//                return $value;
+//            }
+//
+//            array_splice($keys,0,1);
+//
+//            $result = "";
+//            foreach ($this->parameters as $parameter) {
+//                if ($parameter instanceof ProcessedParamModel) {
+//                    $result = $parameter->getParameterValue($keys);
+//                }
+//            }
+//
+//            return $result;
+//        }
+//    }
 
     /**
      * Takes an array of keys and processes them. Constructs a sort of tree based on the keys.
