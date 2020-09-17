@@ -4,9 +4,6 @@
 namespace App\CJW\ConfigProcessorBundle\src;
 
 
-use App\CJW\ConfigProcessorBundle\src\ProcessedParamModel;
-use InvalidArgumentException;
-
 class ConfigProcessor
 {
     /**
@@ -34,6 +31,7 @@ class ConfigProcessor
      *
      * @param array $parameters A list of given parameters to be processed and reformatted.
      * @returns array Returns an array of the processed and formatted parameters.
+     * @return array Returns the processed parameters in the form of an associative array.
      */
     public function processParameters(array $parameters)
     {

@@ -21,7 +21,7 @@ Der aktuelle eZ-siteaccess kann aber viel leichter eingesehen werden: `$GLOBALS:
 * [x] Außerdem filtern nach site_access abhängige Werte (in unterschiedliches Arrays)
 
 * [ ] Im Backend Möglichkeit für Vergleich zwischen Site-Access-Werten verschaffen:
-    * [ ] Site-Accesse vergleichen können (dafür Auswahl von verschiedenen und Schöpfung von Arrays mit zugehörigen Werten)
+    * [x] Site-Accesse vergleichen können (dafür Auswahl von verschiedenen und Schöpfung von Arrays mit zugehörigen Werten)
     * [ ] Spezielles Filtern nach gleichen Parametern mit unterschiedlichen Werten zwischen den SAs
     * [ ] Möglicherweise auch gleiche Werte zu den Parametern anzeigen können
     * [ ] Nicht von den verglichenen SAs abhängige Werte rausfiltern oder gesondert darstellen
@@ -134,3 +134,65 @@ einer kurzen Folge von Messungen zur Folge verbrauchen die Schritte wie folgt Ze
 Es ist davon auszugehen, dass der ConfigResolver die hohen Zeitkosten durch seine Logik verantwortet. Welcher Teil der Logik dabei
 so hohe Kosten verursacht müsste durch Untersuchungen geklärt werden, man kann aber davon ausgehen, dass das Durchsuchen seiner
 Parameter und das Herausfinden der aktuell-geltenden Werte die meiste Zeit in Anspruch nimmt.
+
+###Verlgeich zwischen Site-Accessen
+
+**Ergebnis bisher:**
+
+Bislang wurde zumindest die Möglichkeit geschaffen die Parameter nach Site-Accessen filtern zu lassen
+und für spezifische SAs (Site-Accesse) anzuzeigen. Dafür wurden die vorhandenen Filter- und Duplikat-Entfern-Prozesse herangezogen und der einzige Unterschied ist, dass man nun einen Site-Access angeben kann und eine andere
+Methode aufruft, die den Site-Access berücksichtigt, indem im letzten Schritt (dem resolven der Werte) dann das Scope
+mit angegeben wird, wodurch der ConfigResolver direkt nach den dazugehörigen Werten sucht.
+
+###Überführung in den Cache
+
+Mittlerweile wurden die verschiedenen Prozesse, welche das Parsen der Parameter durchführen, größtenteils mit dem
+Symfony-Cache verknüpft, was bedeutet, dass die Ladezeiten, die durch den Service erzeugt werden, drastisch
+reduziert werden und die Cache-Ergebnisse auch andernorts genutzt werden können. Insgesamt hat die Cache-Einführung
+eine Reduktion der Ladezeiten (nach dem erstmaligen Aufbau des caches) um 70 Millisekunden auf 0.1 Millisekunden erreicht.
+
+Für die Cache-Verknüpfung wurden folgende Dokumente herangezogen:
+
+* Der Symfony Cache-Component:
+    * https://symfony.com/doc/current/components/cache.html
+* Cache-Pools und -Adapter: 
+    * https://symfony.com/doc/current/components/cache/cache_pools.html
+* Der PhpFilesAdapter: 
+    * https://symfony.com/doc/current/components/cache/adapters/php_files_adapter.html
+* Cache Invalidierung: 
+    * https://symfony.com/doc/current/components/cache/cache_invalidation.html
+* Cache Items: 
+    * https://symfony.com/doc/current/components/cache/cache_items.html
+* Und der Cache: 
+    * https://symfony.com/doc/current/cache.html
+    
+Als Implementation muss lediglich folgendes gemacht werden:
+
+```php
+    use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
+
+     /**
+     * @var PhpFilesAdapter
+     */
+    private $cache;
+
+    // Diese Zeile befindet sich bei mir im Konstruktor
+    $this->cache = new PhpFilesAdapter();
+
+    /*
+    * Hier kann man nun das Ergebnis des Cache-Aufrufes in eine eigene Variable überführen
+    * Durch den Schlüssel gibt man den Schlüssel des zu speichernden Wertes im Cache sowohl für das
+    * In-Den-Cache-Schreiben als auch das Herausholen an und mit der Callback-Funktion bestimmt man, was 
+    * passieren soll, wenn der Wert nicht im Cache steht, also woher er den Wert nehmen soll, der in den Cache kommt.
+    */
+     $this->processedParameters = $this->cache->get("processed_params", function(ItemInterface $item) {
+        // Wie lang, in Sekunden, soll der Wert im Cache verbleiben    
+        $item->expiresAfter(300);
+        return $this->parseContainerParameters();
+    });
+```
+
+Darüber habe ich noch Checks eingebaut, ob die Werte im cach liegen, die ich für die Funktions-Aufrufe benötige 
+(geschehen über die `$cache->hasItem(string $key)`-Methode) und wenn nicht, dann werden auch die anderen Werte
+meines Services aus dem Cache gelöscht, damit alle Cache-Werte simultan vorliegen und die Abarbeitung der Funktionen
+korrekt vonstattengeht.
