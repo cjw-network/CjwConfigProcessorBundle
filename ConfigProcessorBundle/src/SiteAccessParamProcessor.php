@@ -52,22 +52,6 @@ class SiteAccessParamProcessor
         $this->ezConfigResolver = $ezConfigResolver;
     }
 
-//    /**
-//     * @return array
-//     */
-//    public function getSiteAccessParameters(): array
-//    {
-//        return $this->siteAccessParameters;
-//    }
-//
-//    /**
-//     * @return array
-//     */
-//    public function getUniqueSiteAccessParameters(): array
-//    {
-//        return $this->uniqueSiteAccessParameters;
-//    }
-
     /**
      * Function to filter and resolve all parameters given to the function via a list of siteaccesses.
      * That means that only values belonging to siteaccesses will be kept in the array and processed
@@ -97,29 +81,6 @@ class SiteAccessParamProcessor
         $uniqueSiteAccessParameters = $this->reformatForOutput($uniqueSiteAccessParameters);
         return $uniqueSiteAccessParameters;
     }
-
-//    /**
-//     *
-//     * @param array $siteAccesses
-//     * @param array $parameters
-//     * @return array
-//     * @throws Exception
-//     */
-//    public function processForSpecificSiteAccess(array $siteAccesses, array $parameters)
-//    {
-//        $scope = $siteAccesses[0];
-//
-//        $uniqueSiteAccessParameters = $this->filterSiteAccess($siteAccesses,$parameters);
-//
-//        try {
-//            $uniqueSiteAccessParameters = $this->resolveParametersWithScope($uniqueSiteAccessParameters, $scope);
-//        } catch (Exception $error) {
-//            sprintf(`Something went wrong while trying to resolve the parameter values. ${$error}`);
-//        }
-//
-//        $uniqueSiteAccessParameters = $this->reformatForOutput($uniqueSiteAccessParameters);
-//        return $uniqueSiteAccessParameters;
-//    }
 
     /**
      * Takes a given list of siteaccesses and searches in the given parameters array for every
@@ -211,6 +172,19 @@ class SiteAccessParamProcessor
         return $filteredParameters;
     }
 
+    /**
+     * Technically does the same as resolveParameters()
+     * but includes the given scope and thus ensures that parameters can be parsed with regards to
+     * a specific given site access.
+     * @see $this->resolveParameters
+     *
+     * might be reworked to better fit the bundle's coding standard.
+     *
+     * @param array $filteredParameters
+     * @param string $scope
+     * @return array
+     * @throws Exception
+     */
     private function resolveParametersWithScope(array $filteredParameters, string $scope)
     {
         if (!$this->ezConfigResolver) {
@@ -246,30 +220,4 @@ class SiteAccessParamProcessor
 
         return $processedSiteAccessParameters;
     }
-
-//    /**
-//     * @param array $uniqueParamArray
-//     * @param array $siteAccessObjects
-//     * @return array
-//     */
-//    private function retrieveParameterValues(array $uniqueParamArray, array $siteAccessObjects)
-//    {
-//        foreach ($siteAccessObjects as $namespace) {
-//            foreach ($namespace as $siteAccess) {
-//
-//                foreach (array_keys($uniqueParamArray) as $arrayNamespace) {
-//                    foreach (array_keys($uniqueParamArray[$arrayNamespace]) as $paramKeys) {
-//                        $keys = explode(".", $paramKeys);
-//
-//                        $result = $siteAccess->getParameterValue($keys);
-//
-//                        if ($result) {
-//                            $uniqueParamArray[$arrayNamespace][$paramKeys] = $result;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        return $uniqueParamArray;
-//    }
 }

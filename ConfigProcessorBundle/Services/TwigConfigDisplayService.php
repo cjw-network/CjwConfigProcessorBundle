@@ -19,6 +19,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Twig\TwigFunction;
 
+/**
+ * Class TwigConfigDisplayService.
+ * This class is responsible for delivering the information about the internal set parameters of the symfony application
+ * to twig templates in the form of both functions and global variables. It therefore also possesses capabilities of processing
+ * the internal options.
+ *
+ * @package App\CJW\ConfigProcessorBundle\Services
+ */
 class TwigConfigDisplayService extends AbstractExtension implements GlobalsInterface
 {
     /**
@@ -100,11 +108,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         try {
             $this->request = $symRequestStack->getCurrentRequest();
 
-            // If there is not stored parameter list in object form, then undo the rest of the cache
-            if (!$this->cache->hasItem("processed_param_objects")) {
-                $this->cache->delete("processed_params");
-                $this->cache->delete("site_access_parameters");
-            }
+            $this->validateCachedItems();
 
             $this->processedParameters = $this->cache->get("processed_params", function(ItemInterface $item) {
                 $item->expiresAfter(300);
@@ -261,5 +265,28 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
             $this->getSiteAccesses(),
             $processedParamObj,
         );
+    }
+
+    /**
+     * Checks whether the required items of the service are already present in the cache or whether they
+     * are not and acts accordingly in order to assure that the processing takes place with the current
+     * and valid parameters and values.
+     */
+    private function validateCachedItems() {
+        // If there is not stored parameter list in object form, then undo the rest of the cache
+        try {
+            $this->cache->prune();
+
+            if (!$this->cache->hasItem("processed_param_objects")) {
+                $this->cache->delete("processed_params");
+                $this->cache->delete("site_access_parameters");
+            } else if (!$this->cache->hasItem("processed_params")) {
+                $this->cache->delete("processed_param_objects");
+            }
+
+        } catch (InvalidArgumentException $e) {
+            print(`Accessing the cache components of the service has led to errors: ${$e}`);
+        }
+
     }
 }

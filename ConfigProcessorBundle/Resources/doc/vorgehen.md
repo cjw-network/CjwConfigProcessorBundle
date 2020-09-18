@@ -36,7 +36,7 @@ Der aktuelle eZ-siteaccess kann aber viel leichter eingesehen werden: `$GLOBALS:
 
 # Erste Schritte:
 
-##Erschaffung der Bundle-Struktur:
+## Erschaffung der Bundle-Struktur:
 
 * Vendor-Name als Überordner, dann der Name des Bundles als Ordner (ohne Vendor),
 * in dem Ordner dann die Unterordner: "Controller, DependencyInjection, Resources und Tests"
@@ -56,13 +56,25 @@ Der aktuelle eZ-siteaccess kann aber viel leichter eingesehen werden: `$GLOBALS:
 
 ## Notiz!!
 
+### Pfade zu den relevaten Dateien
+
 In dem Vendor-Verzeichnis unter symfony kann man den config-Ordner finden, in dem sich die File-Loader befinden und vermutlich auch die Parser selbst, die dann dafür herangezogen werden!
 
-**Pfad:** `{ezinstallation}/vendor/symfony/config`
+**Pfad:** `{ezinstallation}/vendor/symfony/config/Loader`
 
-Unter "Var"-Verzeichnis verbirgt sich das cache-Verzeichnis, dass gelöscht werden muss, damit er in den Config-Loader und ähnliches hineingeht.
+Im Vendor-Verzeichnis unter Symfony, aber unter anderen Pfaden, befinden sich die eigentlichen Parser für die Dateien, nämlich unter:
+
+**Pfad:** `{ezinstallation}/vendor/symfony/dependency-injection/Loader`
+
+Der eigentliche Parser für Yaml-Dateien, aber scheinbar auch alle anderen Konfigurationsdateien liegt direkt im Symfony Ordner:
+
+**Pfad:** `{ezinstallation}/vendor/symfony/`
+
+Unter "Var"-Verzeichnis verbirgt sich das cache-Verzeichnis, das gelöscht werden muss, damit er in den Config-Loader und ähnliches hineingeht.
 
 **Pfad:** `{ezinstallation}/var/cache`
+
+### ParameterBag
 
 !! Der Parameterbag selbst kann durch den Container abgerufen werden!!!! 
 * mit der Methode: "getParameterBag()", 
@@ -75,6 +87,19 @@ diese gibt einen "Frozenparameterbag" zurück. Dieser beinhaltet zwar die Parame
 * Erzeugung einer eigenen Klasse, welche die ursprüngliche Frozen-Parameter-Bag-Klasse beerbt
 * Weiterreichung des Containers mit dem Bag an den Konstruktor dieser eigenen Klasse
 * Hinzufügen einer Funktion `getParameters()`, welche das Parameter-Array zurückgibt
+
+### Loader-Hierarchie:
+
+> **Config/Loader:**
+> > DelegatingLoader <br>
+> > LoaderResolver <br>
+
+* Scheinbar wird für das Parsen der Konfigurationsdateien beim Aufbauen des Caches zuerst der "DelegatingLoader" aufgerufen
+* Dieser ruft dann den "LoaderResolver" auf, welcher seinerseits
+
+> **DependencyInjection/Loader:**
+> > YamlLoader
+* die entsprechenden Datei-Parser durchzugehen scheint (zumindest was die Datei-Kompatibilität angeht).
 
 ## Ziel: Siteaccess-aware sein
 
@@ -135,7 +160,9 @@ Es ist davon auszugehen, dass der ConfigResolver die hohen Zeitkosten durch sein
 so hohe Kosten verursacht müsste durch Untersuchungen geklärt werden, man kann aber davon ausgehen, dass das Durchsuchen seiner
 Parameter und das Herausfinden der aktuell-geltenden Werte die meiste Zeit in Anspruch nimmt.
 
-###Verlgeich zwischen Site-Accessen
+### Vergleich zwischen Site-Accessen
+
+**Eventuell ist mit der PHP-Funktion** `func_get_args()` doch etwas ohne zwei gleiche, aber wenig unterschiedliche Funktionen machbar.
 
 **Ergebnis bisher:**
 
@@ -144,7 +171,7 @@ und für spezifische SAs (Site-Accesse) anzuzeigen. Dafür wurden die vorhandene
 Methode aufruft, die den Site-Access berücksichtigt, indem im letzten Schritt (dem resolven der Werte) dann das Scope
 mit angegeben wird, wodurch der ConfigResolver direkt nach den dazugehörigen Werten sucht.
 
-###Überführung in den Cache
+### Überführung in den Cache
 
 Mittlerweile wurden die verschiedenen Prozesse, welche das Parsen der Parameter durchführen, größtenteils mit dem
 Symfony-Cache verknüpft, was bedeutet, dass die Ladezeiten, die durch den Service erzeugt werden, drastisch
@@ -192,7 +219,10 @@ Als Implementation muss lediglich folgendes gemacht werden:
     });
 ```
 
-Darüber habe ich noch Checks eingebaut, ob die Werte im cach liegen, die ich für die Funktions-Aufrufe benötige 
+Physisch darüber habe ich noch Checks eingebaut, ob die Werte im cach liegen, die ich für die Funktions-Aufrufe benötige 
 (geschehen über die `$cache->hasItem(string $key)`-Methode) und wenn nicht, dann werden auch die anderen Werte
 meines Services aus dem Cache gelöscht, damit alle Cache-Werte simultan vorliegen und die Abarbeitung der Funktionen
 korrekt vonstattengeht.
+
+**Dazu muss eventuell noch eine Überprüfung des Parameter-Bags eingeleitet werden (ein Vergleich zwischen der Anz. Parameter
+des Bags, mit dem das Bundle gearbeitet hat und dem Bag, wie er zu dem Zeitpunkt in symfony vorliegt).**
