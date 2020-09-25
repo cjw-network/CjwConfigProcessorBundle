@@ -4,7 +4,9 @@
 namespace App\CJW\ConfigProcessorBundle\src;
 
 
-class ProcessedParamModel implements \Serializable
+use Serializable;
+
+class ProcessedParamModel implements Serializable
 {
 
     /**
@@ -139,8 +141,7 @@ class ProcessedParamModel implements \Serializable
 
     /**
      * Starting from where it is called, recursively goes through every one of its parameters and adds their keys to the
-     * full name of that parameter then adds every built full name into an array of
-     * parameter names.
+     * full name of that parameter then adds every built full name into an array of parameter names.
      *
      * @return array Returns an array of strings which represent the full parameter names of every one of the object's parameters.
      */
@@ -163,7 +164,7 @@ class ProcessedParamModel implements \Serializable
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      * Used to serialize the object and provides a string that represents the
      * parameters of the object.
      */
@@ -229,7 +230,7 @@ class ProcessedParamModel implements \Serializable
     {
         if ($level < count($keys)) {
             foreach ($this->parameters as $entry) {
-                if ($entry->getKey() === $keys[$level]) {
+                if ($entry instanceof ProcessedParamModel && $entry->getKey() === $keys[$level]) {
                     return $entry->determineIfKeyIsPresent($keys, $level+1);
                 }
             }

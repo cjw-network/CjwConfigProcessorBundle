@@ -70,6 +70,10 @@ Der eigentliche Parser für Yaml-Dateien, aber scheinbar auch alle anderen Konfi
 
 **Pfad:** `{ezinstallation}/vendor/symfony/`
 
+Der tatsächlich direkte und dedizierte Yaml-Parser befindet sich allerdings noch an einem etwas tieferen Ort und im folgenden Verzeichnis als `Parser.php`:
+
+**Pfad:** `{ezinstallation}/vendor/symfony/yaml/`
+
 Unter "Var"-Verzeichnis verbirgt sich das cache-Verzeichnis, das gelöscht werden muss, damit er in den Config-Loader und ähnliches hineingeht.
 
 **Pfad:** `{ezinstallation}/var/cache`

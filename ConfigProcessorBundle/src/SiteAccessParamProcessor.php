@@ -55,8 +55,7 @@ class SiteAccessParamProcessor
     /**
      * Function to filter and resolve all parameters given to the function via a list of siteaccesses.
      * That means that only values belonging to siteaccesses will be kept in the array and processed
-     * further and their values will be resolved. Internally in this object, both the unique and
-     * resolved parameters are stored and the original list of all siteaccess dependent parameters and their values.
+     * further and their values will be resolved.
      *
      * @param array $siteAccesses The list of siteaccesses to filter for in the parameters.
      * @param array $parameters The parameters to be filtered and processed.
@@ -121,14 +120,15 @@ class SiteAccessParamProcessor
         $uniqueParameters = $siteAccessParameters;
         $encounteredParamNames = [];
 
-        foreach (array_keys($uniqueParameters) as $namespace) {
-            foreach ($uniqueParameters[$namespace] as $siteaccess) {
+        foreach ($uniqueParameters as $namespace => $value) {
+            foreach ($value as $siteaccess) {
                 foreach ($siteaccess->getParameters() as $parameter) {
                     if ($parameter instanceof ProcessedParamModel) {
-                        $fullnames = $parameter->getAllFullParameterNames();
+                        $fullParameterNames = $parameter->getAllFullParameterNames();
 
-                        foreach ($fullnames as $fullname) {
+                        foreach ($fullParameterNames as $fullname) {
 
+                            // If an array under the current namespace has not yet been initialised, initialise it
                             if (!isset($encounteredParamNames[$namespace])) {
                                 $encounteredParamNames[$namespace] = [];
                             }
@@ -146,7 +146,7 @@ class SiteAccessParamProcessor
     }
 
     /**
-     * Takes the filteredParameters and tries to resolve them to their current value in the site-access.
+     * Takes the filtered parameters and tries to resolve them to their current value in the site-access.
      *
      * @param array $filteredParameters The filtered parameter list which is being resolved to the actual currently set parameters.
      * @return array Returns the resolved Parameters.
@@ -159,8 +159,8 @@ class SiteAccessParamProcessor
             throw new Exception("No configResolver has been set for this object.");
         }
 
-        foreach (array_keys($filteredParameters) as $namespace) {
-            foreach (array_keys($filteredParameters[$namespace]) as $parameterName) {
+        foreach ($filteredParameters as $namespace => $namespaceValue) {
+            foreach ($namespaceValue as $parameterName => $parameterValue) {
                 try {
                     $filteredParameters[$namespace][$parameterName] = $this->ezConfigResolver->getParameter($parameterName, $namespace);
                 } catch (Exception $error) {
@@ -173,10 +173,9 @@ class SiteAccessParamProcessor
     }
 
     /**
-     * Technically does the same as resolveParameters()
+     * Technically does the same as {@see resolveParameters}
      * but includes the given scope and thus ensures that parameters can be parsed with regards to
      * a specific given site access.
-     * @see $this->resolveParameters
      *
      * might be reworked to better fit the bundle's coding standard.
      *
@@ -191,8 +190,8 @@ class SiteAccessParamProcessor
             throw new Exception("No configResolver has been set for this object.");
         }
 
-        foreach (array_keys($filteredParameters) as $namespace) {
-            foreach (array_keys($filteredParameters[$namespace]) as $parameterName) {
+        foreach ($filteredParameters as $namespace => $namespaceValue) {
+            foreach ($namespaceValue as $parameterName => $parameterValue) {
                 try {
                     $filteredParameters[$namespace][$parameterName] = $this->ezConfigResolver->getParameter($parameterName, $namespace, $scope);
                 } catch (Exception $error) {
@@ -214,7 +213,7 @@ class SiteAccessParamProcessor
     {
         ksort($processedSiteAccessParameters, SORT_STRING);
 
-        foreach (array_keys($processedSiteAccessParameters) as $namespace) {
+        foreach ($processedSiteAccessParameters as $namespace => $namespaceValue) {
             ksort($processedSiteAccessParameters[$namespace], SORT_STRING);
         }
 
