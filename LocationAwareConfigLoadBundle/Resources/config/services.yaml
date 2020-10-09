@@ -1,0 +1,5 @@
+services:
+  test_bundle.twig.display:
+    class: App\TestBundle\Services\TwigTestDisplayService
+    tags:
+      - { name: twig.extension }

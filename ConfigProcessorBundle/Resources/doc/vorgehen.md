@@ -56,7 +56,7 @@ Der aktuelle eZ-siteaccess kann aber viel leichter eingesehen werden: `$GLOBALS:
 
 ## Notiz!!
 
-### Pfade zu den relevaten Dateien
+### Pfade zu den relevanten Dateien
 
 In dem Vendor-Verzeichnis unter symfony kann man den config-Ordner finden, in dem sich die File-Loader befinden und vermutlich auch die Parser selbst, die dann dafür herangezogen werden!
 
@@ -77,6 +77,11 @@ Der tatsächlich direkte und dedizierte Yaml-Parser befindet sich allerdings noc
 Unter "Var"-Verzeichnis verbirgt sich das cache-Verzeichnis, das gelöscht werden muss, damit er in den Config-Loader und ähnliches hineingeht.
 
 **Pfad:** `{ezinstallation}/var/cache`
+
+In dem Vendor-Verzeichnis unter Symfony befindet sich die abstrakte Kernel-Klasse, welche den Load-Vorgang der Konfiguration in Gang setzt und
+alle Loader instanziiert und außerdem die zu-ladenden Routen angibt.
+
+**Pfad:**  `{ezinstallation}/vendor/symfony/http-kernel/Kernel.php`
 
 ### ParameterBag
 
@@ -230,3 +235,40 @@ korrekt vonstattengeht.
 
 **Dazu muss eventuell noch eine Überprüfung des Parameter-Bags eingeleitet werden (ein Vergleich zwischen der Anz. Parameter
 des Bags, mit dem das Bundle gearbeitet hat und dem Bag, wie er zu dem Zeitpunkt in symfony vorliegt).**
+
+## Ziel: File Locations berücksichtigen
+
+**Der eigentliche Punkt des Ganzen:**
+
+Es ist das Ziel, dass nach dem Load-Vorgang, wenn alle Parameter bereitstehen und fertig geladen worden sind, zusätzlich noch die
+Dateien bekannt sind, aus denen der Parameter stammte, sodass schnell eingesehen werden kann, welche Dateien geändert werden sollten,
+damit etwaige Fehler behoben werden.
+
+Also:
+
+* Zusätzlich zu den Werten der Parameter und der Parameter selbst, sollen auch noch die Dateien, in denen sie auftauchen bekannt sein
+* Es soll herauskommen, welche Datei "gewonnen" hat und als letzte eingelesen wurde
+* Das Ganze sollte dann auch noch einsehbar sein
+
+**Voraussetzungen:** 
+
+* Der Load-Vorgang ist irgendwie so manipulierbar, dass die Locations der Parameter über das eigentliche Laden hinaus gespeichert 
+werden können
+* Klassen, die am Load-Vorgang beteiligt sind, müssen die Orte sowohl weitergeben als auch speichern können (im Falle des
+Containers zum Beispiel)
+* Das Ergebnis des Load-Vorganges (welcher Dateien berücksichtigt), muss nach außen getragen werden können
+* Minimale Invasivität ist erforderlich, damit das System stabil und auf längere Zeit kompatibel sein kann (damit außerdem weniger Code
+und Last anfällt)
+
+**Falls kein Eingreifen in den ursprünglichen Load-Vorgang möglich ist:**
+
+* Muss ein separater Load-Vorgang eingesetzt werden, welcher auf die Datei-Pfade achtet
+* Dann sollte dieser ressourcen-schonend sein, da doppeltes Auslesen der Werte eigentlich unnötig ist
+    * Außerdem (sollte /) wird nicht jede Klasse des Boot-Vorganges von Symfony benötigt (werden), um die Parameter zu laden
+* Eine Sicherung der Ergebnisse im Cache ist daher unabdingbar, damit keine zusätzliche Last im Standard-Betrieb entsteht
+
+**Größte Frage: Langlebigkeit?**
+
+Da der zweite Loading-Vorgang sehr stark auf (momentan) vorhandene Symfony-Komponenten und -Vorgänge aufbaut, könnte der Ganze Vorgang
+leicht obsolet werden und müsste dann vermutlich stark angepasst werden, damit er wieder funktioniert.
+=> Wie kann man dort Langlebigkeit und Sicherheit auf Dauer schaffen?

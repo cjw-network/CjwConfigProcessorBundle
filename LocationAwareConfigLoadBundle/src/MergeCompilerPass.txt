@@ -1,0 +1,116 @@
+<?php
+
+
+namespace App\TestBundle\src;
+
+
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
+
+class CustomMergeCompilerPass
+{
+    private static $originalParameterBagState;
+
+    /**
+     * Executes the pre-compile procedure on the container and its parameterBag,
+     * actively retrieving options from the bundles and adding them to the {@see CustomValueStorage}
+     * in order to obtain their origin.
+     *
+     * <br> At the end, the container and the parameterBag are being reset to their original
+     * state (the one they entered the procedure with) in order to allow the remaining
+     * Symfony compile procedures to function as intended and properly.
+     *
+     * <br> Most of this functionality is taken of the existing Symfony {@see MergeExtensionConfigurationPass}
+     *
+     * @param CustomContainerBuilder $container
+     * @throws \Exception
+     */
+    public static function process(CustomContainerBuilder $container) {
+        self::$originalParameterBagState = $container->getParameterBag();
+        $definitions = $container->getDefinitions();
+        $aliases = $container->getAliases();
+        $exprLangProviders = $container->getExpressionLanguageProviders();
+
+        foreach ($container->getExtensions() as $extension) {
+            if ($extension instanceof PrependExtensionInterface) {
+                $extension->prepend($container);
+            }
+        }
+
+        foreach ($container->getExtensions() as $name => $extension) {
+
+            if (!$config = $container->getExtensionConfig($name)) {
+                // this extension was not called
+                continue;
+            }
+
+            $tmpContainer = new ContainerBuilder($container->getParameterBag()->copyBag());
+            $tmpContainer->setDefinitions($definitions);
+            $tmpContainer->setAliases($aliases);
+
+            foreach ($exprLangProviders as $exprLangProvider) {
+                $tmpContainer->addExpressionLanguageProvider($exprLangProvider);
+            }
+
+            $config = $container->getExtensionConfig($name);
+            $config = $container->getParameterBag()->resolveValue($config);
+
+            $extension->load($config, $tmpContainer);
+
+//            $tmpParameters = $tmpContainer->getParameterBag()->all();
+//            $diffKeys = array_diff(array_keys($tmpParameters),array_keys($container->getParameterBag()->all()));
+
+            $resultParameters = self::getParameterValueDifferences($container->getParameterBag()->all(),$tmpContainer->getParameterBag()->all());
+
+//    TODO        CustomValueStorage::lockParameters();
+//            $container->merge($tmpContainer);
+            CustomValueStorage::unlockParameters();
+
+//            foreach($diffKeys as $key) {
+//                CustomValueStorage::addParameterOrLocation($key,$tmpParameters[$key],$extension->getNamespace());
+//            }
+
+            foreach ($resultParameters as $resultKey => $resultParameter) {
+                CustomValueStorage::addParameterOrLocation($resultKey,$resultParameter, $extension->getAlias());
+            }
+        }
+
+        CustomValueStorage::lockParameters();
+        self::restoreOriginalParameterBagState($container);
+    }
+
+    /**
+     * Determines whether the values of the parameters have changed between the bundles resulting configuration
+     * and the original configuration the container started out with (prior to the bundles), since if there is
+     * no change, it is probable, that the value hasn't been set by the bundle.
+     *
+     * @param array $containerParameters
+     * @param array $tmpParameters
+     * @return array Returns the resulting parameters which only consist of parameters that do not exist in the original container and changed parameter values.
+     */
+    public static function getParameterValueDifferences(array $containerParameters, array $tmpParameters): array {
+        $resultArray = [];
+
+        foreach ($tmpParameters as $tmpKey => $tmpParameter) {
+            if (key_exists($tmpKey, $containerParameters)) {
+                if (!($tmpParameter === $containerParameters[$tmpKey])) {
+                    $resultArray[$tmpKey] = $tmpParameter;
+                }
+            } else {
+                $resultArray[$tmpKey] = $tmpParameter;
+            }
+        }
+
+        return $resultArray;
+    }
+
+    /**
+     * Resets the internal parameterBag of the container to its Pre-CustomMergeCompile-State in order to allow
+     * an error-free execution of Symfony's remaining compile procedure.
+     *
+     * @param CustomContainerBuilder $container
+     */
+    public static function restoreOriginalParameterBagState(CustomContainerBuilder $container) {
+        $container->restoreParameterBagToPreCustomCompile(self::$originalParameterBagState);
+    }
+}

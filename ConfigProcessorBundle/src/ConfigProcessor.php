@@ -18,7 +18,7 @@ class ConfigProcessor
     }
 
     /**
-     * @return array
+     * @return array Returns the internal Object-based Parameterlist
      */
     public function getProcessedParameters(): array
     {
@@ -78,6 +78,7 @@ class ConfigProcessor
 
     /**
      * Turns the array of ProcessedParamModel-Objects into an associative array with the keys and the values attached to them.
+     * Also sorts the keys of the array alphabetically so they are more easily searchable.
      */
     private function reformatParametersForOutput() {
         $formattedOutput = [];

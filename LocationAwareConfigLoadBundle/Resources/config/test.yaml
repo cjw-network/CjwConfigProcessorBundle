@@ -1,0 +1,5 @@
+# A file to showcase that the parameters of the file are being added to the parameterbag and the path-list, through the manual addition in the config_paths.yaml
+parameters:
+  another_test_setting.site.soTest: "This stems from a manual reading of the file"
+  manually_read_parameter: "RedFromTest.yaml"
+  mysettings.global.test1: "DefaultTestFromWithinBundleNow"

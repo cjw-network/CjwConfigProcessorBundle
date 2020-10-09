@@ -110,7 +110,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
 
             $this->validateCachedItems();
 
-            $this->processedParameters = $this->cache->get("processed_params", function(ItemInterface $item) {
+            $this->processedParameters = $this->cache->get("cjw_processed_params", function(ItemInterface $item) {
                 $item->expiresAfter(300);
 
                 return $this->parseContainerParameters();
@@ -118,7 +118,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
 
             if ($this->request) {
 
-                $this->siteAccessParameters = $this->cache->get("site_access_parameters", function(ItemInterface $item) {
+                $this->siteAccessParameters = $this->cache->get("cjw_site_access_parameters", function(ItemInterface $item) {
                     $item->expiresAfter(300);
 
                     return $this->getParametersForSiteAccess();
@@ -184,10 +184,13 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
     public function getParametersForSpecificSiteAccess(string $siteAccess): array {
         $siteAccess = strtolower($siteAccess);
 
-        $processedParamObj = $this->cache->get("processed_param_objects", function(ItemInterface $item) {
-            $item->expiresAfter(3600);
-            return $this->configProcessor->getProcessedParameters();
-        });
+        $processedParamObj = $this->cache->get(
+            "cjw_processed_param_objects",
+            function(ItemInterface $item) {
+                $item->expiresAfter(3600);
+                return $this->configProcessor->getProcessedParameters();
+            }
+        );
 
         return $this->siteAccessParamProcessor->processSiteAccessBased(
             $this->getSiteAccesses($siteAccess),
@@ -256,7 +259,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
      */
     private function getParametersForSiteAccess(): array {
 
-        $processedParamObj = $this->cache->get("processed_param_objects", function(ItemInterface $item) {
+        $processedParamObj = $this->cache->get("cjw_processed_param_objects", function(ItemInterface $item) {
             $item->expiresAfter(3600);
             return $this->configProcessor->getProcessedParameters();
         });
@@ -277,11 +280,11 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         try {
             $this->cache->prune();
 
-            if (!$this->cache->hasItem("processed_param_objects")) {
-                $this->cache->delete("processed_params");
-                $this->cache->delete("site_access_parameters");
-            } else if (!$this->cache->hasItem("processed_params")) {
-                $this->cache->delete("processed_param_objects");
+            if (!$this->cache->hasItem("cjw_processed_param_objects")) {
+                $this->cache->delete("cjw_processed_params");
+                $this->cache->delete("cjw_site_access_parameters");
+            } else if (!$this->cache->hasItem("cjw_processed_params")) {
+                $this->cache->delete("cjw_processed_param_objects");
             }
 
         } catch (InvalidArgumentException $e) {
