@@ -12,9 +12,9 @@ use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Symfony\Component\Yaml\Parser;
 
 /**
- * Class ConfigPathUtility is used to provide all (static) functionality that is responsible for saving parameters and their paths.
- * And it is used to set determine paths that lead to bundle configuration in order to determine where the parameters used by bundles stem
- * from.
+ * Class ConfigPathUtility is used to provide all (static) functionality that is responsible for storing parameters and their paths.
+ * And it is used to determine paths that lead to bundle configuration in order to find out where the parameters that are being used by
+ * the bundles stem from.
  *
  * @package App\CJWLocationAwareConfigLoadBundle\src
  */
@@ -194,20 +194,21 @@ class ConfigPathUtility
     {
         $parser = new Parser();
 
+        // Go from this path to the config path of the bundle
         $pathToConfigRoutes = substr(__DIR__, 0, strpos(__DIR__, "src",-3)) . "Resources/config/config_paths.yaml";
         $userDefinedConfigPaths = $parser->parseFile($pathToConfigRoutes);
 
+        // Are there even parameters set in the file? If not, then just initiate the variable as an empty array
         $configPaths = (is_array($userDefinedConfigPaths) && key_exists("parameters",$userDefinedConfigPaths))? $userDefinedConfigPaths["parameters"] : [];
 
         foreach ($configPaths as $pathName => $pathInfo) {
-
+            // First check, whether some basic information is set for the defined routes (to see whether they can be worked with)
             if (self::checkUserDefinedPath($pathInfo)) {
                 if ($pathInfo["addConfExt"]) {
                     $pathInfo["path"] .= self::$configExtensions;
                 }
                 self::addPathToPathlist($pathInfo["path"], $pathInfo["glob"]);
             }
-
         }
     }
 

@@ -78,7 +78,7 @@ class CustomValueStorage
 
     /**
      * This function serves to set the bundle-configuration-mode in {@see $this} class. If activated, unchanged parameter
-     * values will not be set, as during the bundle configuration phase (as of Symfony 5.1), activated through the {@see MergeExtensionConfigurationPass},
+     * values will not be set, as during the bundle configuration phase (as of Symfony 5.1.5), activated through the {@see MergeExtensionConfigurationPass},
      * all bundles are given a complete version of the parameterbag onto which they add their own configuration, but since
      * the containers are then merged in the pass, unchanged and untouched parameters are added again and again to the bag,
      * which would cause as many entrances into {@see $this} classes storages as there are bundles being run through.

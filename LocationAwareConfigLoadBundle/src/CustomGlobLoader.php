@@ -50,9 +50,4 @@ class CustomGlobLoader extends GlobFileLoader
 
         $this->container->addResource($globResource);
     }
-
-//    public function supports($resource, string $type = null)
-//    {
-//        return "glob" === $type;
-//    }
 }

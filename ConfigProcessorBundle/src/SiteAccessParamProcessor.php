@@ -7,29 +7,15 @@ namespace App\CJW\ConfigProcessorBundle\src;
 use Exception;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 
+/**
+ * Class SiteAccessParamProcessor serves to take the processed parameters and determine not only which parameters are
+ * active within that siteaccess, but also what value that parameter holds under these circumstances and reformat them
+ * for output.
+ *
+ * @package App\CJW\ConfigProcessorBundle\src
+ */
 class SiteAccessParamProcessor
 {
-//    /**
-//     * Contains the site access the processor is supposed to work for / work with and display it's content.
-//     * @var string
-//     */
-//    private $workingSiteAccess;
-
-//    /**
-//     * Stores all the parameters only once with their actual current value and does not feature any duplicates
-//     * of the same parameter from a different siteaccess.
-//     *
-//     * @var array
-//     */
-//    private $uniqueSiteAccessParameters;
-//
-//    /**
-//     * Stores all the parameters that are siteaccess dependent including their values as set for their scope.
-//     *
-//     * @var array
-//     */
-//    private $siteAccessParameters;
-
     /**
      * Holds the ezplatform / -systems config resolver with which to work out the values for the parameters.
      *

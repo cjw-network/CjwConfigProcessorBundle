@@ -276,7 +276,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
      * and valid parameters and values.
      */
     private function validateCachedItems() {
-        // If there is not stored parameter list in object form, then undo the rest of the cache
+        // If there is no stored parameter list in object form, then undo the rest of the cache
         try {
             $this->cache->prune();
 
