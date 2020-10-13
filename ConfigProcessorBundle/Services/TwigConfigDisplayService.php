@@ -4,13 +4,13 @@
 namespace App\CJW\ConfigProcessorBundle\Services;
 
 
+use App\CJW\ConfigProcessorBundle\src\ConfigProcessCoordinator;
 use App\CJW\ConfigProcessorBundle\src\ConfigProcessor;
 use App\CJW\ConfigProcessorBundle\ParameterAccessBag;
 use App\CJW\ConfigProcessorBundle\src\SiteAccessParamProcessor;
 use Exception;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\Cache\ItemInterface;
 use Twig\Extension\AbstractExtension;
@@ -44,13 +44,6 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
      * @var ConfigResolverInterface
      */
     private $configResolver;
-
-    /**
-     * Holds the current request for further processing.
-     *
-     * @var Request
-     */
-    private $request;
 
     /**
      * Contains all the processed parameters categorized after their namespaces and other keys within their name
@@ -99,37 +92,42 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         ConfigResolverInterface $ezConfigResolver,
         RequestStack $symRequestStack
     ) {
-        $this->container = $symContainer;
-        $this->configResolver = $ezConfigResolver;
-        $this->configProcessor = new ConfigProcessor();
-        $this->siteAccessParamProcessor = new SiteAccessParamProcessor($this->configResolver);
-        $this->cache = new PhpFilesAdapter();
+//        $this->container = $symContainer;
+//        $this->configResolver = $ezConfigResolver;
+//        $this->configProcessor = new ConfigProcessor();
+//        $this->siteAccessParamProcessor = new SiteAccessParamProcessor($this->configResolver);
+//        $this->cache = new PhpFilesAdapter();
+//
+//        try {
+//            $request = $symRequestStack->getCurrentRequest();
+//
+//            $this->validateCachedItems();
+//
+//            $this->processedParameters = $this->cache->get("cjw_processed_params", function(ItemInterface $item) {
+//                $item->expiresAfter(300);
+//
+//                return $this->parseContainerParameters();
+//            });
+//
+//            if ($request) {
+//
+//                $this->siteAccessParameters = $this->cache->get("cjw_site_access_parameters", function(ItemInterface $item) {
+//                    $item->expiresAfter(300);
+//
+//                    return $this->getParametersForSiteAccess();
+//                });
+//
+//            }
+//        } catch (Exception $error) {
+//            print(`Something went wrong while trying to parse the parameters: ${$error}.`);
+//        } catch (InvalidArgumentException $e) {
+//            print(`An error occured while trying to access caching for the parameters: ${$e}.`);
+//        }
 
-        try {
-            $this->request = $symRequestStack->getCurrentRequest();
-
-            $this->validateCachedItems();
-
-            $this->processedParameters = $this->cache->get("cjw_processed_params", function(ItemInterface $item) {
-                $item->expiresAfter(300);
-
-                return $this->parseContainerParameters();
-            });
-
-            if ($this->request) {
-
-                $this->siteAccessParameters = $this->cache->get("cjw_site_access_parameters", function(ItemInterface $item) {
-                    $item->expiresAfter(300);
-
-                    return $this->getParametersForSiteAccess();
-                });
-
-            }
-        } catch (Exception $error) {
-            print(`Something went wrong while trying to parse the parameters: ${$error}.`);
-        } catch (InvalidArgumentException $e) {
-            print(`An error occured while trying to access caching for the parameters: ${$e}.`);
-        }
+        ConfigProcessCoordinator::initializeCoordinator($symContainer,$ezConfigResolver,$symRequestStack);
+        ConfigProcessCoordinator::startProcess();
+        $this->processedParameters = ConfigProcessCoordinator::getProcessedParameters();
+        $this->siteAccessParameters = ConfigProcessCoordinator::getSiteAccessParameters();
     }
 
     /**

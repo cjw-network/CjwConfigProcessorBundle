@@ -1,0 +1,2 @@
+cjw_config_processing.route.overview:
+  path: /admin/cjw/config-processing
