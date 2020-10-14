@@ -761,3 +761,74 @@ besser aufbereitet werden können und darüber hinaus kleinere Wunsch-Funktionen
     * sondern auch bestimmte Vergleiche / Funktionen geschaffen werden können.
 * Dafür ist es auch nötig, die gesammelten Informationen an das Frontend weiterzugeben und das zum Beispiel im JSON-Format oder direkt
 durch Templates.
+
+### Erste Schritte
+
+**Controller:**
+
+Um die Inhalte, die im Backend durch das übrige Bundle generiert werden, nach vorn tragen zu können, bedarf es einer Klasse (eines Controllers),
+die dazu in der Lage ist, die Inhalte zu besorgen und an Templates im Frontend weiterzutragen. Zumindest sollte sie allerdings bestimmte
+Templates rendern können, damit beim Aufrufen der Route im Backend (im eZ-Admin-Interface) letztlich die Möglichkeit besteht, überhaupt
+etwas anzeigen zu können.
+
+* **WICHTIGE INFORMATION:** Mein Controller beerbt den Abstract-Controller von Symfony. Dieser verlangt es aber, dass dem Controller per Constructor
+ein Container gesetzt wird (derjenige der Applikation). Das heißt, dass `$this->container` nicht null sein darf! Diese Bedingung wird vom `ControllerResolver` des 
+`Framework`-Bundles geprüft und der sorgt dafür, dass die Anfrage fehlerhaft abgebrochen wird, wenn der Controller keinen Container hat.
+    * Theoretisch ist es möglich, den Container auf eine Zahl oder einen String oder irgendwas von `null` verschiedenes zu setzen, aber
+    das birgt das Risiko, dass diese Prüfung auf die Klasse doch irgendwann eingeführt wird und der Workaround somit nicht funktioniert
+    * Da der Controller im Bundle liegt, muss nicht nur per Route definiert werden, dass der Controller existiert, wo er existiert
+    und das er für die Route verantwortlich ist, sondern auch, am besten, dass er ein Service des Bundles ist und als solcher den Container
+    autogewired bekommt
+    * In meinem Fall benötige ich jedoch noch weitaus mehr Parameter, da der Controller sicherstellt, dass die `ConfigProcessCoordinator`-Klasse 
+    gestartet ist, wofür neben `Container` auch noch `Resolver` und `RequestStack` benötigt werden, diese lass ich per Service-Definition
+    nach [Symfony best practices für Bundle](https://symfony.com/doc/current/bundles/best_practices.html) an den Controller übergeben
+    
+Die Konfiguration für den Controller als Service und für die Route, welche den Service deklariert, sehen folgendermaßen aus:
+
+routing.yaml im Bundle:
+```yaml
+    cjw_processed_parameters.list:
+      path: /cjw/config-processing
+      controller: cjw_config_processor.controller::retrieveProcessedParameters
+      methods: [GET]
+```
+
+Der Controller-Name ist dabei derjenige, der für den Controller bei der Service-Definition in der
+
+services.yaml angegeben wurde:
+```yaml
+  cjw_config_processor.controller:
+    class: App\CJW\ConfigProcessorBundle\Controller\ConfigProcessController
+    arguments: [ '@service_container', '@ezpublish.config.resolver', '@request_stack' ]
+    public: true
+```
+    
+## Überführung des Bundles in den Live-Betrieb
+
+### Konfiguration
+
+**Bundle aktivieren**
+
+Die Bundle müssen darüber hinaus auch noch manuell aktiviert werden. Dafür muss die `{Symfony-Installation}/config/bundles.php` bearbeitet werden.
+Das Folgende muss dabei in die Datei eingetragen werden:
+
+```php
+    CJW\ConfigProcessorBundle\CJWConfigProcessorBundle::class => ["all" => true],
+    CJW\LocationAwareConfigLoadBundle\CJWLocationAwareConfigLoadBundle::class => ["all" => true],
+```
+
+Diese beiden Zeilen werden schlicht in das Array, das sonst schon in der Datei vorhanden ist, eingetragen. Damit sind die Bundle aktiviert
+und sowohl die Konfiguration als auch die eigentlichen Services, können ihre Arbeit aufnehmen.
+
+**Routing**
+
+Wie auch bei den Bundlen von Netgen, müssen die Routen, welche über die Bundle-Controller bearbeitet werden, erst noch eingetragen werden.
+Dafür wird lediglich eine Datei in `{Symfony-Installation}/config/routes/` benötigt, welche folgenden Inhalt hat:
+
+```yaml
+    cjw_config_processor_bundle:
+      resource: "@CJWConfigProcessorBundle/Resources/config/routing.yaml"
+```
+
+Dadurch wird Symfony signalisiert, wo es die Routen (und damit die Controller) des Bundles herbekommt. Damit können die eigentlichen
+Routen direkt im Bundle konfiguriert werden.

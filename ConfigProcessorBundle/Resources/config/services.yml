@@ -4,3 +4,10 @@ services:
     arguments: [ '@service_container', '@ezpublish.config.resolver', '@request_stack' ]
     tags:
       - { name: twig.extension }
+
+  cjw_config_processor.controller:
+    class: App\CJW\ConfigProcessorBundle\Controller\ConfigProcessController
+    arguments: [ '@service_container', '@ezpublish.config.resolver', '@request_stack' ]
+    public: true
+
+#TODO Change the namespaces in here to something working in the vendor directory (something without App in front)

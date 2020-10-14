@@ -1,5 +1,5 @@
 services:
-  test_bundle.twig.display:
-    class: App\TestBundle\Services\TwigTestDisplayService
+  cjw_location_aware_config_load_bundle.twig.display:
+    class: App\CJW\LocationAwareConfigLoadBundle\Services\TwigTestDisplayService
     tags:
       - { name: twig.extension }

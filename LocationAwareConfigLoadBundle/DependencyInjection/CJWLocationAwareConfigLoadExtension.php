@@ -19,7 +19,7 @@ class CJWLocationAwareConfigLoadExtension extends Extension
     {
         $loader = new YamlFileLoader( $container, new FileLocator(__DIR__ . '/../Resources/config') );
         try {
-            $loader->load('services.yml');
+            $loader->load('services.yaml');
         } catch (Exception $e) {
             print(`An error occured while trying to process the "services.yml". ${$e->getMessage()}`);
         }

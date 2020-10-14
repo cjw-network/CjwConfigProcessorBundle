@@ -1,0 +1,3 @@
+twig:
+  paths:
+    "@CJWConfigProcessorBundle/Resources/views": "CJWViews"
