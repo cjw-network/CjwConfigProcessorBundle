@@ -1,4 +1,13 @@
-cjw_processed_parameters.list:
+cjw_config_processing.index:
   path: /cjw/config-processing
-  controller: cjw_config_processor.controller::retrieveProcessedParameters
+  controller: cjw_config_processor.controller::getStartPage
   methods: [GET]
+
+cjw_config_processing.param_list:
+  path: /cjw/config-processing/parameter_list
+  controller: cjw_config_processor.controller::getParameterList
+  methods: [GET]
+
+cjw_config_processing.site_access_param_list:
+  path: /cjw/config-processing/site_access_parameter_list
+  controller: cjw_config_processor.controller::getCurrentSAParameters

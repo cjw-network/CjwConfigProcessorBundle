@@ -1,0 +1,44 @@
+{% extends "@ezdesign/ui/layout.html.twig" %}
+
+{% trans_default_domain "cjw_processed_parameters_view" %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/css/bundle.css") }}>
+
+    {% block line_template_stylesheets %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+
+    <div class="cjw_config_processing_content">
+        <div class="cjw_header">
+            <span>CJW-network Config Processor</span>
+        </div>
+
+        <div>
+            <ul class="cjw_menu" role="tablist">
+                <li role="tab"><a id="cjw_param_list_link" href="{{ path("cjw_config_processing.param_list") }}">Parameter-List</a></li>
+                <li role="tab" ><a id="cjw_current_sa_params" href="{{ path("cjw_config_processing.site_access_param_list") }}">Current Site Access</a></li>
+                <li role="tab"><a id="cjw_select_sa_params" href="{{ path("cjw_config_processing.param_list") }}">Select Site Access</a></li>
+            </ul>
+        </div>
+
+        <div class="cjw_main_body">
+            <div class="cjw_side_bar">
+                <p>There might be a side-bar here</p>
+            </div>
+
+            <div class="cjw_main_section">
+                {% block param_list %} {% endblock %}
+            </div>
+        </div>
+
+        <div class="cjw_footer">
+            <span>This could be the beginning of a wonderful footer</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src={{ asset("bundles/cjwconfigprocessor/js/bundle.js") }}></script>
+{% endblock %}

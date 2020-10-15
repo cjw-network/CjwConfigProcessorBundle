@@ -1,0 +1,12 @@
+{% extends "@CJWConfigProcessor/index.html.twig" %}
+
+{% block line_template_stylesheets %}
+    <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/css/current_site_access.css") }}>
+{% endblock %}
+
+{% block param_list %}
+    <ul class="processed_param_list">
+       {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : parameterList} only %}
+    </ul>
+    {{ dump(parameterList) }}
+{% endblock %}

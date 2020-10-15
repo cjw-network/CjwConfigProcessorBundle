@@ -1,0 +1,32 @@
+{# This template serves to recursively go through all entries in the key => value array that is given to it and creates a list from that. #}
+{% for key, value in parameters %}
+
+    {# If there is no more associative key, the value of the path is reached, so treat that differently. #}
+    {% if key is same as(0) or is_numeric(key)%}
+
+        {# Is the value in itself an array? Then go through that one by one as well. #}
+        {% if value is iterable %}
+            <ul>
+                {% include "@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig" ignore missing with { "parameters" : value } only %}
+            </ul>
+        {# Or is it just one single value? #}
+        {% else %}
+            <li class="site_access_param_list_items">{{ value }}</li>
+        {% endif %}
+
+    {# If the value can still be iterated upon, but the key has not reached "0" yet, continue with the procedure #}
+    {% elseif value is iterable %}
+        <li class="site_access_param_list_items">{{ key }}</li>
+        <ul>
+            {% include "@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig" ignore missing with { "parameters" : value } only %}
+        </ul>
+
+    {# As a catchall, if the rest doesn't match but there is still content #}
+    {% else %}
+        <li class="site_access_param_list_items">{{ key }}</li>
+        <ul>
+            <li class="site_access_param_list_items">{{ value }}</li>
+        </ul>
+    {% endif %}
+
+{% endfor %}

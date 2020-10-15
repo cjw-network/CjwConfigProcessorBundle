@@ -110,8 +110,23 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
                 array("is_safe" => array("html")),
             ),
             new TwigFunction(
+              "cjw_process_for_current_siteaccess",
+              array($this, "getParametersForCurrentSiteAccess"),
+              array("is_safe" => array("html")),
+            ),
+            new TwigFunction(
                 "cjw_process_for_siteaccess",
                 array($this, "getParametersForSpecificSiteAccess"),
+                array("is_safe" => array("html")),
+            ),
+            new TwigFunction(
+                "is_numeric",
+                array($this, "isNumeric"),
+                array("is_safe" => array("html")),
+            ),
+            new TwigFunction(
+                "is_string",
+                array($this, "isString"),
                 array("is_safe" => array("html")),
             ),
         );
@@ -149,5 +164,31 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
             echo("Something went wrong while trying to retrieve the processed parameters.");
             return [];
         }
+    }
+
+    public function getParametersForCurrentSiteAccess(): array {
+        try {
+            return ConfigProcessCoordinator::getSiteAccessParameters();
+        } catch (Exception $error) {
+            return [];
+        }
+    }
+
+    public function getParametersForSpecificSiteAccess(string $siteAccess): array {
+        try {
+            return ConfigProcessCoordinator::getParametersForSpecificSiteAccess($siteAccess);
+        } catch (Exception $error) {
+            return [];
+        }
+    }
+
+    //Helper functions in twig templates
+
+    public function isNumeric($value): bool {
+        return is_numeric($value);
+    }
+
+    public function isString($value): bool {
+        return is_string($value);
     }
 }
