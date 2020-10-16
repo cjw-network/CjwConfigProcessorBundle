@@ -143,8 +143,6 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
             "cjw_formatted_parameters" => $this->processedParameters,
             "cjw_siteaccess_parameters" => $this->siteAccessParameters,
         );
-
-        // "cjw_test" => $this->getParametersForSpecificSiteAccess("admin"),
     }
 
     /**

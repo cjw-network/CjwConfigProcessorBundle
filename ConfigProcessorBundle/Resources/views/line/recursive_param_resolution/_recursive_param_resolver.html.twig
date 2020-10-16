@@ -12,10 +12,10 @@
             <div class="param_list_values">{{ value }}</div>
         {% endif %}
 
-    {# If the value can still be iterated upon, but the key has not reached "0" yet, continue with the procedure #}
+    {# If the value can still be iterated upon, but the key has not reached a plain number yet, continue with the procedure #}
     {% elseif value is iterable %}
         <div class="param_list_items">
-            <div class="param_list_keys">{{ key }}</div>
+            <div class="param_list_keys" key="{{ key }}">{{ key }}:</div>
 
             {% include "@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig" ignore missing with { "parameters" : value } only %}
         </div>
@@ -24,13 +24,11 @@
     {# As a catchall, if the rest doesn't match but there is still content #}
     {% else %}
         <div class="param_list_items">
-            <div class="param_list_keys">{{ key }}</div>
+            <div class="param_list_keys" key="{{ key }}">{{ key }}:</div>
 
-{#            <div class="param_list_items">#}
-                <div class="param_list_values">
-                    {{ value }}
-                </div>
-{#            <div>#}
+            <div class="param_list_values">
+                {{ value }}
+            </div>
         </div>
     {% endif %}
 

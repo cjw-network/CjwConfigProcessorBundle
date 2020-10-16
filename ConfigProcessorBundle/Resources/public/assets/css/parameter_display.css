@@ -6,20 +6,23 @@
 
 .param_list_keys {
     /*list-style: none;*/
-    background-color: lightgrey;
-    padding: 10px;
-    margin-bottom: 5px;
+    background-color: aliceblue;
+    padding: 2px;
+    margin-bottom: 3px;
     border-radius: 5px;
+    border: solid 1px midnightblue;
 }
 
 .param_list_keys:hover {
-    background-color: white;
-    transition: all 0.3s cubic-bezier(0.25,0.8,0.25,1);
+    background-color: #0a435b;
+    color: white;
+    transition: all 0.4s cubic-bezier(0.25,0.8,0.25,1);
 }
 
 .param_list_values{
-    background-color: lightgrey;
-    padding: 10px;
-    margin-bottom: 5px;
+    background-color: lightgreen;
+    padding: 2px;
+    margin-bottom: 2px;
     border-radius: 5px;
+    border: solid 1px midnightblue;
 }

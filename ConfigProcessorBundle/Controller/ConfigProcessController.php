@@ -38,7 +38,7 @@ class ConfigProcessController extends AbstractController
     public function getCurrentSAParameters () {
         $saParameters = ConfigProcessCoordinator::getSiteAccessParameters();
 
-        return $this->render("@CJWConfigProcessor/line/param_view_current_sa.html.twig", ["siteAccessParameters" => $saParameters]);
+        return $this->render("@CJWConfigProcessor/line/param_view_siteaccess.html.twig", ["siteAccessParameters" => $saParameters]);
     }
 
     public function getSpecificSAParameters (string $siteAccess) {
@@ -48,6 +48,6 @@ class ConfigProcessController extends AbstractController
             $specSAParameters = [];
         }
 
-        return $this->render("@CJWConfigProcessor/line/param_view_specific_sa.html.twig", ["specificSiteAccessParameters" => $specSAParameters]);
+        return $this->render("@CJWConfigProcessor/line/param_view_siteaccess.html.twig", ["specificSiteAccessParameters" => $specSAParameters]);
     }
 }

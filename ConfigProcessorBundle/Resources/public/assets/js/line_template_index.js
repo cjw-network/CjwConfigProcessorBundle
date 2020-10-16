@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    parameterDisplay = new ParameterDisplay();
+    let parameterDisplay = new ParameterDisplay();
 
     parameterDisplay.cleanUpList();
 });

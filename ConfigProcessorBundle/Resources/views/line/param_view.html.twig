@@ -8,7 +8,7 @@
     <div class="param_list">
        {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : parameterList} only %}
     </div>
-    {{ dump(parameterList) }}
+{#    {{ dump(parameterList) }}#}
 {% endblock %}
 
 {% block line_template_javascripts %}

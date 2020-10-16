@@ -16,7 +16,8 @@ class ParameterDisplay {
             const dontDisplayChildNodes = topNodeEntry.querySelectorAll(".param_list_items, .param_list_values");
 
             for (const dontDisplayNode of dontDisplayChildNodes) {
-                dontDisplayNode.style.display = "none";
+                this.setAppropriateOnClick(dontDisplayNode);
+                dontDisplayNode.classList.add("dont_display");
             }
         }
     }
@@ -24,24 +25,64 @@ class ParameterDisplay {
     getListEntryNodes(targetNode) {
         if (targetNode && targetNode.children.length > 0) {
 
-            const furtherEntries = targetNode.querySelectorAll(".param_list_items, .param_list_values");
+            for (const entry of targetNode.children) {
+                entry.classList.remove("dont_display");
 
-            for (const entry of furtherEntries) {
-                entry.style.display = "";
+                const childNodes = entry.querySelectorAll(".param_list_items, .param_list_values")
 
-                for (const child of entry.children) {
-                    child.style.display = "none";
+                for (const child of childNodes) {
+                    child.classList.add("dont_display");
                 }
 
-                let paddingLeft = targetNode.style.paddingLeft.replace("px","");
+                if (!entry.classList.contains("param_list_keys")) {
+                    let marginLeft = targetNode.style.marginLeft.replace("px", "");
+                    marginLeft = (marginLeft.length < 1) ? 0 : parseInt(marginLeft);
 
-                entry.style.paddingLeft += `${parseInt(paddingLeft)+10}px`;
-                entry.onclick = (event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    this.getListEntryNodes(event.currentTarget);
+                    entry.style.marginLeft += `${marginLeft + 10}px`;
                 }
+            }
+
+            targetNode.onclick = (event) => {
+                event.stopPropagation();
+                event.preventDefault();
+
+                this.closeListEntryNodes(event.currentTarget);
+            }
+        }
+    }
+
+    closeListEntryNodes (targetNode) {
+
+        if (targetNode && targetNode.children.length > 0) {
+
+            const childNodes = targetNode.querySelectorAll(".param_list_items, .param_list_values");
+
+            for (const entry of childNodes) {
+                entry.classList.add("dont_display");
+                entry.removeEventListener("click", this.getListEntryNodes);
+            }
+
+            targetNode.onclick = (event) => {
+                event.stopPropagation();
+                event.preventDefault();
+
+                this.getListEntryNodes(event.currentTarget);
+            }
+        }
+    }
+
+    setAppropriateOnClick(node) {
+        if (node.classList.contains("param_list_items")) {
+            node.onclick = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                this.getListEntryNodes(event.currentTarget);
+            }
+        } else if (node.classList.contains("param_list_values")) {
+            node.onclick = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
             }
         }
     }
