@@ -111,15 +111,12 @@ class ConfigProcessCoordinator
             // ItemInterface $item
             self::$processedParameters = self::$cache->get("cjw_processed_params", function() {
 //                $item->expiresAfter(300);
-
                 return self::parseContainerParameters();
             });
 
             if ($request) {
-                // ItemInterface $item
-                self::$siteAccessParameters = self::$cache->get("cjw_site_access_parameters", function() {
-//                    $item->expiresAfter(300);
 
+                self::$siteAccessParameters = self::$cache->get("cjw_site_access_parameters", function() {
                     return self::getParametersForSiteAccess();
                 });
 
@@ -132,6 +129,8 @@ class ConfigProcessCoordinator
     }
 
     /**
+     * Allows parameters to be retrieved for a given site-access.
+     *
      * @param string $siteAccess
      * @return array
      * @throws InvalidArgumentException
@@ -155,6 +154,8 @@ class ConfigProcessCoordinator
     }
 
     /**
+     * Gets the processed parameters array which contains the reformatted and sorted parameters.
+     *
      * @return array
      * @throws Exception
      */
@@ -168,6 +169,8 @@ class ConfigProcessCoordinator
     }
 
     /**
+     * Retrieves the parameters for the current site access.
+     *
      * @return array
      * @throws Exception
      */
@@ -208,7 +211,7 @@ class ConfigProcessCoordinator
     }
 
     /**
-     * Simply goes into the ezpublish parameter to get the list of current site accesses that exist in the
+     * Simply goes into the ezpublish-parameter to get the list of current site accesses that exist in the
      * parameter.
      *
      * @param string|null $siteAccess Optional parameter which dictates whether only the default SiteAccesses and the given one will be added or all available ones are added.

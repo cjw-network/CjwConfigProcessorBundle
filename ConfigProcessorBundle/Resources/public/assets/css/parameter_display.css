@@ -1,0 +1,25 @@
+.param_list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.param_list_keys {
+    /*list-style: none;*/
+    background-color: lightgrey;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.param_list_keys:hover {
+    background-color: white;
+    transition: all 0.3s cubic-bezier(0.25,0.8,0.25,1);
+}
+
+.param_list_values{
+    background-color: lightgrey;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}

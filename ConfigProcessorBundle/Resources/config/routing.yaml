@@ -11,3 +11,8 @@ cjw_config_processing.param_list:
 cjw_config_processing.site_access_param_list:
   path: /cjw/config-processing/site_access_parameter_list
   controller: cjw_config_processor.controller::getCurrentSAParameters
+
+cjw_config_processing.specific_site_access_param_list:
+  path: /cjw/config-processing/site_access_parameter_list/{siteaccess}
+  controller: cjw_config_processor.controller::getSpecificSAParameters
+  methods: [POST]

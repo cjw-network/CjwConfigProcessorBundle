@@ -6,9 +6,9 @@
 
 {% block param_list %}
     <div class="param_list">
-       {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : parameterList} only %}
+        {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : specificSiteAccessParameters} only %}
     </div>
-    {{ dump(parameterList) }}
+    {{ dump(specificSiteAccessParameters) }}
 {% endblock %}
 
 {% block line_template_javascripts %}

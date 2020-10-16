@@ -24,9 +24,9 @@
         </div>
 
         <div class="cjw_main_body">
-            <div class="cjw_side_bar">
-                <p>There might be a side-bar here</p>
-            </div>
+{#            <div class="cjw_side_bar">#}
+{#                <p>There might be a side-bar here</p>#}
+{#            </div>#}
 
             <div class="cjw_main_section">
                 {% block param_list %} {% endblock %}
@@ -41,4 +41,5 @@
 
 {% block javascripts %}
     <script src={{ asset("bundles/cjwconfigprocessor/js/bundle.js") }}></script>
+    {% block line_template_javascripts %}{% endblock %}
 {% endblock %}

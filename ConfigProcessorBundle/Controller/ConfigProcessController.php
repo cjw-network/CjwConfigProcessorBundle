@@ -5,6 +5,7 @@ namespace App\CJW\ConfigProcessorBundle\Controller;
 
 
 use App\CJW\ConfigProcessorBundle\src\ConfigProcessCoordinator;
+use Exception;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -37,6 +38,16 @@ class ConfigProcessController extends AbstractController
     public function getCurrentSAParameters () {
         $saParameters = ConfigProcessCoordinator::getSiteAccessParameters();
 
-        return $this->render("@CJWConfigProcessor/line/sa_param_view.html.twig", ["siteAccessParameters" => $saParameters]);
+        return $this->render("@CJWConfigProcessor/line/param_view_current_sa.html.twig", ["siteAccessParameters" => $saParameters]);
+    }
+
+    public function getSpecificSAParameters (string $siteAccess) {
+        try {
+            $specSAParameters = ConfigProcessCoordinator::getParametersForSpecificSiteAccess($siteAccess);
+        } catch (Exception $error) {
+            $specSAParameters = [];
+        }
+
+        return $this->render("@CJWConfigProcessor/line/param_view_specific_sa.html.twig", ["specificSiteAccessParameters" => $specSAParameters]);
     }
 }
