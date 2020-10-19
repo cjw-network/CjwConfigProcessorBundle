@@ -35,6 +35,8 @@ class LoadInitializer extends Kernel
         try {
             // First the extensions of the file formats that are being supported by Symfony with regards to configuration.
             ConfigPathUtility::setConfigExtensions('.{php,xml,yaml,yml}');
+            // Get a custom cache directory in order to prevent the paths to be cached only temporarily (leading to problems when restarting the server and the Kernel is still cached, but the routes aren't)
+            ConfigPathUtility::setCacheDir($this->getCacheDir());
             // Then initialise the key piece in the tracking of parameter paths.
             ConfigPathUtility::initializePathUtility();
             // Boot the custom kernel and initiate the location aware loading process.

@@ -14,6 +14,7 @@ class SearchBarUtility {
             const searchField = document.createElement("input");
             searchField.type="text";
 
+            searchForm.classList.add("searchbar");
             searchForm.appendChild(searchField);
 
             searchField.addEventListener("input", (event) => {
@@ -27,7 +28,7 @@ class SearchBarUtility {
 
     reactToSearchInput(searchText) {
         if (searchText.trim().length === 0) {
-
+            this.resetList();
             return;
         }
 
@@ -61,7 +62,7 @@ class SearchBarUtility {
         if (node.offsetParent === null || node.classList.contains("dont_display")) {
             const nodeParent = node.parentElement;
 
-            if (nodeParent) {
+            if (nodeParent && !nodeParent.classList.contains("param_list")) {
                 if (nodeParent.previousElementSibling) {
                     nodeParent.previousElementSibling.classList.remove("dont_display");
                 }
@@ -86,7 +87,9 @@ class SearchBarUtility {
     removeRemainingIrrelevantResults (searchText) {
         const nonRelevantVisibleResults = this.mainSection.querySelectorAll(`div:not(.dont_display):not([key^="${searchText}" i]), [key]`)
         for (const nonRelevantResult of nonRelevantVisibleResults) {
-            nonRelevantResult.classList.add("dont_display");
+            if (!nonRelevantResult.classList.contains("param_list_keys")) {
+                nonRelevantResult.classList.add("dont_display");
+            }
         }
     }
 
@@ -97,9 +100,17 @@ class SearchBarUtility {
         for (const node of rootNodes) {
             node.classList.remove("dont_display");
 
-            if (node.children.length > 0) {
-
+            for (const childNode of node.children) {
+                if (childNode.classList.contains("param_list_keys")) {
+                    childNode.classList.remove("dont_display");
+                }
             }
+        }
+
+        const lastResult = document.querySelector(".first_search_result");
+
+        if (lastResult) {
+            lastResult.classList.remove("first_search_result")
         }
     }
 }

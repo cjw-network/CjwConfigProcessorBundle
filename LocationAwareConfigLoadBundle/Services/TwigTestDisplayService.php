@@ -8,6 +8,7 @@ use App\CJW\LocationAwareConfigLoadBundle\src\CustomValueStorage;
 use App\CJW\LocationAwareConfigLoadBundle\src\LoadInitializer;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
+use Symfony\Component\Cache\Exception\CacheException;
 use Symfony\Contracts\Cache\ItemInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
@@ -32,9 +33,16 @@ class TwigTestDisplayService extends AbstractExtension implements GlobalsInterfa
 
     public function __construct()
     {
-        $this->cache = new PhpFilesAdapter();
         // The loader is created basically the same way as the typical kernel would
         $this->customConfigLoader = new LoadInitializer($_SERVER['APP_ENV'], (bool)$_SERVER['APP_DEBUG']);
+
+        $cacheDir = $this->customConfigLoader->getCacheDir()."/cjw/config-processor-bundle/";
+
+        try {
+            $this->cache = new PhpFilesAdapter("", 0, $cacheDir);
+        } catch (CacheException $e) {
+            $this->cache = new PhpFilesAdapter();
+        }
 
         // After the booting process of the LoadInitializer, the parameters should be present
         $this->parametersAndLocations = CustomValueStorage::getParametersAndTheirLocations();

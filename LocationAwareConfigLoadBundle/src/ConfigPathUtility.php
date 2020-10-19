@@ -8,7 +8,7 @@ use Exception;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
-//use Symfony\Component\Cache\Exception\CacheException;
+use Symfony\Component\Cache\Exception\CacheException;
 use Symfony\Component\Yaml\Parser;
 
 /**
@@ -39,6 +39,9 @@ class ConfigPathUtility
     /** @var bool This boolean states whether there has been a change to the paths that warrants the kernel and thereby load process to be restarted to include the newly found paths. */
     private static $restartLoadProcess = false;
 
+    /** @var string The directory in which to cache all the routes (in order to prevent the cache from being stored only temporarily) */
+    private static $cacheDir = null;
+
     /**
      * Serves to set up and initialise all major internal attributes in order to allow the class to function properly.
      * It initiates the cache (if it hasn't already), retrieves the routes from the cache, parses the manually defined routes
@@ -49,7 +52,11 @@ class ConfigPathUtility
         if (!self::$cacheInitialized) {
             // If the cache has not yet been instantiated
             if (!isset(self::$configPathCache)) {
-                self::$configPathCache = new PhpFilesAdapter();
+                try {
+                    self::$configPathCache = new PhpFilesAdapter("", 0, self::$cacheDir);
+                } catch (CacheException $e) {
+                    self::$configPathCache = new PhpFilesAdapter();
+                }
             }
 
             self::$restartLoadProcess = false;
@@ -57,7 +64,7 @@ class ConfigPathUtility
 
             try {
                 // Retrieve the cached routes
-                self::$configPaths = self::$configPathCache->get("cjw_config_paths", function (CacheItemInterface $item) {
+                self::$configPaths = self::$configPathCache->get("cjw_config_paths", function () {
                     return [];
                 });
 
@@ -135,7 +142,7 @@ class ConfigPathUtility
         if (self::$cacheInitialized && self::$pathsChanged) {
             try {
                 self::$configPathCache->delete("cjw_config_paths");
-                self::$configPathCache->get("cjw_config_paths", function (CacheItemInterface $item) {
+                self::$configPathCache->get("cjw_config_paths", function () {
                     return self::$configPaths;
                 });
                 self::$restartLoadProcess = true;
@@ -184,6 +191,16 @@ class ConfigPathUtility
     public static function setConfigExtensions(string $configExtensions): void
     {
         self::$configExtensions = $configExtensions;
+    }
+
+    /**
+     * @param string $cacheDir
+     */
+    public static function setCacheDir(string $cacheDir): void
+    {
+        if (is_dir($cacheDir)) {
+            self::$cacheDir = $cacheDir."/cjw/config-processor-bundle/";
+        }
     }
 
     /**

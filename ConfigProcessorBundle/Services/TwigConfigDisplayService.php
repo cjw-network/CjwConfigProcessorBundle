@@ -17,6 +17,7 @@ use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
+use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 /**
@@ -145,6 +146,13 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         );
     }
 
+    public function getFilters()
+    {
+        return array(
+            new TwigFilter("boolean", array($this, "booleanFilter")),
+        );
+    }
+
     /**
      * Returns the name of the extension.
      *
@@ -188,5 +196,13 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
 
     public function isString($value): bool {
         return is_string($value);
+    }
+
+    public function booleanFilter ($value) {
+        if (is_bool($value)) {
+            return $value? "true" : "false";
+        } else {
+            return $value;
+        }
     }
 }

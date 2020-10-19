@@ -52,7 +52,6 @@ class ParameterDisplay {
     }
 
     closeListEntryNodes (targetNode) {
-
         if (targetNode && targetNode.children.length > 0) {
 
             const childNodes = targetNode.querySelectorAll(".param_list_items, .param_list_values");

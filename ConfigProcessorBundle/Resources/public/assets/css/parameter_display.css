@@ -10,19 +10,20 @@
     padding: 2px;
     margin-bottom: 3px;
     border-radius: 5px;
-    border: solid 1px midnightblue;
+    border: solid 1px lightslategrey;
 }
 
 .param_list_keys:hover {
     background-color: #0a435b;
     color: white;
     transition: all 0.4s cubic-bezier(0.25,0.8,0.25,1);
+    cursor: pointer;
 }
 
 .param_list_values{
     background-color: lightgreen;
     padding: 2px;
-    margin-bottom: 2px;
+    margin-bottom: 3px;
     border-radius: 5px;
-    border: solid 1px midnightblue;
+    border: solid 1px lightslategrey;
 }

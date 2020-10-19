@@ -183,6 +183,30 @@ class ConfigProcessCoordinator
         return self::$siteAccessParameters;
     }
 
+    /**
+     * Simply goes into the ezpublish-parameter to get the list of current site accesses that exist in the
+     * parameter.
+     *
+     * @param string|null $desiredSiteAccess Optional parameter which dictates whether only the default SiteAccesses and the given one will be added or all available ones are added.
+     * @return array Returns all found siteAccesses in an array.
+     */
+    public static function getSiteAccesses(string $desiredSiteAccess = null): array {
+        try {
+            if (!$desiredSiteAccess) {
+                $siteAccesses = self::$processedParameters["ezpublish"]["siteaccess"]["list"];
+                array_push($siteAccesses, ...array_keys(self::$processedParameters["ezpublish"]["siteaccess"]["groups"]));
+            } else {
+                $siteAccesses = array($desiredSiteAccess);
+                array_push($siteAccesses,...self::$processedParameters["ezpublish"]["siteaccess"]["groups_by_siteaccess"][$desiredSiteAccess]);
+            }
+
+            array_push($siteAccesses, "default", "global");
+        } catch (Exception $error) {
+            // Fallback SAs if the others are not accessible via the array route
+            $siteAccesses = array("default","global");
+        }
+        return $siteAccesses;
+    }
 
     /*****************************************************************************************
      *
@@ -208,31 +232,6 @@ class ConfigProcessCoordinator
         }
 
         return self::$processedParameters;
-    }
-
-    /**
-     * Simply goes into the ezpublish-parameter to get the list of current site accesses that exist in the
-     * parameter.
-     *
-     * @param string|null $siteAccess Optional parameter which dictates whether only the default SiteAccesses and the given one will be added or all available ones are added.
-     * @return array Returns all found siteAccesses in an array.
-     */
-    private static function getSiteAccesses(string $siteAccess = null): array {
-        try {
-            if (!$siteAccess) {
-                $sa = self::$processedParameters["ezpublish"]["siteaccess"]["list"];
-                array_push($sa, ...array_keys(self::$processedParameters["ezpublish"]["siteaccess"]["groups"]));
-            } else {
-                $sa = array($siteAccess);
-                array_push($sa,...self::$processedParameters["ezpublish"]["siteaccess"]["groups_by_siteaccess"][$siteAccess]);
-            }
-
-            array_push($sa, "default", "global");
-        } catch (Exception $error) {
-            // Fallback SAs if the others are not accessible via the array route
-            $sa = array("default","global");
-        }
-        return $sa;
     }
 
     /**

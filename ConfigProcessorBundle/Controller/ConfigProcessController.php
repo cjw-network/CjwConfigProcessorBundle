@@ -25,8 +25,9 @@ class ConfigProcessController extends AbstractController
 
     public function getStartPage () {
         ConfigProcessCoordinator::startProcess();
+        $availableSiteAccesses = ConfigProcessCoordinator::getSiteAccesses();
 
-        return $this->render("@CJWConfigProcessor/index.html.twig");
+        return $this->render("@CJWConfigProcessor/index.html.twig", ["siteAccesses" => $availableSiteAccesses]);
     }
 
     public function getParameterList () {
@@ -48,6 +49,6 @@ class ConfigProcessController extends AbstractController
             $specSAParameters = [];
         }
 
-        return $this->render("@CJWConfigProcessor/line/param_view_siteaccess.html.twig", ["specificSiteAccessParameters" => $specSAParameters]);
+        return $this->render("@CJWConfigProcessor/line/param_view_siteaccess.html.twig", ["siteAccess" => $siteAccess,"siteAccessParameters" => $specSAParameters]);
     }
 }

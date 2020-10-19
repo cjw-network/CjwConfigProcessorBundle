@@ -9,7 +9,7 @@
             {% include "@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig" ignore missing with { "parameters" : value } only %}
         {# Or is it just one single value? #}
         {% else %}
-            <div class="param_list_values">{{ value }}</div>
+            <div class="param_list_values">{{ value | boolean }}</div>
         {% endif %}
 
     {# If the value can still be iterated upon, but the key has not reached a plain number yet, continue with the procedure #}
@@ -27,7 +27,7 @@
             <div class="param_list_keys" key="{{ key }}">{{ key }}:</div>
 
             <div class="param_list_values">
-                {{ value }}
+                {{ value | boolean }}
             </div>
         </div>
     {% endif %}
