@@ -17,6 +17,9 @@ class ParameterDisplay {
 
             for (const dontDisplayNode of dontDisplayChildNodes) {
                 this.setAppropriateOnClick(dontDisplayNode);
+
+                dontDisplayNode.style.marginLeft += `15px`;
+
                 dontDisplayNode.classList.add("dont_display");
             }
         }
@@ -32,13 +35,6 @@ class ParameterDisplay {
 
                 for (const child of childNodes) {
                     child.classList.add("dont_display");
-                }
-
-                if (!entry.classList.contains("param_list_keys")) {
-                    let marginLeft = targetNode.style.marginLeft.replace("px", "");
-                    marginLeft = (marginLeft.length < 1) ? 0 : parseInt(marginLeft);
-
-                    entry.style.marginLeft += `${marginLeft + 10}px`;
                 }
             }
 

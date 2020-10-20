@@ -1,0 +1,67 @@
+.cjw_site_access_list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.cjw_site_access_list > li > a {
+    padding: 1rem 2rem;
+    color: white;
+    display: flex;
+    transition: all 0.3s cubic-bezier(0.25,0.8,0.25,1);
+    margin-bottom: 5px;
+}
+
+.cjw_site_access_list a:link, a:visited {
+    background-color: #0a435b;
+    text-align: center;
+    text-decoration: none;
+}
+
+.cjw_site_access_list a:hover, a:active {
+    background-color: white;
+    color: black;
+    text-align: center;
+    text-decoration: none;;
+}
+
+.searchbar {
+    display: none;
+}
+
+.deactivated_links {
+    pointer-events: none;
+}
+
+.deactivated_links:hover {
+    background-color: #0a435b;
+    text-decoration: none;
+}
+
+.switch {
+    background-color: white !important;
+    border: 1px solid #0a435b !important;
+    color: black !important;
+    transition: 0.4s all ease;
+}
+
+#sendSiteAccessHolder {
+    display: flex;
+    justify-content: center;
+}
+
+#sendSplitViewSiteAccesses {
+    width: 60vw;
+    padding: 10px;
+    box-shadow: none;
+    border: 2px solid #0a435b;
+    background-color: white;
+    transition: 0.4s all ease;
+}
+
+#sendSplitViewSiteAccesses:hover {
+    background-color: #0a435b;
+    color: white;
+    transition: 0.4s all ease;
+}
+

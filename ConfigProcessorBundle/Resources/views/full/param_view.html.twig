@@ -4,7 +4,7 @@
     <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/css/parameter_display.css") }}>
 {% endblock %}
 
-{% block param_list %}
+{% block param_content %}
     <div class="param_list">
        {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : parameterList} only %}
     </div>
@@ -12,6 +12,7 @@
 {% endblock %}
 
 {% block line_template_javascripts %}
-    <script src={{ asset("bundles/cjwconfigprocessor/js/line_template_index.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/js/param_list_index.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterBranchDisplay.js") }}></script>
 {% endblock %}

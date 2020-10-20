@@ -8,9 +8,11 @@
     /*list-style: none;*/
     background-color: aliceblue;
     padding: 2px;
-    margin-bottom: 3px;
-    border-radius: 5px;
-    border: solid 1px lightslategrey;
+    margin-bottom: 4px;
+    /*border-radius: 5px;*/
+    border: solid 2px #0a435b;
+    position: relative;
+    align-items: center;
 }
 
 .param_list_keys:hover {
@@ -23,7 +25,28 @@
 .param_list_values{
     background-color: lightgreen;
     padding: 2px;
-    margin-bottom: 3px;
-    border-radius: 5px;
+    margin-bottom: 4px;
+    /*border-radius: 5px;*/
     border: solid 1px lightslategrey;
+}
+
+.searchbar > input {
+    border-radius: 0;
+    border: 2px solid white;
+}
+
+.searchbar > input:focus {
+    border: 2px solid #ffde25;
+    transition: border-color 0.2s ease;
+}
+
+.location_info {
+    background-color: white;
+    /*border: 2px solid #0a435b;*/
+    border-radius: 100%;
+    position: absolute;
+    right: 10px;
+    bottom: 1%;
+    padding-left: 9px;
+    padding-right: 9px;
 }

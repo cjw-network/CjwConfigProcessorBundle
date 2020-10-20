@@ -10,19 +10,21 @@ class SearchBarUtility {
 
     setUpSearchBar() {
         if (this.header) {
-            const searchForm = document.createElement("form");
-            const searchField = document.createElement("input");
-            searchField.type="text";
+            // const searchForm = document.createElement("form");
+            // const searchField = document.createElement("input");
+            // searchField.type="text";
+            //
+            // searchForm.classList.add("searchbar");
+            // searchForm.appendChild(searchField);
 
-            searchForm.classList.add("searchbar");
-            searchForm.appendChild(searchField);
+            const searchField = document.querySelector(".searchbar > input");
 
             searchField.addEventListener("input", (event) => {
                 event.preventDefault();
                 this.reactToSearchInput(event.target.value);
             })
 
-            this.header.appendChild(searchForm);
+            // this.header.appendChild(searchForm);
         }
     }
 
@@ -33,23 +35,30 @@ class SearchBarUtility {
         }
 
         if (this.mainSection) {
-            const highlightedNode = document.querySelector(".first_search_result");
-            if (highlightedNode) {
-                highlightedNode.classList.toggle("first_search_result");
+            // const highlightedNode = document.querySelector(".first_search_result");
+            // if (highlightedNode) {
+            //     highlightedNode.classList.toggle("first_search_result");
+            // }
+
+            const highlightedNodes = document.querySelectorAll(".first_search_result");
+            for (const highlightedNode of highlightedNodes) {
+                highlightedNode.classList.remove("first_search_result");
             }
 
             this.removeRemainingIrrelevantResults(searchText);
 
             if (searchText.trim().length > 0) {
-                const possibleResults = this.mainSection.querySelectorAll(`[key^="${searchText}" i]`);
+                // const possibleResults = this.mainSection.querySelectorAll(`[key^="${searchText}" i]`);
+                const possibleResults = this.mainSection.querySelectorAll(`[key*="${searchText}" i]`);
 
                 if (possibleResults.length > 0) {
                     possibleResults[0].scrollIntoView();
-                    possibleResults[0].classList.toggle("first_search_result");
+                    // possibleResults[0].classList.toggle("first_search_result");
                 }
 
                 for (const result of possibleResults) {
                     this.createNodeListToRoot(result);
+                    result.classList.add("first_search_result");
                 }
             }
         }
@@ -69,13 +78,6 @@ class SearchBarUtility {
 
                 // nodeList.push(this.createNodeListToRoot(node.parent));
                 this.createNodeListToRoot(nodeParent);
-
-                if (!node.classList.contains("param_list_keys")) {
-                    let marginLeft = nodeParent.style.marginLeft.replace("px", "");
-                    marginLeft = (marginLeft.length < 1) ? 0 : parseInt(marginLeft);
-
-                    node.style.marginLeft += `${marginLeft + 10}px`;
-                }
             }
 
             node.classList.remove("dont_display");
@@ -85,11 +87,12 @@ class SearchBarUtility {
     }
 
     removeRemainingIrrelevantResults (searchText) {
-        const nonRelevantVisibleResults = this.mainSection.querySelectorAll(`div:not(.dont_display):not([key^="${searchText}" i]), [key]`)
+        // const nonRelevantVisibleResults = this.mainSection.querySelectorAll(`div:not(.dont_display):not([key^="${searchText}" i]), [key]`)
+        let nonRelevantVisibleResults = this.mainSection.querySelectorAll(`div:not(.dont_display):not([key*="${searchText}" i]), [key]`)
+        nonRelevantVisibleResults = Array.from(nonRelevantVisibleResults).filter((node) => node.classList.contains("param_list_items"));
+
         for (const nonRelevantResult of nonRelevantVisibleResults) {
-            if (!nonRelevantResult.classList.contains("param_list_keys")) {
-                nonRelevantResult.classList.add("dont_display");
-            }
+            nonRelevantResult.classList.add("dont_display");
         }
     }
 
@@ -107,9 +110,15 @@ class SearchBarUtility {
             }
         }
 
-        const lastResult = document.querySelector(".first_search_result");
+        // const lastResult = document.querySelector(".first_search_result");
+        //
+        // if (lastResult) {
+        //     lastResult.classList.remove("first_search_result")
+        // }
 
-        if (lastResult) {
+        const lastResults = document.querySelectorAll(".first_search_result");
+
+        for (const lastResult of lastResults) {
             lastResult.classList.remove("first_search_result")
         }
     }

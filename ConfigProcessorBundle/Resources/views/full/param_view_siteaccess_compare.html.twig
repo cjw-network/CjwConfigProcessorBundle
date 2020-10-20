@@ -1,0 +1,26 @@
+{% extends "@CJWConfigProcessor/index.html.twig" %}
+
+{% block line_template_stylesheets %}
+    <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/css/site_access_compare.css") }}>
+    <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/css/parameter_display.css") }}>
+{% endblock %}
+
+{% block param_content %}
+    <div class="compare_display">
+        <div class="param_list first_list">
+            <h3>{{ firstSiteAccess }}</h3>
+            {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : firstSiteAccessParameters} only %}
+        </div>
+
+        <div class="param_list second_list">
+            <h3>{{ secondSiteAccess }}</h3>
+            {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : secondSiteAccessParameters} only %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block line_template_javascripts %}
+    <script src={{ asset("bundles/cjwconfigprocessor/js/param_list_index.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterBranchDisplay.js") }}></script>
+{% endblock %}

@@ -13,20 +13,27 @@
     <div class="cjw_config_processing_content">
         <div class="cjw_header">
             <span>CJW-network Config Processor</span>
+            <form class="searchbar">
+                <input type="text">
+            </form>
         </div>
 
         <div class="cjw_main_body">
             <div class="cjw_side_bar">
                 <ul class="cjw_menu" role="tablist">
                     <li role="tab"><a id="cjw_param_list_link" href="{{ path("cjw_config_processing.param_list") }}">Parameter-List</a></li>
-                    <li role="tab" ><a id="cjw_current_sa_params" href="{{ path("cjw_config_processing.site_access_param_list") }}">Current Site Access</a></li>
+                    <li role="tab"><a id="cjw_site_access_list" href="{{ path("cjw_config_processing.site_access_selection") }}">Site Access Selection</a></li>
+                    {% block additional_tabs %} {% endblock %}
                 </ul>
             </div>
 
             <div class="cjw_main_section">
-                {% block param_list %} {% endblock %}
-                {% block split_view_param_list %} {% endblock %}
+                {% block param_content %} {% endblock %}
             </div>
+        </div>
+
+        <div class="scroll_up_button">
+            <button class="dont_display">^</button>
         </div>
 
 {#        <div class="cjw_footer">#}
@@ -38,5 +45,7 @@
 {% block javascripts %}
     <script src={{ asset("bundles/cjwconfigprocessor/js/bundle_index.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/SearchBarUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/js/ScrollUpButtonDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/js/SAListSplitScreen.js") }}></script>
     {% block line_template_javascripts %}{% endblock %}
 {% endblock %}

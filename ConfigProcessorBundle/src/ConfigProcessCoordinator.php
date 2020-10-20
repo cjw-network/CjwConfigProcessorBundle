@@ -134,6 +134,7 @@ class ConfigProcessCoordinator
      * @param string $siteAccess
      * @return array
      * @throws InvalidArgumentException
+     * @throws Exception
      */
     public static function getParametersForSpecificSiteAccess(string $siteAccess): array {
         $siteAccess = strtolower($siteAccess);
@@ -183,29 +184,11 @@ class ConfigProcessCoordinator
         return self::$siteAccessParameters;
     }
 
-    /**
-     * Simply goes into the ezpublish-parameter to get the list of current site accesses that exist in the
-     * parameter.
-     *
-     * @param string|null $desiredSiteAccess Optional parameter which dictates whether only the default SiteAccesses and the given one will be added or all available ones are added.
-     * @return array Returns all found siteAccesses in an array.
-     */
-    public static function getSiteAccesses(string $desiredSiteAccess = null): array {
-        try {
-            if (!$desiredSiteAccess) {
-                $siteAccesses = self::$processedParameters["ezpublish"]["siteaccess"]["list"];
-                array_push($siteAccesses, ...array_keys(self::$processedParameters["ezpublish"]["siteaccess"]["groups"]));
-            } else {
-                $siteAccesses = array($desiredSiteAccess);
-                array_push($siteAccesses,...self::$processedParameters["ezpublish"]["siteaccess"]["groups_by_siteaccess"][$desiredSiteAccess]);
-            }
-
-            array_push($siteAccesses, "default", "global");
-        } catch (Exception $error) {
-            // Fallback SAs if the others are not accessible via the array route
-            $siteAccesses = array("default","global");
-        }
-        return $siteAccesses;
+    public static function getSiteAccessListForController(): array {
+//        self::$processedParameters = self::$cache->get("cjw_processed_params", function() {
+//            return self::parseContainerParameters();
+//        });
+        return self::getSiteAccesses();
     }
 
     /*****************************************************************************************
@@ -235,11 +218,42 @@ class ConfigProcessCoordinator
     }
 
     /**
+     * Simply goes into the ezpublish-parameter to get the list of current site accesses that exist in the
+     * parameter.
+     *
+     * @param string|null $desiredSiteAccess Optional parameter which dictates whether only the default SiteAccesses and the given one will be added or all available ones are added.
+     * @return array Returns all found siteAccesses in an array.
+     * @throws Exception
+     */
+    private static function getSiteAccesses(string $desiredSiteAccess = null): array {
+        if (!self::$processedParameters) {
+            self::startProcess();
+        }
+
+        try {
+            if (!$desiredSiteAccess) {
+                $siteAccesses = self::$processedParameters["ezpublish"]["siteaccess"]["list"];
+                array_push($siteAccesses, ...array_keys(self::$processedParameters["ezpublish"]["siteaccess"]["groups"]));
+            } else {
+                $siteAccesses = array($desiredSiteAccess);
+                array_push($siteAccesses,...self::$processedParameters["ezpublish"]["siteaccess"]["groups_by_siteaccess"][$desiredSiteAccess]);
+            }
+
+            array_push($siteAccesses, "default", "global");
+        } catch (Exception $error) {
+            // Fallback SAs if the others are not accessible via the array route
+            $siteAccesses = array("default","global");
+        }
+        return $siteAccesses;
+    }
+
+    /**
      * Takes the processed parameters and searches for all parameters and their values that
      * belong to the current site access.
      *
      * @return array Returns a formatted array that can be displayed in twig templates.
      * @throws InvalidArgumentException
+     * @throws Exception
      */
     private static function getParametersForSiteAccess(): array {
 

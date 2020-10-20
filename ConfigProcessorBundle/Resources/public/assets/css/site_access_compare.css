@@ -1,0 +1,19 @@
+.compare_display {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+}
+
+.compare_display > * {
+    width: 48%;
+}
+
+.first_list {
+    position: absolute;
+    left: 0;
+}
+
+.second_list {
+    position: absolute;
+    right: 0;
+}

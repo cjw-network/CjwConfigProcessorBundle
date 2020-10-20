@@ -8,6 +8,11 @@ cjw_config_processing.param_list:
   controller: cjw_config_processor.controller::getParameterList
   methods: [GET]
 
+cjw_config_processing.site_access_selection:
+  path: /cjw/config-processing/siteaccess_list
+  controller: cjw_config_processor.controller::siteAccessSelection
+  methods: [GET]
+
 cjw_config_processing.site_access_param_list:
   path: /cjw/config-processing/parameter_list/siteaccess/current
   controller: cjw_config_processor.controller::getCurrentSAParameters
@@ -15,4 +20,9 @@ cjw_config_processing.site_access_param_list:
 cjw_config_processing.specific_site_access_param_list:
   path: /cjw/config-processing/parameter_list/siteaccess/{siteAccess}
   controller: cjw_config_processor.controller::getSpecificSAParameters
+  methods: [GET]
+
+cjw_config_processing.compare_site_accesses:
+  path: /cjw/config-processing/parameter_list/compare/{firstSiteAccess}/{secondSiteAccess}
+  controller: cjw_config_processor.controller::compareSiteAccesses
   methods: [GET]

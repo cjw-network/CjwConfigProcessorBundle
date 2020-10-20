@@ -1,0 +1,33 @@
+{% extends "@CJWConfigProcessor/index.html.twig" %}
+
+{% block line_template_stylesheets %}
+    <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/css/site_access_list.css") }}>
+{% endblock %}
+
+{% block param_content %}
+    <div>
+        <p>Available Site Accesses:</p>
+        <ul role="tablist" class="cjw_site_access_list">
+            {% for siteAccess in siteAccesses %}
+                <li role="tab">
+                    <a href="{{ path("cjw_config_processing.specific_site_access_param_list", {"siteAccess": siteAccess} ) }}">
+                        {{ siteAccess }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div id="sendSiteAccessHolder">
+            <button id="sendSplitViewSiteAccesses" class="dont_display">Compare SiteAccesses</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block additional_tabs %}
+    <li role="tab"><a id="cjw_split_selection" href="#">Split View</a></li>
+{% endblock %}
+
+{% block line_template_javascripts %}
+    <script src={{ asset("bundles/cjwconfigprocessor/js/split_view_index.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/js/SAListSplitScreen.js") }}></script>
+{% endblock %}
