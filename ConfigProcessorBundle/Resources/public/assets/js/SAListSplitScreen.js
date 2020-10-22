@@ -21,14 +21,14 @@ class SAListSplitScreen {
         if (this.splitViewButton) {
             this.splitViewButton.classList.add("switch");
 
-            const sendButton = document.querySelector("#sendSplitViewSiteAccesses");
+            const sendButton = document.querySelector("#sendSplitViewSiteAccessesButton");
 
             if (sendButton) {
-                sendButton.classList.remove("dont_display");
+                sendButton.classList.remove("transparentButton");
                 sendButton.onclick = (event) => {
                     event.preventDefault();
 
-                    this.splitViewIniationFetchRequest();
+                    this.splitViewIniationRequest();
                 }
             }
 
@@ -68,10 +68,10 @@ class SAListSplitScreen {
         if (this.splitViewButton) {
             this.splitViewButton.classList.remove("switch");
 
-            const sendButton = document.querySelector("#sendSplitViewSiteAccesses");
+            const sendButton = document.querySelector("#sendSplitViewSiteAccessesButton");
 
             if (sendButton) {
-                sendButton.classList.add("dont_display");
+                sendButton.classList.add("transparentButton");
             }
 
             const siteAccessSwitchList = document.querySelectorAll(".cjw_site_access_list > li > a");
@@ -96,7 +96,7 @@ class SAListSplitScreen {
         }
     }
 
-    splitViewIniationFetchRequest () {
+    splitViewIniationRequest () {
         const selectedSiteAccesses = document.querySelectorAll(".cjw_site_access_list > li > .switch");
 
         if (selectedSiteAccesses && selectedSiteAccesses.length === 2) {
@@ -104,6 +104,8 @@ class SAListSplitScreen {
             const secondSA = selectedSiteAccesses[1].innerText;
 
             window.location = `/admin/cjw/config-processing/parameter_list/compare/${firstSA}/${secondSA}`;
+        } else {
+            alert("There have to be exactly 2 site accesses selected!");
         }
     }
 }

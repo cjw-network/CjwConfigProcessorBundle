@@ -1,26 +1,71 @@
 class ParameterDisplay {
 
-    nodeArray;
+    paramBranchDisplay;
+
+    constructor(paramBranchDisplay) {
+        this.paramBranchDisplay = paramBranchDisplay;
+    }
 
     cleanUpList() {
         const topNodes = document.querySelectorAll(".param_list > .param_list_items");
 
-        for (const topNodeEntry of topNodes) {
-            topNodeEntry.onclick = (event) => {
-                event.preventDefault();
-                event.stopPropagation();
+        this.setTopNodesAsynchronously(0,topNodes);
 
-                this.getListEntryNodes(event.currentTarget);
-            };
+        this.paramBranchDisplay.setDoubleClickFocusListener();
+    }
 
-            const dontDisplayChildNodes = topNodeEntry.querySelectorAll(".param_list_items, .param_list_values");
+    async setTopNodesAsynchronously (counter, nodeList) {
 
-            for (const dontDisplayNode of dontDisplayChildNodes) {
-                this.setAppropriateOnClick(dontDisplayNode);
+        if (nodeList && nodeList.length > counter >= 0) {
 
-                dontDisplayNode.style.marginLeft += `15px`;
+            do {
+                const topNodeEntry = nodeList[counter];
 
-                dontDisplayNode.classList.add("dont_display");
+                if (topNodeEntry) {
+                    this.setAppropriateOnClick(topNodeEntry);
+                    topNodeEntry.classList.remove("dont_display");
+
+                    const dontDisplayChildNodes = topNodeEntry.querySelectorAll(".param_list_items, .param_list_values");
+
+                    setTimeout(() => {
+                        this.cleanUpChildNodesAsynchronously(0, dontDisplayChildNodes);
+                    });
+
+                    const topKey = topNodeEntry.querySelector(".param_list_keys");
+
+                    if (topKey) {
+                        topKey.classList.add("top_nodes");
+                    }
+                }
+
+                ++counter;
+            } while (counter < nodeList.length && (counter % 30 !== 0))
+
+            if (counter < nodeList.length) {
+                setTimeout(() => {
+                    this.setTopNodesAsynchronously(counter, nodeList);
+                });
+            }
+        }
+    }
+
+    cleanUpChildNodesAsynchronously (counter, nodeList)  {
+        if (nodeList && nodeList.length > counter >= 0) {
+            do {
+                const currentNode = nodeList[counter];
+
+                if (currentNode) {
+                    this.setAppropriateOnClick(currentNode);
+                    currentNode.style.marginLeft += "15px";
+                }
+
+                ++counter;
+            } while (counter < nodeList.length && (counter % 40 !== 0))
+
+            if (counter < nodeList.length) {
+                setTimeout(() => {
+                    this.cleanUpChildNodesAsynchronously(counter,nodeList);
+                });
             }
         }
     }
@@ -32,10 +77,10 @@ class ParameterDisplay {
                 entry.classList.remove("dont_display");
 
                 const childNodes = entry.querySelectorAll(".param_list_items, .param_list_values")
-
-                for (const child of childNodes) {
-                    child.classList.add("dont_display");
-                }
+                //
+                // for (const child of childNodes) {
+                //     child.classList.add("dont_display");
+                // }
             }
 
             targetNode.onclick = (event) => {
@@ -54,7 +99,14 @@ class ParameterDisplay {
 
             for (const entry of childNodes) {
                 entry.classList.add("dont_display");
-                entry.removeEventListener("click", this.getListEntryNodes);
+                // entry.removeEventListener("click", this.getListEntryNodes);
+
+                entry.onclick = (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    this.getListEntryNodes(event.currentTarget);
+                };
             }
 
             targetNode.onclick = (event) => {

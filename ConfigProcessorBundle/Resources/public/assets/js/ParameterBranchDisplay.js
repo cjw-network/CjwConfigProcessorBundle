@@ -10,7 +10,7 @@ class ParameterBranchDisplay {
         }
     }
 
-    setDoubleClickFocusListener () {
+    setDoubleClickFocusListener (onclickFunction) {
         for(const nodeToFocus of this.parameterToFocus) {
             nodeToFocus.ondblclick = ((event) => {
                 event.preventDefault();
@@ -22,13 +22,21 @@ class ParameterBranchDisplay {
     }
 
     focusOnDoubleClick (nodeToFocus) {
-        const nodesToHide = document.querySelectorAll(".param_list_items, .param_list_items:not(.dont_display)");
+        const nodesToHide = document.querySelectorAll(".param_list_items:not(.dont_display)");
+        const searchBar = document.querySelector(".searchbar > input");
+
+        if (searchBar) {
+            const searchLimiter = nodeToFocus.querySelector(".param_list_keys");
+            searchBar.value = searchLimiter? ""+searchLimiter.innerText : "";
+        }
 
         for (const hideNode of nodesToHide) {
-            if (hideNode !== nodeToFocus) {
-                hideNode.classList.add("dont_display");
-            }
+            hideNode.classList.add("dont_display");
         }
+
+        // later removed here, because it is more performant than reformatting the entire list into an array and splicing this note or having an if condition
+        // executed on every turn in the for loop form before
+        nodeToFocus.classList.remove("dont_display");
 
         if (nodeToFocus) {
             nodeToFocus.ondblclick = (event) => {
@@ -42,6 +50,11 @@ class ParameterBranchDisplay {
 
     restoreFocusToNormal (nodeToFocus) {
         const standardNodeList = document.querySelectorAll(".param_list > .param_list_items");
+        const searchBar = document.querySelector(".searchbar > input");
+
+        if (searchBar) {
+            searchBar.value = "";
+        }
 
         if (standardNodeList) {
             for (const upperLevelNode of standardNodeList) {

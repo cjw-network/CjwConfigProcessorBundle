@@ -5,25 +5,37 @@ html {
 .cjw_config_processing_content {
     display: flex;
     flex-direction: column;
+    margin-left: -15px;
+    margin-right: -15px;
 }
 
 .cjw_header {
-    background-color: lightslategrey;
-    color: white;
-    padding: 10px;
+    /*background-color: lightslategrey;*/
+    background-color: #e5e3e3;
+    /*color: white;*/
+    color: #444;
+    /*padding: 10px 10px 12px 10px;*/
+    width: 100%;
     display: flex;
     flex-direction: row;
-    margin-bottom: 5px;
+    align-content: center;
+    height: 50px;
 }
 
 .cjw_header > span {
-    padding-top: 2px;
-    padding-bottom: 3px;
+    margin-left: 10px
+}
+
+.cjw_header > * {
+    align-self: center;
 }
 
 .searchbar > input {
     margin-left: 10px;
     width: 80vw;
+    box-sizing: border-box;
+    border-radius: 4px;
+    text-indent: 4px;
 }
 
 .cjw_menu {
@@ -31,7 +43,8 @@ html {
     flex-direction: column;
     flex-wrap: wrap;
     list-style: none;
-    background-color: #1f3152;
+    /*background-color: #1f3152;*/
+    background-color: #444;
     width: 100%;
     padding-left: 0;
 }
@@ -45,14 +58,17 @@ html {
     padding: 1rem 2rem;
     height: 10vh;
     align-items: center;
-    border-bottom: 1px solid lightslategrey;
+    justify-content: center;
+    /*border-bottom: 1px solid lightslategrey;*/
+    border-bottom: 1px solid white;
     color: white;
     display: flex;
     transition: all 0.3s cubic-bezier(0.25,0.8,0.25,1);
 }
 
 .cjw_menu a:link, a:visited {
-    background-color: #0a435b;
+    /*background-color: #0a435b;*/
+    background-color: #444;
     text-align: center;
     text-decoration: none;
 }
@@ -67,24 +83,16 @@ html {
 .cjw_main_body {
     display: flex;
     flex-direction: row;
-    height: 87.5vh;
-}
-
-.cjw_main_body > div {
-    align-items: stretch;
-    align-content: stretch;
+    height: calc(100vh - 108px);
+    /*min-height: 100%;*/
+    box-sizing: border-box;
 }
 
 .cjw_side_bar {
     color: white;
-    background-color: #0a435b;
+    /*background-color: #0a435b;*/
+    background-color: #444;
     width: 10%;
-}
-
-.cjw_side_bar_minimized {
-    color: white;
-    background-color: #0a435b;
-    width: 5%;
 }
 
 .cjw_main_section {
@@ -110,8 +118,15 @@ html {
 
 .first_search_result {
     font-weight: bold;
-    background-color: lightgoldenrodyellow !important;
-    transition: all 1s ease !important;
+    /*background-color: lightgoldenrodyellow !important;*/
+    background-color: #eaA415 !important;
+    /*background-color: #ea9412 !important;*/
+    transition: all 0.5s ease !important;
+    color: white !important;
+}
+
+.first_search_result:hover {
+    background-color: #106d95 !important;
 }
 
 .scroll_up_button {
@@ -120,7 +135,8 @@ html {
     right: 25px;
     width: 50px;
     height: 50px;
-    background-color: #0a435b;
+    /*background-color: #0a435b;*/
+    background-color: #106d95;
     transition: 0.5s all ease;
 }
 

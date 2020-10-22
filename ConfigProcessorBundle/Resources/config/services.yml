@@ -10,4 +10,10 @@ services:
     arguments: [ '@service_container', '@ezpublish.config.resolver', '@request_stack' ]
     public: true
 
+  cjw_config_processing.menu.subscriber:
+    class: App\CJW\ConfigProcessorBundle\EventSubscriber\MyMenuSubscriber
+    tags:
+      - { name: kernel.event_subscriber }
+
+
 #TODO Change the namespaces in here to something working in the vendor directory (something without App in front)

@@ -9,11 +9,13 @@
     color: white;
     display: flex;
     transition: all 0.3s cubic-bezier(0.25,0.8,0.25,1);
-    margin-bottom: 5px;
+    margin-bottom: 4px;
+    border: 1px solid white;
 }
 
 .cjw_site_access_list a:link, a:visited {
-    background-color: #0a435b;
+    /*background-color: #0a435b;*/
+    background-color: #444;
     text-align: center;
     text-decoration: none;
 }
@@ -34,13 +36,15 @@
 }
 
 .deactivated_links:hover {
-    background-color: #0a435b;
+    /*background-color: #0a435b;*/
+    background-color: #444;
     text-decoration: none;
 }
 
 .switch {
     background-color: white !important;
-    border: 1px solid #0a435b !important;
+    /*border: 1px solid #0a435b !important;*/
+    border: 1px solid #444 !important;
     color: black !important;
     transition: 0.4s all ease;
 }
@@ -50,18 +54,24 @@
     justify-content: center;
 }
 
-#sendSplitViewSiteAccesses {
+#sendSplitViewSiteAccessesButton {
     width: 60vw;
     padding: 10px;
     box-shadow: none;
-    border: 2px solid #0a435b;
+    /*border: 2px solid #0a435b;*/
+    border: 2px solid #444;
     background-color: white;
     transition: 0.4s all ease;
 }
 
-#sendSplitViewSiteAccesses:hover {
-    background-color: #0a435b;
+#sendSplitViewSiteAccessesButton:hover {
+    /*background-color: #0a435b;*/
+    background-color: #444;
     color: white;
     transition: 0.4s all ease;
+}
+
+.transparentButton {
+    opacity: 0;
 }
 
