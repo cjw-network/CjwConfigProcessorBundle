@@ -12,6 +12,7 @@ class ParameterDisplay {
         this.setTopNodesAsynchronously(0,topNodes);
 
         this.paramBranchDisplay.setDoubleClickFocusListener();
+        this.paramBranchDisplay.setDoubleClickListenerForRemainingNodes();
     }
 
     async setTopNodesAsynchronously (counter, nodeList) {
@@ -75,12 +76,6 @@ class ParameterDisplay {
 
             for (const entry of targetNode.children) {
                 entry.classList.remove("dont_display");
-
-                const childNodes = entry.querySelectorAll(".param_list_items, .param_list_values")
-                //
-                // for (const child of childNodes) {
-                //     child.classList.add("dont_display");
-                // }
             }
 
             targetNode.onclick = (event) => {
@@ -99,7 +94,6 @@ class ParameterDisplay {
 
             for (const entry of childNodes) {
                 entry.classList.add("dont_display");
-                // entry.removeEventListener("click", this.getListEntryNodes);
 
                 entry.onclick = (event) => {
                     event.preventDefault();

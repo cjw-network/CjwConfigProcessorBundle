@@ -108,9 +108,7 @@ class ConfigProcessCoordinator
 
             self::validateCachedItems();
 
-            // ItemInterface $item
             self::$processedParameters = self::$cache->get("cjw_processed_params", function() {
-//                $item->expiresAfter(300);
                 return self::parseContainerParameters();
             });
 
@@ -185,9 +183,6 @@ class ConfigProcessCoordinator
     }
 
     public static function getSiteAccessListForController(): array {
-//        self::$processedParameters = self::$cache->get("cjw_processed_params", function() {
-//            return self::parseContainerParameters();
-//        });
         return self::getSiteAccesses();
     }
 

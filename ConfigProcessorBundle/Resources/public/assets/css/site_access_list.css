@@ -41,14 +41,6 @@
     text-decoration: none;
 }
 
-.switch {
-    background-color: white !important;
-    /*border: 1px solid #0a435b !important;*/
-    border: 1px solid #444 !important;
-    color: black !important;
-    transition: 0.4s all ease;
-}
-
 #sendSiteAccessHolder {
     display: flex;
     justify-content: center;

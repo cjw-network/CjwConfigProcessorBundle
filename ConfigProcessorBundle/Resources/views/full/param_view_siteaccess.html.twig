@@ -8,10 +8,10 @@
     {% if siteAccess is defined and not siteAccess is empty %}
         <h2>Parameters for siteaccess: "{{ siteAccess }}"</h2>
     {% else %}
-        <h2>Parameters for siteaccess: "{{ app.request.get('siteaccess').name }}"</h2>
+        <h2>Parameters for siteaccess 2: "{{ siteAccess }}"</h2>
     {% endif %}
 
-    <div class="param_list">
+    <div siteaccess="{{ siteAccess }}" class="param_list">
         {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : siteAccessParameters} only %}
     </div>
 {#    {{ dump(siteAccessParameters) }}#}
@@ -21,4 +21,5 @@
     <script src={{ asset("bundles/cjwconfigprocessor/js/param_list_index.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterDisplay.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterBranchDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterLocationRetrieval.js") }}></script>
 {% endblock %}

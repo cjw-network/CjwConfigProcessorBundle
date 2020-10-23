@@ -5,5 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
         )
     );
 
+    let parameterLocationRetriever = new ParameterLocationRetrieval();
+
     parameterDisplay.cleanUpList();
+    parameterLocationRetriever.setUpLocationRetrievalButtons();
 });

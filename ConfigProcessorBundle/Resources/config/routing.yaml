@@ -26,3 +26,14 @@ cjw_config_processing.compare_site_accesses:
   path: /cjw/config-processing/parameter_list/compare/{firstSiteAccess}/{secondSiteAccess}
   controller: cjw_config_processor.controller::compareSiteAccesses
   methods: [GET]
+
+cjw_config_processing.compare_site_accesses.commons_only:
+  path: /cjw/config-processing/parameter_list/compare/{firstSiteAccess}/{secondSiteAccess}/commons
+  controller: cjw_config_processor.controller::compareSiteAccessesCommonsOnly
+  methods: [GET]
+
+cjw_config_processing.compare_site_accesses.uncommons_only:
+  path: /cjw/config-processing/parameter_list/compare/{firstSiteAccess}/{secondSiteAccess}/uncommons
+  controller: cjw_config_processor.controller::compareSiteAccessesUncommonsOnly
+  methods: [GET]
+

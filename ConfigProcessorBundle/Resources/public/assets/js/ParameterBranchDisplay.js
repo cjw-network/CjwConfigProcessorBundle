@@ -17,6 +17,7 @@ class ParameterBranchDisplay {
                 event.stopPropagation();
 
                 this.focusOnDoubleClick(nodeToFocus);
+                this.flipDoubleClickListener(nodeToFocus,false);
             });
         }
     }
@@ -37,15 +38,6 @@ class ParameterBranchDisplay {
         // later removed here, because it is more performant than reformatting the entire list into an array and splicing this note or having an if condition
         // executed on every turn in the for loop form before
         nodeToFocus.classList.remove("dont_display");
-
-        if (nodeToFocus) {
-            nodeToFocus.ondblclick = (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-
-                this.restoreFocusToNormal(event.currentTarget);
-            }
-        }
     }
 
     restoreFocusToNormal (nodeToFocus) {
@@ -62,15 +54,48 @@ class ParameterBranchDisplay {
             }
         }
 
-        if (nodeToFocus) {
-            nodeToFocus.ondblclick = ((event) => {
-                event.preventDefault();
-                event.stopPropagation();
-
-                this.focusOnDoubleClick(nodeToFocus);
-            });
-        }
-
         nodeToFocus.scrollIntoView();
+    }
+
+    flipDoubleClickListener(nodeToFocus, isActiveThen) {
+        if (nodeToFocus && typeof isActiveThen === "boolean") {
+
+            if (!isActiveThen) {
+                nodeToFocus.ondblclick = ((event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    this.focusOnDoubleClick(nodeToFocus);
+                    this.flipDoubleClickListener(nodeToFocus,true);
+                });
+            } else {
+                nodeToFocus.ondblclick = (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    this.restoreFocusToNormal(event.currentTarget);
+                    this.flipDoubleClickListener(nodeToFocus, false);
+                }
+            }
+        }
+    }
+
+    setDoubleClickListenerForRemainingNodes() {
+        const notTopNodeKeys = document.querySelectorAll(".param_list_keys:not(.top_nodes)");
+
+        if (notTopNodeKeys) {
+            for (const key of notTopNodeKeys) {
+                key.ondblclick = (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    key.scrollIntoView();
+                    key.style.backgroundColor = "#eaA415";
+                    setTimeout(() => {
+                        key.style.backgroundColor = "";
+                    },2000);
+                }
+            }
+        }
     }
 }
