@@ -35,8 +35,8 @@ class ParameterBranchDisplay {
             hideNode.classList.add("dont_display");
         }
 
-        // later removed here, because it is more performant than reformatting the entire list into an array and splicing this note or having an if condition
-        // executed on every turn in the for loop form before
+        // this is removed here, because it is more performant than reformatting the entire list into an array and splicing this note or having an if-condition
+        // executed on every turn in the for loop from before
         nodeToFocus.classList.remove("dont_display");
     }
 
@@ -81,7 +81,7 @@ class ParameterBranchDisplay {
     }
 
     setDoubleClickListenerForRemainingNodes() {
-        const notTopNodeKeys = document.querySelectorAll(".param_list_keys:not(.top_nodes)");
+        let notTopNodeKeys = document.querySelectorAll(".param_list_keys:not(.top_nodes)");
 
         if (notTopNodeKeys) {
             for (const key of notTopNodeKeys) {

@@ -120,7 +120,7 @@ class SiteAccessParamProcessor
                             }
 
                             if (!in_array($fullname, array_keys($encounteredParamNames[$namespace]))) {
-                                $encounteredParamNames[$namespace][$fullname] = "";
+                                $encounteredParamNames[$namespace][$fullname] = ["parameter_value" => ""];
                             }
                         }
                     }
@@ -148,7 +148,12 @@ class SiteAccessParamProcessor
         foreach ($filteredParameters as $namespace => $namespaceValue) {
             foreach ($namespaceValue as $parameterName => $parameterValue) {
                 try {
-                    $filteredParameters[$namespace][$parameterName] = $this->ezConfigResolver->getParameter($parameterName, $namespace);
+                    $result = $this->ezConfigResolver->getParameter($parameterName, $namespace);
+                    if (is_array($result) && count($result) === 1 && key_exists(0,$result)) {
+                        $result = $result[0];
+                    }
+
+                    $filteredParameters[$namespace][$parameterName]["parameter_value"] = $result;
                 } catch (Exception $error) {
                     unset($filteredParameters[$namespace][$parameterName]);
                 }
@@ -179,7 +184,7 @@ class SiteAccessParamProcessor
         foreach ($filteredParameters as $namespace => $namespaceValue) {
             foreach ($namespaceValue as $parameterName => $parameterValue) {
                 try {
-                    $filteredParameters[$namespace][$parameterName] = $this->ezConfigResolver->getParameter($parameterName, $namespace, $scope);
+                    $filteredParameters[$namespace][$parameterName]["parameter_value"] = $this->ezConfigResolver->getParameter($parameterName, $namespace, $scope);
                 } catch (Exception $error) {
                     unset($filteredParameters[$namespace][$parameterName]);
                 }

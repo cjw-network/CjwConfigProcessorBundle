@@ -71,12 +71,18 @@ class ProcessedParamModel implements Serializable
      * @param array $keys A list of keys which describe the path through the data structure and to which node to add the values
      * @param array $valueArray A list of values the final node will be passed as parameters.
      */
-    public function addParameter(array $keys,array $valueArray = []) {
+    public function addParameter(array $keys, array $valueArray = []) {
         $modelToAddTo = $this->constructByKeys($keys);
 
         // Is there anything to add?
         if(count($valueArray) > 0) {
-            array_push($modelToAddTo->parameters, $valueArray);
+//            array_push($modelToAddTo->parameters, $valueArray);
+
+            if (count($valueArray) === 1 && key_exists(0,$valueArray)) {
+                $modelToAddTo->parameters["parameter_value"] = $valueArray[0];
+            } else {
+                $modelToAddTo->parameters["parameter_value"] = $valueArray;
+            }
         }
     }
 
@@ -92,7 +98,14 @@ class ProcessedParamModel implements Serializable
 
             // If there is no more Object as a parameter, then the end of the "branch" has been reached and the actual value can be returned
             if (!$parameter instanceof ProcessedParamModel) {
-                return $parameter;
+//                return $parameter;
+
+                if (count($outputArray) > 0) {
+                    $outputArray["parameter_value"] = $parameter;
+                    return $outputArray;
+                } else {
+                    return $this->parameters;
+                }
             }
 
             // Otherwise the returned value of the children (parameters) of the object are being slotted into an associative array

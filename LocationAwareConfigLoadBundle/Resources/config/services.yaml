@@ -3,3 +3,8 @@ services:
     class: App\CJW\LocationAwareConfigLoadBundle\Services\TwigTestDisplayService
     tags:
       - { name: twig.extension }
+
+  cjw_location_retrieval.controller:
+    class: App\CJW\LocationAwareConfigLoadBundle\Controller\ConfigProcessLocationInfoController
+    arguments: [ '@service_container' ]
+    public: true

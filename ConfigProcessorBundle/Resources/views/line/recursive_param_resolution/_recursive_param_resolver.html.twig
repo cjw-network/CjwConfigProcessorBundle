@@ -2,8 +2,7 @@
 {% for key, value in parameters %}
 
     {# If there is no more associative key, the value of the path is reached, so treat that differently. #}
-    {% if key is same as(0) or is_numeric(key)%}
-        <button class="location_info">i</button>
+    {% if key is same as(0) or is_numeric(key) or key is same as("parameter_value")%}
         {# Is the value in itself an array? Then go through that one by one as well. #}
         {% if value is iterable %}
             {% include "@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig" ignore missing with { "parameters" : value } only %}
@@ -17,17 +16,19 @@
         <div class="param_list_items dont_display">
             <div class="param_list_keys" key="{{ key |trim }}">
                 {{ key |trim }}:
+                {% if "parameter_value" in value|keys %}
+                    <button class="location_info">i</button>
+                {% endif %}
             </div>
             {% include "@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig" ignore missing with { "parameters" : value } only %}
         </div>
 
 
-    {# As a catchall, if the rest doesn't match but there is still content #}
+    {# As a catch-all, if the rest doesn't match but there is still content #}
     {% else %}
         <div class="param_list_items dont_display">
             <div class="param_list_keys" key="{{ key |trim }}">
                 {{ key |trim }}:
-                <button class="location_info">i</button>
             </div>
             <div class="param_list_values dont_display">
                 {{ value | boolean }}

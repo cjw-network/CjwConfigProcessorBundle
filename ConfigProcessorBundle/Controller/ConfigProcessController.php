@@ -28,7 +28,7 @@ class ConfigProcessController extends AbstractController
     public function getStartPage () {
         ConfigProcessCoordinator::startProcess();
 
-        return $this->render("@CJWConfigProcessor/index.html.twig");
+        return $this->render("@CJWConfigProcessor/pagelayout.html.twig");
     }
 
     public function getParameterList () {

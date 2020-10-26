@@ -227,11 +227,11 @@ class ConfigProcessCoordinator
 
         try {
             if (!$desiredSiteAccess) {
-                $siteAccesses = self::$processedParameters["ezpublish"]["siteaccess"]["list"];
-                array_push($siteAccesses, ...array_keys(self::$processedParameters["ezpublish"]["siteaccess"]["groups"]));
+                $siteAccesses = self::$processedParameters["ezpublish"]["siteaccess"]["list"]["parameter_value"];
+                array_push($siteAccesses, ...array_keys(self::$processedParameters["ezpublish"]["siteaccess"]["groups"]["parameter_value"]));
             } else {
                 $siteAccesses = array($desiredSiteAccess);
-                array_push($siteAccesses,...self::$processedParameters["ezpublish"]["siteaccess"]["groups_by_siteaccess"][$desiredSiteAccess]);
+                array_push($siteAccesses,...self::$processedParameters["ezpublish"]["siteaccess"]["groups_by_siteaccess"]["parameter_value"][$desiredSiteAccess]);
             }
 
             array_push($siteAccesses, "default", "global");
