@@ -14,6 +14,7 @@ class ParameterLocationRetrieval {
             }
 
             this.resolveParameterNameToAttribute(button, siteAccess);
+
             button.onclick = (event) => {
                 event.preventDefault();
                 event.stopPropagation();
@@ -75,7 +76,81 @@ class ParameterLocationRetrieval {
             });
 
             if (res) {
-                console.log(await res.json());
+                const responseJson = await res.json();
+                // console.log(responseJson);
+                const pathOverview = await this.buildLocationList(responseJson);
+
+                if (pathOverview) {
+                    targetButton.parentElement.appendChild(pathOverview);
+                    targetButton.innerText = "X";
+                    targetButton.classList.remove("location_info");
+                    targetButton.classList.add("close_location_info");
+
+                    targetButton.onclick = (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        this.removePathInfo(targetButton.parentElement,pathOverview);
+                        targetButton.innerText = "i";
+                        targetButton.classList.remove("close_location_info");
+                        targetButton.classList.add("location_info");
+                    }
+                } else {
+                    alert("No path could be found for the chosen parameter!");
+                    targetButton.disabled = true;
+                }
+            }
+        }
+    }
+
+    async buildLocationList(responseBody) {
+        if (responseBody) {
+            const paths = Object.keys(responseBody);
+
+            if (paths && paths.length > 0) {
+                const container = document.createElement("div");
+
+                for (const path of paths) {
+                    const keyContainer = document.createElement("span");
+                    const carrier = document.createElement("div");
+                    const valueContainer = document.createElement("span");
+                    let value = responseBody[path];
+
+                    keyContainer.innerText = path+": ";
+                    valueContainer.innerText = value;
+
+                    valueContainer.classList.add("path_info_value");
+                    keyContainer.classList.add("path_info_key");
+
+                    carrier.appendChild(keyContainer);
+                    carrier.appendChild(valueContainer);
+                    carrier.classList.add("path_info");
+                    container.appendChild(carrier);
+                }
+
+                // const newDocument = await window.open("","ParameterLocations")
+                // newDocument.document.querySelector("body").appendChild(container);
+
+                return container;
+            } else {
+                return paths;
+            }
+        }
+    }
+
+    removePathInfo (targetButtonParent, pathContainerToRemove) {
+        if (targetButtonParent && pathContainerToRemove) {
+            targetButtonParent.removeChild(pathContainerToRemove);
+        }
+
+        const targetButton = targetButtonParent.querySelector(".close_location_info");
+
+        if (targetButton) {
+            targetButton.onclick = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+
+                this.locationRetrievalRequest(targetButton);
             }
         }
     }

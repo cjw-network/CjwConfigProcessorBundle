@@ -6,6 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (document.querySelector(".first_list") && document.querySelector(".second_list")) {
         const siteAccessComparisonUtility = new SiteAccessComparisonUtility();
+        const differenceHighlighter = new SiteAccessDifferencesHighlighter();
+
         siteAccessComparisonUtility.setUpBothUtilityButtons();
+        differenceHighlighter.setUpFunctionality();
     }
 })

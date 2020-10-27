@@ -17,3 +17,13 @@
     position: absolute;
     right: 0;
 }
+
+.difference {
+    background-color: indianred;
+    color: white;
+}
+
+.similarity {
+    background-color: green;
+    color: white;
+}

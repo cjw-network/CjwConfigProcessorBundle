@@ -54,9 +54,23 @@
     border: 1px transparent;
     position: absolute;
     right: 10px;
-    bottom: 1%;
+    top: 8%;
     padding-left: 9px;
     padding-right: 9px;
+    font-weight: bold;
+}
+
+.close_location_info {
+    background-color: lightcoral;
+    color: white;
+    border-radius: 100%;
+    border: 1px transparent;
+    position: absolute;
+    right: 10px;
+    top: 8%;
+    padding-left: 7px;
+    padding-right: 7px;
+    font-weight: bold;
 }
 
 .top_nodes {
@@ -65,4 +79,22 @@
     background-color: #686868;
     color: white;
     /*font-weight: bold;*/
+}
+
+.path_info {
+    /*background-color: #e5e3e3;*/
+    color: black;
+    border-radius: 5px;
+    padding: 1px;
+    /*border: 2px #eaA415 solid;*/
+    margin-bottom: 1px;
+    font-size: 0.9rem;
+}
+
+.path_info_value {
+    background: lightgreen;
+}
+
+.path_info_key {
+    background: lightblue;
 }

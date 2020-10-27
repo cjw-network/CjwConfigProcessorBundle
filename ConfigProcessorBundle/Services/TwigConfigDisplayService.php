@@ -5,14 +5,8 @@ namespace App\CJW\ConfigProcessorBundle\Services;
 
 
 use App\CJW\ConfigProcessorBundle\src\ConfigProcessCoordinator;
-use App\CJW\ConfigProcessorBundle\src\ConfigProcessor;
-use App\CJW\ConfigProcessorBundle\ParameterAccessBag;
-use App\CJW\ConfigProcessorBundle\src\SiteAccessParamProcessor;
 use Exception;
-use Psr\Cache\InvalidArgumentException;
-use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Contracts\Cache\ItemInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -30,21 +24,6 @@ use Twig\TwigFunction;
  */
 class TwigConfigDisplayService extends AbstractExtension implements GlobalsInterface
 {
-    /**
-     * Contains the symfony container which stores all the parameters of the configuration gathered through
-     * the yml files in the app.
-     *
-     * @var ContainerInterface
-     */
-    private $container;
-
-    /**
-     * Holds the eZ-Platform specific ConfigResolver which is responsible for delivering site access dependent configuration
-     * parameters.
-     *
-     * @var ConfigResolverInterface
-     */
-    private $configResolver;
 
     /**
      * Contains all the processed parameters categorized after their namespaces and other keys within their name
@@ -63,30 +42,6 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
      * @var array
      */
     private $siteAccessParameters;
-
-    /**
-     * Contains an instance of a ConfigProcessor which is responsible for
-     * transforming and processing the config information given to it.
-     *
-     * @var ConfigProcessor
-     */
-    private $configProcessor;
-
-    /**
-     * Contains the cache adapter of the class.
-     *
-     * @var PhpFilesAdapter
-     */
-    private $cache;
-
-    /**
-     * Contains an instance of a SiteAccessParamProcessor which is responsible for
-     * filtering a given list of parameters for a given list of siteaccesses and resolve
-     * the current values of said parameters.
-     *
-     * @var SiteAccessParamProcessor
-     */
-    private $siteAccessParamProcessor;
 
     public function __construct(
         ContainerInterface $symContainer,

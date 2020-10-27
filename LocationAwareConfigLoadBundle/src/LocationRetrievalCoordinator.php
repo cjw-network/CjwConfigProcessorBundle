@@ -49,6 +49,8 @@ class LocationRetrievalCoordinator
             // If parameters are returned (meaning that the kernel has booted and thus new parameters could have entered), delete the parameters present
             if (is_array(self::$parametersAndLocations) && count(self::$parametersAndLocations) > 0) {
                 self::$cache->delete("parametersAndLocations");
+                self::$cache->delete("cjw_processed_param_objects");
+                self::$cache->delete("cjw_processed_params");
             }
 
             // Then store the presumably "new" parameters
@@ -91,6 +93,22 @@ class LocationRetrievalCoordinator
      * @return array Returns an array which is filled with all encountered locations during the configuration-loading-process.
      */
     private static function getLocationsForSpecificParameter (string $parameterName) {
+        $parameterKeySegments = explode(".", $parameterName);
+
+        if (is_array($parameterKeySegments) && count($parameterKeySegments) > 1) {
+            if (!isset(self::$parametersAndLocations[$parameterName]) && ($parameterKeySegments[1] !== "default" || $parameterKeySegments[1] !== "global")) {
+                $parameterKeySegments[1] = "global";
+                $newTryParameterName = join(".",$parameterKeySegments);
+
+                if (!isset(self::$parametersAndLocations[$newTryParameterName])) {
+                    $parameterKeySegments[1] = "default";
+                    $newTryParameterName = join(".",$parameterKeySegments);
+                }
+
+                return isset(self::$parametersAndLocations[$newTryParameterName])? self::$parametersAndLocations[$newTryParameterName] : null;
+            }
+        }
+
         // Only if that parameter exists as a key in the array, will that parameters paths and values be returned, otherwise null
         return isset(self::$parametersAndLocations[$parameterName])? self::$parametersAndLocations[$parameterName] : null;
     }

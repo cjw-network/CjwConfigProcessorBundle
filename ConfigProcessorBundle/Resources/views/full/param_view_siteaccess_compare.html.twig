@@ -23,6 +23,7 @@
 {% block additional_tabs %}
     <li role="tab"><a id="cjw_show_common_parameters" href="#">Common Parameters Only</a></li>
     <li role="tab"><a id="cjw_show_uncommon_parameters" href="#">Uncommon Parameters Only</a></li>
+    <li role="tab"><a id="cjw_highlight_differences" href="#">Highlight Differences</a></li>
 {% endblock %}
 
 {% block line_template_javascripts %}
@@ -32,4 +33,5 @@
     <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterLocationRetrieval.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/split_view_index.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/SiteAccessComparisonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/js/SiteAccessDifferencesHighlighter.js") }}></script>
 {% endblock %}

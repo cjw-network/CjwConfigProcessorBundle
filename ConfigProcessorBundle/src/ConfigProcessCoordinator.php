@@ -5,6 +5,7 @@ namespace App\CJW\ConfigProcessorBundle\src;
 
 
 use App\CJW\ConfigProcessorBundle\ParameterAccessBag;
+use App\CJW\LocationAwareConfigLoadBundle\src\ConfigPathUtility;
 use Exception;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Psr\Cache\InvalidArgumentException;
@@ -140,7 +141,6 @@ class ConfigProcessCoordinator
         $processedParamObj = self::$cache->get(
             "cjw_processed_param_objects",
             function(ItemInterface $item) {
-                $item->expiresAfter(3600);
                 return self::$configProcessor->getProcessedParameters();
             }
         );
