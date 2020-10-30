@@ -8,10 +8,11 @@
     {% if siteAccess is defined and not siteAccess is empty %}
         <h2>Parameters for siteaccess: "{{ siteAccess }}"</h2>
     {% else %}
-        <h2>Parameters for siteaccess 2: "{{ siteAccess }}"</h2>
+        {% set siteAccess = "unknown" %}
+        <h2>Parameters for siteaccess: "{{ siteAccess }}"</h2>
     {% endif %}
 
-    <div siteaccess="{{ siteAccess }}" class="param_list">
+    <div siteaccess="{{ siteAccess }}" class="param_list tab-content container mt-4 px-5">
         {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : siteAccessParameters} only %}
     </div>
 {#    {{ dump(siteAccessParameters) }}#}

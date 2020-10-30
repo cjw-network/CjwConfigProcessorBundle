@@ -1,40 +1,43 @@
 class ScrollUpButtonDisplay {
+  scrollUpButton;
+  paramDisplayPane;
 
-    scrollUpButton;
-    paramDisplayPane;
+  constructor() {
+    this.scrollUpButton = document.querySelector(".scroll_up_button");
+    this.paramDisplayPane = document.querySelector(".cjw_main_section");
+  }
 
-    constructor() {
-        this.scrollUpButton = document.querySelector(".scroll_up_button");
-        this.paramDisplayPane = document.querySelector(".cjw_main_section");
+  setUpScrollUpButton() {
+    if (this.scrollUpButton) {
+      this.scrollUpButton.style.height = 0;
+      // this.scrollUpButton.children[0].classList.add("dont_display");
+
+      if (this.paramDisplayPane) {
+        this.scrollUpButton.onclick = (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+
+          this.paramDisplayPane.scroll(0, 0);
+        };
+
+        this.paramDisplayPane.addEventListener(
+          "scroll",
+          this.handleScroll.bind(this)
+        );
+      }
     }
+  }
 
-    setUpScrollUpButton () {
-        if (this.scrollUpButton) {
-            this.scrollUpButton.style.height = 0;
-            // this.scrollUpButton.children[0].classList.add("dont_display");
-
-            if (this.paramDisplayPane){
-                this.scrollUpButton.onclick = (event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    this.paramDisplayPane.scroll(0,0);
-                }
-
-                this.paramDisplayPane.addEventListener("scroll", this.handleScroll.bind(this));
-
-            }
-        }
+  handleScroll() {
+    // if (window.scrollY === 0) {
+    if (this.paramDisplayPane.scrollTop === 0) {
+      this.scrollUpButton.style.height = 0;
+      this.scrollUpButton.children[0].classList.add("dont_display");
+    } else if (
+      this.scrollUpButton.children[0].classList.contains("dont_display")
+    ) {
+      this.scrollUpButton.children[0].classList.remove("dont_display");
+      this.scrollUpButton.style.height = "50px";
     }
-
-    handleScroll() {
-        // if (window.scrollY === 0) {
-        if (this.paramDisplayPane.scrollTop === 0) {
-            this.scrollUpButton.style.height = 0;
-            this.scrollUpButton.children[0].classList.add("dont_display");
-        } else if (this.scrollUpButton.children[0].classList.contains("dont_display")) {
-            this.scrollUpButton.children[0].classList.remove("dont_display");
-            this.scrollUpButton.style.height = "50px";
-        }
-    }
+  }
 }

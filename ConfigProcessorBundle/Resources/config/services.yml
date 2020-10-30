@@ -1,19 +1,45 @@
 services:
   cjw_config_processor.twig.display:
     class: App\CJW\ConfigProcessorBundle\Services\TwigConfigDisplayService
-    arguments: [ '@service_container', '@ezpublish.config.resolver', '@request_stack' ]
+    arguments:
+      ["@service_container", "@ezpublish.config.resolver", "@request_stack"]
     tags:
       - { name: twig.extension }
 
   cjw_config_processor.controller:
     class: App\CJW\ConfigProcessorBundle\Controller\ConfigProcessController
-    arguments: [ '@service_container', '@ezpublish.config.resolver', '@request_stack' ]
+    arguments:
+      ["@service_container", "@ezpublish.config.resolver", "@request_stack"]
     public: true
 
+  # menu builders for the frontend
   cjw_config_processing.menu.subscriber:
     class: App\CJW\ConfigProcessorBundle\EventSubscriber\MyMenuSubscriber
     tags:
       - { name: kernel.event_subscriber }
 
+  cjw_config_processing.left.sidebar.builder:
+    class: App\CJW\ConfigProcessorBundle\Services\LeftSideBarMenuBuilder
+    autowire: true
+    autoconfigure: true
+    public: true
+    tags:
+      - { name: knp_menu.menu_builder, method: build, alias: cjw_config_processing.menu.sidebar_left }
+
+  cjw_config_processing.right.site_access_selection.sidebar.builder:
+    class: App\CJW\ConfigProcessorBundle\Services\RightSideBarSiteAccessSelectionMenuBuilder
+    autowire: true
+    autoconfigure: true
+    public: true
+    tags:
+      - { name: knp_menu.menu_builder, method: build, alias: cjw_config_processing.menu.site_access_selection.sidebar_right }
+
+  cjw_config_processing.right.site_access_comparison.sidebar.builder:
+    class: App\CJW\ConfigProcessorBundle\Services\RightSideBarSiteAccessComparisonMenuBuilder
+    autowire: true
+    autoconfigure: true
+    public: true
+    tags:
+      - { name: knp_menu.menu_builder, method: build, alias: cjw_config_processing.menu.site_access_comparison.sidebar_right }
 
 #TODO Change the namespaces in here to something working in the vendor directory (something without App in front)

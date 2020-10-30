@@ -1,7 +1,6 @@
 #CJW's Config-Processor Bundle
 
-Goal
-===========
+# Goal
 
 This Bundle has been created to serve the function of parsing / processing the existing
 parameter-/options array that exists within a standard symfony and especially
@@ -9,22 +8,19 @@ eZPlatform app. Its purpose is to take the unsorted array and split it up into p
 on the target of the options and specifically the site-access it is targeting in order to
 allow a smoother and more comfortable developer experience.
 
-Authors
-============
+# Authors
 
-* **CJW Network**
-<br/>
-<br/>
+- **CJW Network**
+  <br/>
+  <br/>
 
-Installation
-============
+# Installation
 
 Make sure Composer is installed globally, as explained in the
 [installation chapter](https://getcomposer.org/doc/00-intro.md)
 of the Composer documentation.
 
-Applications that use Symfony Flex
-----------------------------------
+## Applications that use Symfony Flex
 
 Open a command console, enter your project directory and execute:
 
@@ -32,8 +28,7 @@ Open a command console, enter your project directory and execute:
 $ composer require <package-name>
 ```
 
-Applications that don't use Symfony Flex
-----------------------------------------
+## Applications that don't use Symfony Flex
 
 ### Step 1: Download the Bundle
 
@@ -57,5 +52,3 @@ return [
     <vendor>\<bundle-name>\<bundle-long-name>::class => ['all' => true],
 ];
 ```
-
-

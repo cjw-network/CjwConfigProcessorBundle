@@ -57,7 +57,7 @@ class MyMenuSubscriber implements EventSubscriberInterface {
             "cjw_config_processing",
             [
                 "label" => "Config Processing View",
-                "uri" => "/admin/cjw/config-processing",
+                "route" => "cjw_config_processing.index",
                 "extras" => ["icon" => "article"],
             ]
         );

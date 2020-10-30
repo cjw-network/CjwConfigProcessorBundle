@@ -9,21 +9,29 @@
 {% block param_content %}
     <div class="compare_display">
         <div siteaccess="{{ firstSiteAccess }}" class="param_list first_list">
-            <h3>{{ firstSiteAccess }}</h3>
+            <h3>Site Access "{{ firstSiteAccess }}"</h3>
             {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : firstSiteAccessParameters} only %}
         </div>
 
         <div siteaccess="{{ secondSiteAccess }}" class="param_list second_list">
-            <h3>{{ secondSiteAccess }}</h3>
+            <h3>Site Access "{{ secondSiteAccess }}"</h3>
             {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : secondSiteAccessParameters} only %}
         </div>
     </div>
 {% endblock %}
 
-{% block additional_tabs %}
-    <li role="tab"><a id="cjw_show_common_parameters" href="#">Common Parameters Only</a></li>
-    <li role="tab"><a id="cjw_show_uncommon_parameters" href="#">Uncommon Parameters Only</a></li>
-    <li role="tab"><a id="cjw_highlight_differences" href="#">Highlight Differences</a></li>
+{#{% block additional_tabs %}#}
+{#    <li role="tab"><a id="cjw_show_common_parameters" href="#">Common Parameters Only</a></li>#}
+{#    <li role="tab"><a id="cjw_show_uncommon_parameters" href="#">Uncommon Parameters Only</a></li>#}
+{#    <li role="tab"><a id="cjw_highlight_differences" href="#">Highlight Differences</a></li>#}
+{#{% endblock %}#}
+
+{% block right_sidebar %}
+    <div class="pt-4 px-0 bg-secondary ez-context-menu">
+        <div class="ez-sticky-container">
+            {{ knp_menu_render('cjw_config_processing.menu.site_access_comparison.sidebar_right', {'template': '@ezdesign/ui/menu/sidebar_right.html.twig'}) }}
+        </div>
+    </div>
 {% endblock %}
 
 {% block line_template_javascripts %}

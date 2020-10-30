@@ -11,34 +11,37 @@
 {% block content %}
 
     <div class="cjw_config_processing_content">
-        <div class="cjw_header">
-            <span>CJW-network Config Processor</span>
-            <form class="searchbar">
-                <input type="text" placeholder="Search...">
-            </form>
-        </div>
+        <div class="cjw_main_body ez-main-row row">
+{#            <div class="cjw_side_bar ez-sticky-container">#}
+{#                <ul class="cjw_menu" role="tablist">#}
+{#                    <li role="tab"><a id="cjw_param_list_link" href="{{ path("cjw_config_processing.param_list") }}">Parameter-List</a></li>#}
+{#                    <li role="tab"><a id="cjw_site_access_list" href="{{ path("cjw_config_processing.site_access_selection") }}">Site Access Selection</a></li>#}
+{#                    {% block additional_tabs %} {% endblock %}#}
+{#                </ul>#}
+{#                {{ parent() }}#}
+{#            </div>#}
 
-        <div class="cjw_main_body">
-            <div class="cjw_side_bar">
-                <ul class="cjw_menu" role="tablist">
-                    <li role="tab"><a id="cjw_param_list_link" href="{{ path("cjw_config_processing.param_list") }}">Parameter-List</a></li>
-                    <li role="tab"><a id="cjw_site_access_list" href="{{ path("cjw_config_processing.site_access_selection") }}">Site Access Selection</a></li>
-                    {% block additional_tabs %} {% endblock %}
-                </ul>
-            </div>
+            {% block left_sidebar %}
+                <div class="bg-dark pt-4 px-0 ez-side-menu">
+                    <div class="ez-sticky-container">
+                        {{ knp_menu_render('cjw_config_processing.menu.sidebar_left', {'template': '@ezdesign/ui/menu/sidebar_left.html.twig'}) }}
+                    </div>
+                </div>
+            {% endblock %}
 
-            <div class="cjw_main_section">
+            <div class="cjw_main_section ez-sticky-container ez-content-container pb-4">
+                <form class="searchbar ez-sticky-container">
+                    <input type="text" placeholder="Search...">
+                </form>
                 {% block param_content %} {% endblock %}
             </div>
+
+            {% block right_sidebar %}{% endblock %}
         </div>
 
         <div class="scroll_up_button">
             <button class="dont_display">^</button>
         </div>
-
-{#        <div class="cjw_footer">#}
-{#            <span>This could be the beginning of a wonderful footer</span>#}
-{#        </div>#}
     </div>
 {% endblock %}
 
