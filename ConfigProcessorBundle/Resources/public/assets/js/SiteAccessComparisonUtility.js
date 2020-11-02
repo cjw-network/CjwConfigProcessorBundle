@@ -1,23 +1,35 @@
 class SiteAccessComparisonUtility {
+  singleSiteAccessViewButton;
   commonParamSelectButton;
   uncommonParamSelectButton;
 
   constructor() {
+    this.singleSiteAccessViewButton = document.querySelector(
+      "[cjw_id=cjw_single_sa_view]"
+    );
     this.commonParamSelectButton = document.querySelector(
-      "#cjw_show_common_parameters"
+      "[cjw_id=cjw_show_common_parameters]"
     );
     this.uncommonParamSelectButton = document.querySelector(
-      "#cjw_show_uncommon_parameters"
+      "[cjw_id=cjw_show_uncommon_parameters]"
     );
   }
 
-  setUpBothUtilityButtons() {
+  setUpTheUtilityButtons() {
+    if (this.singleSiteAccessViewButton) {
+      this.singleSiteAccessViewButton.onclick = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        this.redirectToLimitedView();
+      };
+    }
+
     if (this.commonParamSelectButton) {
       this.commonParamSelectButton.onclick = (event) => {
         event.preventDefault();
         event.stopPropagation();
 
-        this.commonParamSelectButton.classList.add("switch");
         this.redirectToLimitedView("commons");
       };
     }
@@ -27,21 +39,12 @@ class SiteAccessComparisonUtility {
         event.preventDefault();
         event.stopPropagation();
 
-        this.uncommonParamSelectButton.classList.add("switch");
         this.redirectToLimitedView("uncommons");
       };
     }
   }
 
-  // getAllCommonParameters() {
-  //     const firstListParameters = document.querySelectorAll(".first_list > .param_list_keys");
-  //
-  //     for (const key of firstListParameters) {
-  //         const pendantElement = document.querySelector(".second_list")
-  //     }
-  // }
-
-  redirectToLimitedView(limiterKeyWord) {
+  redirectToLimitedView(limiterKeyWord = null) {
     if (
       limiterKeyWord &&
       (limiterKeyWord === "commons" || limiterKeyWord === "uncommons")
@@ -57,6 +60,14 @@ class SiteAccessComparisonUtility {
         : "";
 
       window.location = `/admin/cjw/config-processing/parameter_list/compare/${firstSiteAccess}/${secondSiteAccess}/${limiterKeyWord}`;
+    } else {
+      let firstSiteAccess = document.querySelector(".first_list");
+
+      firstSiteAccess = firstSiteAccess
+        ? firstSiteAccess.getAttribute("siteaccess")
+        : "current";
+
+      window.location = `/admin/cjw/config-processing/parameter_list/siteaccess/${firstSiteAccess}`;
     }
   }
 }

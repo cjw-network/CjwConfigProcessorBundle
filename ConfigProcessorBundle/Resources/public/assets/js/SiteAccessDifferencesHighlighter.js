@@ -1,38 +1,36 @@
 class SiteAccessDifferencesHighlighter {
-  differenceHighlightingButton;
 
-  constructor() {
-    this.differenceHighlightingButton = document.querySelector(
-      "#cjw_highlight_differences"
-    );
-  }
+    differenceHighlightingButton;
 
-  setUpFunctionality() {
-    if (this.differenceHighlightingButton) {
-      this.differenceHighlightingButton.onclick = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        this.differenceHighlightingButton.classList.add("switch");
-      };
+    constructor () {
+        this.differenceHighlightingButton = document.querySelector("#cjw_highlight_differences");
     }
-  }
 
-  findDifferences() {
-    let firstListKeys = document.querySelectorAll(
-      ".first_list > .param_list_keys"
-    );
-    let secondListKeys = document.querySelectorAll(
-      ".second_list > .param_list_keys"
-    );
+    setUpFunctionality () {
+        if (this.differenceHighlightingButton) {
+            this.differenceHighlightingButton.onclick = (event) => {
+                event.preventDefault();
+                event.stopPropagation();
 
-    if (firstListKeys && secondListKeys) {
-      firstListKeys = Array.from(firstListKeys);
-      secondListKeys = Array.from(secondListKeys);
-
-      this.findDifferencesInKeysAsynchronously(firstListKeys, secondListKeys);
+                this.differenceHighlightingButton.classList.add("switch");
+            }
+        }
     }
-  }
 
-  findDifferencesInKeysAsynchronously(firstList, secondList) {}
+    findDifferences () {
+        let firstListKeys = document.querySelectorAll(".first_list > .param_list_keys");
+        let secondListKeys = document.querySelectorAll(".second_list > .param_list_keys");
+
+        if (firstListKeys && secondListKeys) {
+            firstListKeys = Array.from(firstListKeys);
+            secondListKeys = Array.from(secondListKeys);
+
+            this.findDifferencesInKeysAsynchronously(firstListKeys, secondListKeys);
+        }
+
+    }
+
+    findDifferencesInKeysAsynchronously (firstList, secondList) {
+        
+    }
 }

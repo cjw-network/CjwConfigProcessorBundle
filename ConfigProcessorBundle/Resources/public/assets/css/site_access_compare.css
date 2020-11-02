@@ -1,29 +1,41 @@
+/*h3 {*/
+/*    margin-top: 5px;*/
+/*    padding: 5px;*/
+/*    text-align: center;*/
+/*    background-color: #e5e3e3;*/
+/*}*/
+
 .compare_display {
-  display: flex;
-  flex-direction: row;
-  position: relative;
+    display: flex;
+    flex-direction: row;
+    position: relative;
 }
 
 .compare_display > * {
-  width: 48%;
+    width: 48.8%;
 }
 
 .first_list {
-  position: absolute;
-  left: 0;
+    position: absolute;
+    left: 0;
+    margin-left: 5px;
 }
 
 .second_list {
-  position: absolute;
-  right: 0;
+    position: absolute;
+    right: 0;
 }
 
 .difference {
-  background-color: indianred;
-  color: white;
+    background-color: indianred;
+    color: white;
 }
 
 .similarity {
-  background-color: green;
-  color: white;
+    background-color: green;
+    color: white;
+}
+
+.cjw_site_access_selectors {
+    margin-top: 25px;
 }

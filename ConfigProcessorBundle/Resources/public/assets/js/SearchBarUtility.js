@@ -1,14 +1,14 @@
 class SearchBarUtility {
-  header;
+  // header;
   mainSection;
 
   constructor() {
-    this.header = document.querySelector(".cjw_header");
+    // this.header = document.querySelector(".cjw_header");
     this.mainSection = document.querySelector(".cjw_main_section");
   }
 
   setUpSearchBar() {
-    if (this.header) {
+    if (this.mainSection) {
       const searchField = document.querySelector(".searchbar > input");
       let timeout = null;
 

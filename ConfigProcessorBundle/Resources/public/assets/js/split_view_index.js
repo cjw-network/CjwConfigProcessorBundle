@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-  if (document.querySelector("#cjw_split_selection")) {
-    const saListSplitView = new SAListSplitScreen();
-    saListSplitView.setUpSplitViewButton();
+  const saListSplitView = new SAListSplitScreen();
+
+  if (document.querySelector(".param_list")) {
+    saListSplitView.disableRightSideBarButtons();
+    saListSplitView.setUpSiteAccessSelectionForSingleView();
   }
 
   if (
@@ -11,7 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const siteAccessComparisonUtility = new SiteAccessComparisonUtility();
     const differenceHighlighter = new SiteAccessDifferencesHighlighter();
 
-    siteAccessComparisonUtility.setUpBothUtilityButtons();
+    saListSplitView.enableRightSideBarButtons();
+    saListSplitView.setUpSiteAccessSelectionForCompareView();
+
+    siteAccessComparisonUtility.setUpTheUtilityButtons();
     differenceHighlighter.setUpFunctionality();
   }
 });

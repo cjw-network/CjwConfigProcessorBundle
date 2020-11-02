@@ -1,101 +1,126 @@
+/*h2 {*/
+/*    margin-top: 5px;*/
+/*    padding: 5px;*/
+/*    text-align: center;*/
+/*    background-color: #e5e3e3;*/
+/*}*/
+
 .param_list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    /*border: 2px solid #e5e3e3;*/
+    /*border-radius: 5px;*/
+}
+
+.param_list_items {
+    background-color: white;
 }
 
 .param_list_keys {
-  /*background-color: aliceblue;*/
-  background-color: #e5e3e3;
-  padding: 2px;
-  margin-bottom: 2px;
-  /*border-radius: 5px;*/
-  /*border: solid 2px #0a435b;*/
-  border: solid 1px #e5e3e3;
-  position: relative;
-  align-items: center;
-  /*color: white;*/
-  color: black;
+    /*background-color: #e5e3e3;*/
+    padding: 2px;
+    margin-bottom: 2px;
+    position: relative;
+    align-items: center;
+    color: #11546c;
+    border-bottom: 1px solid lightgrey;
+    /*border-left: 2px lightgrey solid;*/
 }
 
 .param_list_keys:hover {
-  /*background-color: #0a435b;*/
-  background-color: #106d95;
-  color: white;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    /*background-color: #0a435b;*/
+    /*background-color: #106d95;*/
+    background-color: #e8f8f8;
+    /*color: white;*/
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25,0.8,0.25,1);
 }
 
-.param_list_values {
-  background-color: lightgreen;
-  padding: 2px;
-  margin-bottom: 4px;
-  /*border-radius: 5px;*/
-  border: solid 1px lightgreen;
+.param_list_values{
+    /*background-color: lightgreen;*/
+    padding: 2px;
+    margin-bottom: 4px;
+    /*border-radius: 5px;*/
+    text-align: end;
+    color: green;
+}
+
+.param_list_values:hover {
+    background-color: #e8f8f8;
+    /*color: white;*/
 }
 
 .searchbar > input {
-  border-radius: 4px;
-  border: 2px solid white;
-  transition: border-color 0.2s ease;
+    border-radius: 4px;
+    border: 2px solid #333;
+    transition: all 0.3s ease;
 }
 
-.searchbar > input:focus,
-input:hover {
-  /*border: 2px solid #0a435b;*/
-  border: 2px solid #444;
-  transition: border-color 0.2s ease;
+.searchbar > input:focus, input:hover {
+    /*border: 2px solid #0a435b;*/
+    border: 2px solid #106d95;
+    width: 30vw;
+    transition: all 0.4s ease;
 }
 
 .location_info {
-  background-color: white;
-  /*border: 2px solid #0a435b;*/
-  border-radius: 100%;
-  outline: white;
-  border: 1px transparent;
-  position: absolute;
-  right: 10px;
-  top: 8%;
-  padding-left: 9px;
-  padding-right: 9px;
-  font-weight: bold;
+    background-color: white;
+    /*border: 2px solid #0a435b;*/
+    border-radius: 100%;
+    outline: white;
+    border: 1px transparent;
+    position: absolute;
+    right: 10px;
+    top: 8%;
+    padding-left: 9px;
+    padding-right: 9px;
+    font-weight: bold;
 }
 
 .close_location_info {
-  background-color: lightcoral;
-  color: white;
-  border-radius: 100%;
-  border: 1px transparent;
-  position: absolute;
-  right: 10px;
-  top: 8%;
-  padding-left: 7px;
-  padding-right: 7px;
-  font-weight: bold;
+    background-color: lightcoral;
+    color: white;
+    border-radius: 100%;
+    border: 1px transparent;
+    position: absolute;
+    right: 10px;
+    top: 8%;
+    padding-left: 7px;
+    padding-right: 7px;
+    font-weight: bold;
 }
 
 .top_nodes {
-  /*background-color: #a0c0cd;*/
-  /*background-color: #a4c2cc;*/
-  background-color: #686868;
-  color: white;
-  /*font-weight: bold;*/
 }
 
 .path_info {
-  /*background-color: #e5e3e3;*/
-  color: black;
-  border-radius: 5px;
-  padding: 1px;
-  /*border: 2px #eaA415 solid;*/
-  margin-bottom: 1px;
-  font-size: 0.9rem;
+    /*background-color: #e5e3e3;*/
+    color: black;
+    border-radius: 5px;
+    padding: 1px;
+    /*border: 2px #eaA415 solid;*/
+    margin-bottom: 1px;
+    font-size: 0.82rem;
 }
 
-.path_info_value {
-  background: lightgreen;
+/*.path_info_value {*/
+/*    !*background: lightgreen;*!*/
+/*}*/
+
+/*.path_info_key {*/
+/*    !*background: lightblue;*!*/
+/*}*/
+
+.cjw_site_access_selectors {
+    height: auto;
+    z-index: 20;
+    background-color: #eaeaea;
+    top: 0;
 }
 
-.path_info_key {
-  background: lightblue;
+.cjw_table_head_with_searchbar {
+    height: auto;
+    z-index: 20;
+    top: 0;
 }
