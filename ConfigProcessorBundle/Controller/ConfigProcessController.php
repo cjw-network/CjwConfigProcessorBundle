@@ -11,6 +11,7 @@ use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class ConfigProcessController extends AbstractController
@@ -48,10 +49,23 @@ class ConfigProcessController extends AbstractController
         );
     }
 
-    public function getCurrentSAParameters () {
+    public function getCurrentSAParameters (Request $request) {
         $saParameters = ConfigProcessCoordinator::getSiteAccessParameters();
+        $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
 
-        return $this->render("@CJWConfigProcessor/full/param_view_siteaccess.html.twig", ["siteAccessParameters" => $saParameters]);
+        $currentSiteAccess = $request->attributes->get("siteaccess")->name;
+        $siteAccesses = ControllerUtility::determinePureSiteAccesses($processedParameters);
+        $groups = ControllerUtility::determinePureSiteAccessGroups($processedParameters);
+
+        return $this->render(
+            "@CJWConfigProcessor/full/param_view_siteaccess.html.twig",
+            [
+                "siteAccess" => $currentSiteAccess,
+                "allSiteAccesses" => $siteAccesses,
+                "allSiteAccessGroups" => $groups,
+                "siteAccessParameters" => $saParameters
+            ]
+        );
     }
 
     public function getSpecificSAParameters (string $siteAccess) {
@@ -61,10 +75,17 @@ class ConfigProcessController extends AbstractController
             $specSAParameters = [];
         }
 
+        $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
+
+        $siteAccesses = ControllerUtility::determinePureSiteAccesses($processedParameters);
+        $groups = ControllerUtility::determinePureSiteAccessGroups($processedParameters);
+
         return $this->render(
             "@CJWConfigProcessor/full/param_view_siteaccess.html.twig",
             [
                 "siteAccess" => $siteAccess,
+                "allSiteAccesses" => $siteAccesses,
+                "allSiteAccessGroups" => $groups,
                 "siteAccessParameters" => $specSAParameters
             ]
         );
@@ -77,11 +98,18 @@ class ConfigProcessController extends AbstractController
         $firstSiteAccessParameters = $resultParameters[0];
         $secondSiteAccessParameters = $resultParameters[1];
 
+        $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
+
+        $siteAccesses = ControllerUtility::determinePureSiteAccesses($processedParameters);
+        $groups = ControllerUtility::determinePureSiteAccessGroups($processedParameters);
+
         return $this->render(
             "@CJWConfigProcessor/full/param_view_siteaccess_compare.html.twig",
             [
                 "firstSiteAccess" => $firstSiteAccess,
                 "secondSiteAccess" => $secondSiteAccess,
+                "allSiteAccesses" => $siteAccesses,
+                "allSiteAccessGroups" => $groups,
                 "firstSiteAccessParameters" => $firstSiteAccessParameters,
                 "secondSiteAccessParameters" => $secondSiteAccessParameters
             ]
@@ -96,11 +124,18 @@ class ConfigProcessController extends AbstractController
         $firstSiteAccessParameters = $resultParameters[0];
         $secondSiteAccessParameters = $resultParameters[1];
 
+        $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
+
+        $siteAccesses = ControllerUtility::determinePureSiteAccesses($processedParameters);
+        $groups = ControllerUtility::determinePureSiteAccessGroups($processedParameters);
+
         return $this->render(
             "@CJWConfigProcessor/full/param_view_siteaccess_compare.html.twig",
             [
                 "firstSiteAccess" => $firstSiteAccess,
                 "secondSiteAccess" => $secondSiteAccess,
+                "allSiteAccesses" => $siteAccesses,
+                "allSiteAccessGroups" => $groups,
                 "firstSiteAccessParameters" => $firstSiteAccessParameters,
                 "secondSiteAccessParameters" => $secondSiteAccessParameters
             ]
@@ -115,11 +150,18 @@ class ConfigProcessController extends AbstractController
         $firstSiteAccessParameters = $resultParameters[0];
         $secondSiteAccessParameters = $resultParameters[1];
 
+        $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
+
+        $siteAccesses = ControllerUtility::determinePureSiteAccesses($processedParameters);
+        $groups = ControllerUtility::determinePureSiteAccessGroups($processedParameters);
+
         return $this->render(
             "@CJWConfigProcessor/full/param_view_siteaccess_compare.html.twig",
             [
                 "firstSiteAccess" => $firstSiteAccess,
                 "secondSiteAccess" => $secondSiteAccess,
+                "allSiteAccesses" => $siteAccesses,
+                "allSiteAccessGroups" => $groups,
                 "firstSiteAccessParameters" => $firstSiteAccessParameters,
                 "secondSiteAccessParameters" => $secondSiteAccessParameters
             ]

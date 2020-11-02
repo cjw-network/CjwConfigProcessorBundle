@@ -15,7 +15,8 @@
     {% elseif value is iterable %}
         <div class="param_list_items dont_display">
             <div class="param_list_keys" key="{{ key |trim }}">
-                {{ key |trim }}:
+                <span class="param_item_toggle">+</span>
+                <span>{{ key |trim }}:</span>
                 {% if "parameter_value" in value|keys %}
                     <button class="location_info">i</button>
                 {% endif %}
@@ -28,7 +29,8 @@
     {% else %}
         <div class="param_list_items dont_display">
             <div class="param_list_keys" key="{{ key |trim }}">
-                {{ key |trim }}:
+                <span class="param_item_toggle">+</span>
+                <span>{{ key |trim }}:</span>
             </div>
             <div class="param_list_values dont_display">
                 {{ value | boolean }}

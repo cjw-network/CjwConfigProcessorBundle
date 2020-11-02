@@ -18,7 +18,7 @@ class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationConta
 
     /* Menu items */
     const ITEM__PARAMETERLIST = 'Parameter List';
-    const ITEM__SITE_ACCESS_SELECTION = 'Site Access Selection';
+    const ITEM__PARAMETER_LIST_SITE_ACCESS = 'Parameter List: Site Access';
 
     public function __construct(
         MenuItemFactory $factory,
@@ -42,14 +42,14 @@ class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationConta
                 self::ITEM__PARAMETERLIST,
                 [
                     "route" => "cjw_config_processing.param_list",
-                    "extras" => ["icon" => "content-tree"],
+                    "extras" => ["icon" => "list"],
                 ]
             ),
-            self::ITEM__SITE_ACCESS_SELECTION => $this->createMenuItem(
-                self::ITEM__SITE_ACCESS_SELECTION,
+            self::ITEM__PARAMETER_LIST_SITE_ACCESS => $this->createMenuItem(
+                self::ITEM__PARAMETER_LIST_SITE_ACCESS,
                 [
-                    "route" => "cjw_config_processing.site_access_selection",
-                    "extras" => ["icon" => "content-tree"],
+                    "route" => "cjw_config_processing.site_access_param_list",
+                    "extras" => ["icon" => "view-list"],
                 ]
             )
         ];
@@ -63,7 +63,7 @@ class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationConta
     {
         return [
             (new Message(self::ITEM__PARAMETERLIST,"menu"))->setDesc("Parameter List"),
-            (new Message(self::ITEM__SITE_ACCESS_SELECTION, "menu"))->setDesc("Site Access Selection")
+            (new Message(self::ITEM__PARAMETER_LIST_SITE_ACCESS, "menu"))->setDesc("Parameter List Site Access")
         ];
     }
 }

@@ -4,12 +4,40 @@
     <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/css/parameter_display.css") }}>
 {% endblock %}
 
+{% block list_header %}
+    <div class="ez-header">
+        <div class="container">
+            <ol class="breadcrumb px-4">
+                <li class="breadcrumb-item">Admin</li>
+                <li class="breadcrumb-item">CJW Config Processing</li>
+                <li class="breadcrumb-item active">Parameterlist</li>
+            </ol>
+            <div class="ez-page-title py-3 px-4">
+                <div class="ez-page-title__content-item">
+                    <svg class="ez-icon ez-icon-content-type">
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#content-type"></use>
+                    </svg>
+                    <h1 class="ez-page-title__content-name">
+                        Parameterlist: Site Access Independent
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
 {% block param_content %}
-    <h2>Site Access Independent Parameters</h2>
     <div class="param_list tab-content container mt-4 px-5">
+        <div class="ez-table-header ez-sticky-container cjw_table_head_with_searchbar">
+            <div class="ez-table-header__headline">
+                Parameterlist
+            </div>
+            {% block search_bar %}
+                {{ parent() }}
+            {% endblock %}
+        </div>
        {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : parameterList} only %}
     </div>
-{#    {{ dump(parameterList) }}#}
 {% endblock %}
 
 {% block line_template_javascripts %}

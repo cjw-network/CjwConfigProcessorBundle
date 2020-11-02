@@ -4,6 +4,8 @@
 namespace App\CJW\ConfigProcessorBundle\src\Utility;
 
 
+use Exception;
+
 class ControllerUtility
 {
 
@@ -69,5 +71,24 @@ class ControllerUtility
      */
     public static function has_string_keys(array $array) {
         return count(array_filter(array_keys($array), 'is_string')) > 0;
+    }
+
+    public static function determinePureSiteAccesses(array $processedParameterArray): array {
+        try {
+            $results = $processedParameterArray["ezpublish"]["siteaccess"]["list"]["parameter_value"];
+            array_push($results, "default", "global");
+
+            return $results;
+        } catch (Exception $error) {
+            return ["default", "global"];
+        }
+    }
+
+    public static function determinePureSiteAccessGroups (array $processedParameterArray): array {
+        try {
+            return $processedParameterArray["ezpublish"]["siteaccess"]["groups"]["parameter_value"];
+        } catch (Exception $error) {
+            return [];
+        }
     }
 }

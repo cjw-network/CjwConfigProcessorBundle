@@ -140,7 +140,7 @@ class ConfigProcessCoordinator
 
         $processedParamObj = self::$cache->get(
             "cjw_processed_param_objects",
-            function(ItemInterface $item) {
+            function() {
                 return self::$configProcessor->getProcessedParameters();
             }
         );
