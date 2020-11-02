@@ -1,10 +1,3 @@
-/*h2 {*/
-/*    margin-top: 5px;*/
-/*    padding: 5px;*/
-/*    text-align: center;*/
-/*    background-color: #e5e3e3;*/
-/*}*/
-
 .param_list {
     list-style: none;
     display: flex;
@@ -42,7 +35,7 @@
     padding: 2px;
     margin-bottom: 4px;
     /*border-radius: 5px;*/
-    text-align: end;
+    text-indent: 10px;
     color: green;
 }
 
@@ -51,17 +44,30 @@
     /*color: white;*/
 }
 
-.searchbar > input {
+#cjw_searchbar {
     border-radius: 4px;
-    border: 2px solid #333;
+    border: 1px solid #333;
     transition: all 0.3s ease;
 }
 
-.searchbar > input:focus, input:hover {
+#cjw_searchbar:focus, #cjw_searchbar:hover {
     /*border: 2px solid #0a435b;*/
-    border: 2px solid #106d95;
+    border: 1px solid #106d95;
     width: 30vw;
     transition: all 0.4s ease;
+}
+
+.open_subtree {
+    position: absolute;
+    right: 30px;
+    top: 2%;
+    outline: white;
+    border: 1px transparent;
+}
+
+.param_item_toggle {
+    /*border: 1px solid #11546c;*/
+    /*padding-inline: 2px;*/
 }
 
 .location_info {
@@ -86,12 +92,9 @@
     position: absolute;
     right: 10px;
     top: 8%;
-    padding-left: 7px;
-    padding-right: 7px;
+    padding-left: 6px;
+    padding-right: 6px;
     font-weight: bold;
-}
-
-.top_nodes {
 }
 
 .path_info {
@@ -104,14 +107,6 @@
     font-size: 0.82rem;
 }
 
-/*.path_info_value {*/
-/*    !*background: lightgreen;*!*/
-/*}*/
-
-/*.path_info_key {*/
-/*    !*background: lightblue;*!*/
-/*}*/
-
 .cjw_site_access_selectors {
     height: auto;
     z-index: 20;
@@ -123,4 +118,23 @@
     height: auto;
     z-index: 20;
     top: 0;
+}
+
+@keyframes loading_parameters {
+    0% {transform: rotate(0)}
+    /*25% {transform: rotate(90deg)}*/
+    /*50% {transform: rotate(180deg)}*/
+    /*75% {transform: rotate(270deg)}*/
+    100% {transform: rotate(360deg)}
+}
+
+#loading_circle {
+    position: absolute;
+    z-index: 100;
+    top: 50%;
+    left: 50%;
+    animation-name: loading_parameters;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
 }

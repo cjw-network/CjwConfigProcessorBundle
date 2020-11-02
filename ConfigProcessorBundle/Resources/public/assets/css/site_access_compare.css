@@ -18,7 +18,7 @@
 .first_list {
     position: absolute;
     left: 0;
-    margin-left: 5px;
+    margin-left: 10px;
 }
 
 .second_list {
@@ -38,4 +38,5 @@
 
 .cjw_site_access_selectors {
     margin-top: 25px;
+    margin-left: 10px;
 }

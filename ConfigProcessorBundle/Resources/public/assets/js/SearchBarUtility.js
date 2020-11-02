@@ -9,7 +9,7 @@ class SearchBarUtility {
 
   setUpSearchBar() {
     if (this.mainSection) {
-      const searchField = document.querySelector(".searchbar > input");
+      const searchField = document.querySelector("#cjw_searchbar");
       let timeout = null;
 
       searchField.addEventListener("input", (event) => {
