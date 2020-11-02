@@ -36,12 +36,15 @@
                 {{ parent() }}
             {% endblock %}
         </div>
+        <svg class="ez-icon ez-icon--large" id="loading_circle">
+            <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#spinner"></use>
+        </svg>
        {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : parameterList} only %}
     </div>
 {% endblock %}
 
 {% block line_template_javascripts %}
-    <script src={{ asset("bundles/cjwconfigprocessor/js/param_list_index.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/js/bundle_index.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterDisplay.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterBranchDisplay.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterLocationRetrieval.js") }}></script>

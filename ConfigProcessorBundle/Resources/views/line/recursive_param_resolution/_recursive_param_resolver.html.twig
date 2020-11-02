@@ -15,8 +15,20 @@
     {% elseif value is iterable %}
         <div class="param_list_items dont_display">
             <div class="param_list_keys" key="{{ key |trim }}">
-                <span class="param_item_toggle">+</span>
+                <span class="param_item_toggle">
+                    <svg class="ez-icon ez-icon--small">
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#caret-next"></use>
+                    </svg>
+                </span>
+
                 <span>{{ key |trim }}:</span>
+
+                <button class="open_subtree">
+                    <svg class="ez-icon ez-icon--small">
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
+                    </svg>
+                </button>
+
                 {% if "parameter_value" in value|keys %}
                     <button class="location_info">i</button>
                 {% endif %}
@@ -29,9 +41,15 @@
     {% else %}
         <div class="param_list_items dont_display">
             <div class="param_list_keys" key="{{ key |trim }}">
-                <span class="param_item_toggle">+</span>
+                <span class="param_item_toggle">
+                    <svg class="ez-icon ez-icon--small">
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#caret-next"></use>
+                    </svg>
+                </span>
+
                 <span>{{ key |trim }}:</span>
             </div>
+
             <div class="param_list_values dont_display">
                 {{ value | boolean }}
             </div>

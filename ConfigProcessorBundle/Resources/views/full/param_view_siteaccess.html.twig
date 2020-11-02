@@ -35,7 +35,7 @@
     <div siteaccess="{{ siteAccess }}" class="param_list tab-content container mt-4 px-5">
 
         <div class="p-3 mb-5 ez-sticky-container cjw_site_access_selectors">
-            <form class="form-inline ez-form-inline justify-content-around">
+            <form class="form-inline ez-form-inline justify-content-md-start">
                 <label class="ez-label" for="first_site_access_selection">Site Access 1</label>
                 <select id="first_site_access_selection" name="first_site_access_selection" class="form-control">
                     <option value="0" disabled="disabled">- siteaccess.list -</option>
@@ -73,10 +73,10 @@
                         <option value="{{ saGroup }}">{{ saGroup }}</option>
                     {% endfor %}
                 </select>
+                {% block search_bar %}
+                    {{ parent() }}
+                {% endblock %}
             </form>
-            {% block search_bar %}
-                {{ parent() }}
-            {% endblock %}
         </div>
 
         {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : siteAccessParameters} only %}
@@ -93,10 +93,9 @@
 {% endblock %}
 
 {% block line_template_javascripts %}
-    <script src={{ asset("bundles/cjwconfigprocessor/js/param_list_index.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/js/bundle_index.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterDisplay.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterBranchDisplay.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterLocationRetrieval.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/js/split_view_index.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/SAListSplitScreen.js") }}></script>
 {% endblock %}

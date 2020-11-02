@@ -19,7 +19,7 @@
             <div class="ez-page-title py-3 px-4">
                 <div class="ez-page-title__content-item">
                     <svg class="ez-icon ez-icon-content-type">
-                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#content-type"></use>
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#table-row"></use>
                     </svg>
                     <h1 class="ez-page-title__content-name">
                         Parameterlist: Site Access Comparison
@@ -105,11 +105,10 @@
 {% endblock %}
 
 {% block line_template_javascripts %}
-    <script src={{ asset("bundles/cjwconfigprocessor/js/param_list_index.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/js/bundle_index.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterDisplay.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterBranchDisplay.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterLocationRetrieval.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/js/split_view_index.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/SAListSplitScreen.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/SiteAccessComparisonUtility.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/SiteAccessDifferencesHighlighter.js") }}></script>

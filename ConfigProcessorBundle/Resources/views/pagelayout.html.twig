@@ -30,7 +30,7 @@
                 {% block param_content %}
                     {% block search_bar %}
                         <form class="searchbar ez-sticky-container">
-                            <input type="text" placeholder="Search...">
+                            <input id="cjw_searchbar" type="text" placeholder="Search...">
                         </form>
                     {% endblock %}
                 {% endblock %}
@@ -49,6 +49,5 @@
     <script src={{ asset("bundles/cjwconfigprocessor/js/bundle_index.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/SearchBarUtility.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/js/ScrollUpButtonDisplay.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/js/SAListSplitScreen.js") }}></script>
     {% block line_template_javascripts %}{% endblock %}
 {% endblock %}
