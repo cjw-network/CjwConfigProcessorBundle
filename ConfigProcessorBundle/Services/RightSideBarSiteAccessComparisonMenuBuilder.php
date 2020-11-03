@@ -73,6 +73,7 @@ class RightSideBarSiteAccessComparisonMenuBuilder extends \EzSystems\EzPlatformA
                         'attributes' => [
                             'class' => 'ez-btn--reveal',
                             'data-actions' => 'highlight',
+                            "cjw_id" => "cjw_highlight_differences",
                         ],
                     ]
                 ),

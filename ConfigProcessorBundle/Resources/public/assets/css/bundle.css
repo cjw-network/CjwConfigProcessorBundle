@@ -68,13 +68,14 @@ html {
 /*}*/
 
 .cjw_main_section {
-    width: 90%;
+    /*width: 90%;*/
     /*padding-left: 5px;*/
-    flex: 2 0 auto;
+    /*flex: 2 0 auto;*/
     /*font-size: 0.97rem;*/
-    overflow-y: scroll;
+    /*overflow-y: scroll;*/
     scroll-behavior: smooth;
     /*background-color: #e5e3e3;*/
+    height: auto;
 }
 
 .cjw_main_section > div {

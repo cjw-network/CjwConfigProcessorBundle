@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
       saListSplitView.setUpSiteAccessSelectionForCompareView();
 
       siteAccessComparisonUtility.setUpTheUtilityButtons();
-      differenceHighlighter.setUpFunctionality();
+      differenceHighlighter.setUpHighlighterButton();
     }
   }
 });

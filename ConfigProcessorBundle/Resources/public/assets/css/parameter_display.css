@@ -1,5 +1,4 @@
 .param_list {
-    list-style: none;
     display: flex;
     flex-direction: column;
     /*border: 2px solid #e5e3e3;*/

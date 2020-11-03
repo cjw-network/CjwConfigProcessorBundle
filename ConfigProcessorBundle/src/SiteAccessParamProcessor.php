@@ -96,7 +96,7 @@ class SiteAccessParamProcessor
 
     /**
      * Function which removes every parameter that is already present in the array under a different site-
-     * access. As a result the array only contains unique parameters for further processing.
+     * access. As a result, the array only contains unique parameters for further processing.
      *
      * @param array $siteAccessParameters The parameters to be processed.
      * @return array Returns an array that includes only unique parameters.
@@ -208,6 +208,6 @@ class SiteAccessParamProcessor
             ksort($processedSiteAccessParameters[$namespace], SORT_STRING);
         }
 
-        return $processedSiteAccessParameters;
+        return array_filter($processedSiteAccessParameters);
     }
 }
