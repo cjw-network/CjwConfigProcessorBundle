@@ -3,7 +3,6 @@
 {% block line_template_stylesheets %}
     <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/css/site_access_compare.css") }}>
     <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/css/parameter_display.css") }}>
-    <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/css/site_access.css") }}>
 {% endblock %}
 
 {% block list_header %}
@@ -34,54 +33,66 @@
 
     <div class="p-3 mb-5 ez-sticky-container cjw_site_access_selectors">
         <form class="form-inline ez-form-inline justify-content-around">
-            <label class="ez-label" for="first_site_access_selection">Site Access 1</label>
-            <select id="first_site_access_selection" name="first_site_access_selection" class="form-control">
-                <option value="0" disabled="disabled">- siteaccess.list -</option>
+            <div class="d-inline-flex">
+                <label class="ez-label" for="first_site_access_selection">Site Access 1</label>
+                <select id="first_site_access_selection" name="first_site_access_selection" class="form-control">
+                    <option value="0" disabled="disabled">- siteaccess.list -</option>
 
-                {% for oneSiteAccess in allSiteAccesses %}
-                    {% if oneSiteAccess is same as(firstSiteAccess) %}
-                        <option value="{{ oneSiteAccess }}" selected="selected">{{ oneSiteAccess }}</option>
-                    {% else %}
-                        <option value="{{ oneSiteAccess }}">{{ oneSiteAccess }}</option>
-                    {% endif %}
-                {% endfor %}
+                    {% for oneSiteAccess in allSiteAccesses %}
+                        {% if oneSiteAccess is same as(firstSiteAccess) %}
+                            <option value="{{ oneSiteAccess }}" selected="selected">{{ oneSiteAccess }}</option>
+                        {% else %}
+                            <option value="{{ oneSiteAccess }}">{{ oneSiteAccess }}</option>
+                        {% endif %}
+                    {% endfor %}
 
-                <option value="0" disabled="disabled">- siteaccess.groups -</option>
+                    <option value="0" disabled="disabled">- siteaccess.groups -</option>
 
-                {% for saGroup in allSiteAccessGroups|keys %}
-                    {% if saGroup is same as(firstSiteAccess) %}
-                        <option value="{{ saGroup }}" selected="selected">{{ saGroup }}</option>
-                    {% else %}
-                        <option value="{{ saGroup }}">{{ saGroup }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-            <label class="ez-label" for="second_site_access_selection">Site Access 2</label>
-            <select id="second_site_access_selection" name="second_site_access_selection" class="form-control">
-                <option value="0" disabled="disabled">- siteaccess.list -</option>
+                    {% for saGroup in allSiteAccessGroups|keys %}
+                        {% if saGroup is same as(firstSiteAccess) %}
+                            <option value="{{ saGroup }}" selected="selected">{{ saGroup }}</option>
+                        {% else %}
+                            <option value="{{ saGroup }}">{{ saGroup }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="d-inline-flex">
+                <label class="ez-label" for="second_site_access_selection">Site Access 2</label>
+                <select id="second_site_access_selection" name="second_site_access_selection" class="form-control">
+                    <option value="0" disabled="disabled">- siteaccess.list -</option>
 
-                {% for oneSiteAccess in allSiteAccesses %}
-                    {% if oneSiteAccess is same as(secondSiteAccess) %}
-                        <option value="{{ oneSiteAccess }}" selected="selected">{{ oneSiteAccess }}</option>
-                    {% else %}
-                        <option value="{{ oneSiteAccess }}">{{ oneSiteAccess }}</option>
-                    {% endif %}
-                {% endfor %}
+                    {% for oneSiteAccess in allSiteAccesses %}
+                        {% if oneSiteAccess is same as(secondSiteAccess) %}
+                            <option value="{{ oneSiteAccess }}" selected="selected">{{ oneSiteAccess }}</option>
+                        {% else %}
+                            <option value="{{ oneSiteAccess }}">{{ oneSiteAccess }}</option>
+                        {% endif %}
+                    {% endfor %}
 
-                <option value="0" disabled="disabled">- siteaccess.groups -</option>
+                    <option value="0" disabled="disabled">- siteaccess.groups -</option>
 
-                {% for saGroup in allSiteAccessGroups|keys %}
-                    {% if saGroup is same as(secondSiteAccess) %}
-                        <option value="{{ saGroup }}" selected="selected">{{ saGroup }}</option>
-                    {% else %}
-                        <option value="{{ saGroup }}">{{ saGroup }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
+                    {% for saGroup in allSiteAccessGroups|keys %}
+                        {% if saGroup is same as(secondSiteAccess) %}
+                            <option value="{{ saGroup }}" selected="selected">{{ saGroup }}</option>
+                        {% else %}
+                            <option value="{{ saGroup }}">{{ saGroup }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="input-group-btn">
+                {% block search_bar %}
+                    {{ parent() }}
+                {% endblock %}
+            </div>
         </form>
-        {% block search_bar %}
-            {{ parent() }}
-        {% endblock %}
+    </div>
+
+    <div class="ez-table-header cjw_table_head_without_searchbar">
+        <div class="ez-table-header__headline">
+            Parameterlist: {{ limiter }}
+        </div>
     </div>
 
     <div class="compare_display">

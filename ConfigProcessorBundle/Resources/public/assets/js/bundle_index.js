@@ -19,21 +19,22 @@ document.addEventListener("DOMContentLoaded", function () {
     parameterDisplay.cleanUpList();
     parameterLocationRetriever.setUpLocationRetrievalButtons();
 
+    // if (document.querySelector(".compare_display")) {
     paramBranchDisplay.subTreeOpenClickListener();
-    paramBranchDisplay.setDoubleClickListenerForRemainingNodes();
+    // } else {
+    //   paramBranchDisplay.subTreeViewOpenClickListener();
+    // }
 
     const loadingCircle = document.querySelector("#loading_circle");
 
     if (loadingCircle) {
       setTimeout(() => {
-        const tableHeaderWithLoadingCircle = document.querySelector(
-          ".param_list"
-        );
+        const containerWithLoader = document.querySelector(".param_list");
 
         if (document.querySelector("#loading_circle")) {
-          tableHeaderWithLoadingCircle?.removeChild(loadingCircle);
+          containerWithLoader?.removeChild(loadingCircle);
         }
-      }, 500);
+      }, 250);
     }
   }
 

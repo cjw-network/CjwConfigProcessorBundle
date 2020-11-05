@@ -51,7 +51,7 @@ class ParameterDisplay {
 
         if (currentNode) {
           this.setAppropriateOnClick(currentNode);
-          currentNode.style.marginLeft += "10px";
+          currentNode.style.marginLeft += "12px";
         }
 
         ++counter;

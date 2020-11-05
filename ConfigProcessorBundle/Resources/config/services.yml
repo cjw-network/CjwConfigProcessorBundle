@@ -14,28 +14,20 @@ services:
 
   # menu builders for the frontend
   cjw_config_processing.menu.subscriber:
-    class: App\CJW\ConfigProcessorBundle\EventSubscriber\MyMenuSubscriber
+    class: App\CJW\ConfigProcessorBundle\EventSubscriber\ConfigProcessingMenuSubscriber
     tags:
       - { name: kernel.event_subscriber }
 
   cjw_config_processing.left.sidebar.builder:
-    class: App\CJW\ConfigProcessorBundle\Services\LeftSideBarMenuBuilder
+    class: App\CJW\ConfigProcessorBundle\EventSubscriber\LeftSideBarMenuBuilder
     autowire: true
     autoconfigure: true
     public: true
     tags:
       - { name: knp_menu.menu_builder, method: build, alias: cjw_config_processing.menu.sidebar_left }
 
-  cjw_config_processing.right.site_access_selection.sidebar.builder:
-    class: App\CJW\ConfigProcessorBundle\Services\RightSideBarSiteAccessSelectionMenuBuilder
-    autowire: true
-    autoconfigure: true
-    public: true
-    tags:
-      - { name: knp_menu.menu_builder, method: build, alias: cjw_config_processing.menu.site_access_selection.sidebar_right }
-
   cjw_config_processing.right.site_access_comparison.sidebar.builder:
-    class: App\CJW\ConfigProcessorBundle\Services\RightSideBarSiteAccessComparisonMenuBuilder
+    class: App\CJW\ConfigProcessorBundle\EventSubscriber\RightSideBarSiteAccessComparisonMenuBuilder
     autowire: true
     autoconfigure: true
     public: true

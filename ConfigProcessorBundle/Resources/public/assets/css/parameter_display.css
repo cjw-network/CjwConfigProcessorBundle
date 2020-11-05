@@ -9,6 +9,10 @@
     background-color: white;
 }
 
+.focussed_items {
+    background-color: whitesmoke;
+}
+
 .param_list_keys {
     /*background-color: #e5e3e3;*/
     padding: 2px;
@@ -16,7 +20,7 @@
     position: relative;
     align-items: center;
     color: #11546c;
-    border-bottom: 1px solid lightgrey;
+    /*border-bottom: 1px solid lightgrey;*/
     /*border-left: 2px lightgrey solid;*/
 }
 
@@ -44,22 +48,23 @@
 }
 
 #cjw_searchbar {
-    border-radius: 4px;
-    border: 1px solid #333;
+    /*border-radius: 4px;*/
+    /*border: 1px solid #333;*/
+    width: 20vw;
     transition: all 0.3s ease;
 }
 
 #cjw_searchbar:focus, #cjw_searchbar:hover {
-    /*border: 2px solid #0a435b;*/
-    border: 1px solid #106d95;
-    width: 30vw;
-    transition: all 0.4s ease;
+    border-color: #f8ad88;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(241,90,16,0.25);
+    transition: all 0.3s ease;
 }
 
 .open_subtree {
     position: absolute;
     right: 30px;
-    top: 2%;
+    top: auto;
     outline: white;
     border: 1px transparent;
 }
@@ -77,22 +82,17 @@
     border: 1px transparent;
     position: absolute;
     right: 10px;
-    top: 8%;
+    top: auto;
     padding-left: 9px;
     padding-right: 9px;
     font-weight: bold;
 }
 
 .close_location_info {
-    background-color: lightcoral;
-    color: white;
     border-radius: 100%;
-    border: 1px transparent;
     position: absolute;
-    right: 10px;
-    top: 8%;
-    padding-left: 6px;
-    padding-right: 6px;
+    padding-left: 7px;
+    padding-right: 7px;
     font-weight: bold;
 }
 
@@ -127,6 +127,11 @@
     100% {transform: rotate(360deg)}
 }
 
+@keyframes key_scrolled_to {
+    0% {background-color: #106d95;}
+    100% {background-color: inherit;}
+}
+
 #loading_circle {
     position: absolute;
     z-index: 100;
@@ -136,4 +141,40 @@
     animation-duration: 2s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
+}
+
+.subtree_viewport {
+    width: 40%;
+    background: white;
+    overflow-y: scroll;
+    top: 0;
+    font-size: 0.9rem;
+}
+
+.subtree_header {
+    margin-bottom: 10px;
+    margin-left: 5px;
+    padding-top: 5px;
+    border-bottom: 1px solid lightgrey;
+    height: auto;
+    top: 0;
+    background-color: white;
+    z-index: 100;
+}
+
+.subtree_headline {
+    font-size: 0.95rem;
+    font-weight: bold;
+}
+
+.subtree_closer {
+    position: absolute;
+    right: 0;
+    font-weight: bold;
+    bottom: 1px;
+    border: 2px black solid;
+}
+
+.subtree_closer:hover {
+    background-color: whitesmoke;
 }

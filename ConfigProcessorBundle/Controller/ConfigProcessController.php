@@ -111,7 +111,8 @@ class ConfigProcessController extends AbstractController
                 "allSiteAccesses" => $siteAccesses,
                 "allSiteAccessGroups" => $groups,
                 "firstSiteAccessParameters" => $firstSiteAccessParameters,
-                "secondSiteAccessParameters" => $secondSiteAccessParameters
+                "secondSiteAccessParameters" => $secondSiteAccessParameters,
+                "limiter" => "Unlimited View",
             ]
         );
     }
@@ -137,7 +138,9 @@ class ConfigProcessController extends AbstractController
                 "allSiteAccesses" => $siteAccesses,
                 "allSiteAccessGroups" => $groups,
                 "firstSiteAccessParameters" => $firstSiteAccessParameters,
-                "secondSiteAccessParameters" => $secondSiteAccessParameters
+                "secondSiteAccessParameters" => $secondSiteAccessParameters,
+                "limiter" => "Common Parameter View",
+
             ]
         );
     }
@@ -163,7 +166,8 @@ class ConfigProcessController extends AbstractController
                 "allSiteAccesses" => $siteAccesses,
                 "allSiteAccessGroups" => $groups,
                 "firstSiteAccessParameters" => $firstSiteAccessParameters,
-                "secondSiteAccessParameters" => $secondSiteAccessParameters
+                "secondSiteAccessParameters" => $secondSiteAccessParameters,
+                "limiter" => "Uncommon Parameter View"
             ]
         );
 

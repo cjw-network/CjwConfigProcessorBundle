@@ -72,6 +72,16 @@ class SiteAccessDifferencesHighlighter {
 
       results.push(...onlyFirstListKeys, ...onlySecondListKeys);
 
+      for (const uniqueKey of results) {
+        const unhighlightedKeys = uniqueKey.parentElement.querySelectorAll(
+          ".param_list_keys:not(.difference)"
+        );
+
+        for (const unhighlightedKey of unhighlightedKeys) {
+          unhighlightedKey.classList.add("difference");
+        }
+      }
+
       return results;
     }
   }
@@ -85,23 +95,13 @@ class SiteAccessDifferencesHighlighter {
       const results = [];
 
       const onlyFirstListValues = firstListValues.filter((value) => {
-        const counterPartValue = this.filterValuesAcrossLists(
-          value,
-          secondListValues
-        );
-
-        // does counterPartValue equate to "true", meaning an object has been found, or not
-        return !!counterPartValue;
+        // if a counter part as a value has been found, it will return "false" (since then the value is not unique), it returns "true" if it is unique
+        return this.filterValuesAcrossLists(value, secondListValues);
       });
 
       const onlySecondListValues = secondListValues.filter((value) => {
-        const counterPartValue = this.filterValuesAcrossLists(
-          value,
-          firstListValues
-        );
-
-        // does counterPartValue equate to "true", meaning an object has been found, or not
-        return !!counterPartValue;
+        // if a counter part as a value has been found, it will return "false" (since then the value is not unique), it returns "true" if it is unique
+        return this.filterValuesAcrossLists(value, firstListValues);
       });
 
       results.push(...onlyFirstListValues, ...onlySecondListValues);
@@ -119,11 +119,11 @@ class SiteAccessDifferencesHighlighter {
       const actualValue = value.getAttribute("value");
 
       const counterPartValue = compareValueList.find((node) => {
-        this.findCounterPartValue(node, correspondingKey, actualValue);
+        return this.findCounterPartValue(node, correspondingKey, actualValue);
       });
 
       // does counterPartValue equate to "true", meaning an object has been found, or not
-      return !!counterPartValue;
+      return !counterPartValue;
     }
 
     return false;
@@ -151,9 +151,11 @@ class SiteAccessDifferencesHighlighter {
 
   highlightSimilarNodes() {
     const similarNodesInFirstList = this.firstList.querySelectorAll(
+      // ".param_list_values:not(.difference)"
       "div:not(.difference)"
     );
     const similarNodesInSecondList = this.secondList.querySelectorAll(
+      // ".param_list_values:not(.difference)"
       "div:not(.difference)"
     );
 

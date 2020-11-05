@@ -1,18 +1,20 @@
 <?php
 
 
-namespace App\CJW\ConfigProcessorBundle\Services;
+namespace App\CJW\ConfigProcessorBundle\EventSubscriber;
 
 
+use EzSystems\EzPlatformAdminUi\Menu\AbstractBuilder;
 use EzSystems\EzPlatformAdminUi\Menu\Event\ConfigureMenuEvent;
 use EzSystems\EzPlatformAdminUi\Menu\MenuItemFactory;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class RightSideBarSiteAccessComparisonMenuBuilder extends \EzSystems\EzPlatformAdminUi\Menu\AbstractBuilder
+class RightSideBarSiteAccessComparisonMenuBuilder extends AbstractBuilder
 {
 
     const ITEM__SINGLE_SITEACCESS_VIEW = 'Single Site Access View';
+    const ITEM__NORMAL_COMPARISON_VIEW = 'Normal Comparison View';
     const ITEM__COMMON_PARAMETERS_VIEW = 'Common Parameters Only';
     const ITEM__UNCOMMON_PARAMETERS_VIEW = 'Uncommon Parameters Only';
     const ITEM__HIGHLIGHT_DIFFERENCES = 'Highlight Differences';
@@ -36,11 +38,22 @@ class RightSideBarSiteAccessComparisonMenuBuilder extends \EzSystems\EzPlatformA
                 $this->createMenuItem(
                     self::ITEM__SINGLE_SITEACCESS_VIEW,
                     [
-                        'extras' => ['icon' => 'view', 'orderNumber' => 59],
+                        'extras' => ['icon' => 'view', 'orderNumber' => 58],
                         'attributes' => [
                             'class' => 'ez-btn--reveal',
                             'data-actions' => 'change view',
                             "cjw_id" => "cjw_single_sa_view"
+                        ],
+                    ]
+                ),
+                $this->createMenuItem(
+                    self::ITEM__NORMAL_COMPARISON_VIEW,
+                    [
+                        'extras' => ['icon' => 'go-to-root', 'orderNumber' => 59],
+                        'attributes' => [
+                            'class' => 'ez-btn--reveal',
+                            'data-actions' => 'change view',
+                            "cjw_id" => "cjw_show_normal_comparison"
                         ],
                     ]
                 ),

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJW\ConfigProcessorBundle\Services;
+namespace App\CJW\ConfigProcessorBundle\EventSubscriber;
 
 
 use EzSystems\EzPlatformAdminUi\Menu\AbstractBuilder;
@@ -38,6 +38,13 @@ class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationConta
         $menu = $this->factory->createItem("root");
 
         $menuItems = [
+            self::ITEM__PARAMETER_LIST_SITE_ACCESS => $this->createMenuItem(
+                self::ITEM__PARAMETER_LIST_SITE_ACCESS,
+                [
+                    "route" => "cjw_config_processing.site_access_param_list",
+                    "extras" => ["icon" => "view-list"],
+                ]
+            ),
             self::ITEM__PARAMETERLIST => $this->createMenuItem(
                 self::ITEM__PARAMETERLIST,
                 [
@@ -45,13 +52,6 @@ class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationConta
                     "extras" => ["icon" => "list"],
                 ]
             ),
-            self::ITEM__PARAMETER_LIST_SITE_ACCESS => $this->createMenuItem(
-                self::ITEM__PARAMETER_LIST_SITE_ACCESS,
-                [
-                    "route" => "cjw_config_processing.site_access_param_list",
-                    "extras" => ["icon" => "view-list"],
-                ]
-            )
         ];
 
         $menu->setChildren($menuItems);

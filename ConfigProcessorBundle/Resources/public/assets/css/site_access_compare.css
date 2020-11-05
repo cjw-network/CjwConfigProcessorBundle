@@ -13,7 +13,7 @@
 }
 
 .compare_display > * {
-    width: 48.8%;
+    width: 49%;
 }
 
 .first_list {
@@ -23,21 +23,28 @@
 }
 
 .second_list {
-    position: absolute;
+    /*position: absolute;*/
     right: 0;
+    margin-left: 10px;
 }
 
 .difference {
-    background-color: #fcb1b1;
+    background-color: #ffe1bc;
     /*color: white;*/
 }
 
 .similarity {
-    background-color: #b9ffb9;
+    background-color: #e3f0fd;
     /*color: white;*/
 }
 
 .cjw_site_access_selectors {
     margin-top: 25px;
     margin-left: 10px;
+    margin-right:  10px;
+}
+
+.cjw_table_head_without_searchbar {
+    margin-left: 10px;
+    margin-right: 10px;
 }

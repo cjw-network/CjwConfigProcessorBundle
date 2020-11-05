@@ -10,7 +10,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * If the autoconfigure option is set to false in the service.yaml, then this Menu-Subscriber would have to be registered separately
  * in the yaml as: (under services) (Path to my class): App\EventListener\<My Class Name I Gave>: then tags: then - { name: kernel.event.subscriber }
  */
-class MyMenuSubscriber implements EventSubscriberInterface {
+class ConfigProcessingMenuSubscriber implements EventSubscriberInterface {
 
     /**
      * Through this function it is possible for me to get the main menu and perform an action as the menu is being build / as it
@@ -57,8 +57,8 @@ class MyMenuSubscriber implements EventSubscriberInterface {
             "cjw_config_processing",
             [
                 "label" => "Config Processing View",
-                "route" => "cjw_config_processing.index",
-                "extras" => ["icon" => "article"],
+                "route" => "cjw_config_processing.site_access_param_list",
+                "extras" => ["icon" => "list"],
             ]
         );
 

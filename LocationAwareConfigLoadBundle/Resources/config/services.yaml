@@ -6,5 +6,5 @@ services:
 
   cjw_location_retrieval.controller:
     class: App\CJW\LocationAwareConfigLoadBundle\Controller\ConfigProcessLocationInfoController
-    arguments: ["@service_container"]
+    arguments: ["@service_container", "%kernel.project_dir%"]
     public: true
