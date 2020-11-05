@@ -19,7 +19,7 @@ class ParameterDisplay {
           topNodeEntry.classList.remove("dont_display");
 
           const dontDisplayChildNodes = topNodeEntry.querySelectorAll(
-            ".param_list_items, .param_list_values"
+            ".param_list_items, .param_list_values:not(.inline_value)"
           );
 
           setTimeout(() => {
@@ -100,7 +100,7 @@ class ParameterDisplay {
       }
 
       const childNodes = targetNode.querySelectorAll(
-        ".param_list_items, .param_list_values"
+        ".param_list_items, .param_list_values:not(.inline_value)"
       );
 
       for (const entry of childNodes) {
@@ -132,6 +132,33 @@ class ParameterDisplay {
   }
 
   setAppropriateOnClick(node) {
+    let doesHaveChildren = false;
+
+    for (const child of node.children) {
+      if (
+        child.classList.contains("param_list_items") ||
+        child.classList.contains("param_list_values")
+      ) {
+        doesHaveChildren = true;
+        break;
+      }
+    }
+
+    if (!doesHaveChildren) {
+      const keysWithoutChildren = node.querySelectorAll(".param_list_keys");
+
+      for (const key of keysWithoutChildren) {
+        key.removeChild(key.querySelector(".param_item_toggle"));
+        key.removeChild(key.querySelector(".open_subtree"));
+        key.classList.add("param_list_key_without_child");
+        key.onclick = (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+        };
+      }
+      return;
+    }
+
     if (node.classList.contains("param_list_items")) {
       node.onclick = (event) => {
         event.preventDefault();

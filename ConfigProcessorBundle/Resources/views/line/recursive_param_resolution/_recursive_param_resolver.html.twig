@@ -13,6 +13,8 @@
 
     {# If the value can still be iterated upon, but the key has not reached a plain number yet, continue with the procedure #}
     {% elseif value is iterable %}
+        {% set inline_value = "false" %}
+
         <div class="param_list_items dont_display">
             <div class="param_list_keys" key="{{ key |trim }}">
                 <span class="param_item_toggle">
@@ -20,9 +22,14 @@
                         <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#caret-next"></use>
                     </svg>
                 </span>
-
                 <span>{{ key |trim }}:</span>
-
+                {% if value|keys|length == 1 %}
+                    {% set arrayKey = value|keys[0] %}
+                    {% if not value[arrayKey] is iterable %}
+                        <span class="param_list_values inline_value">{{ value[arrayKey]|boolean }}</span>
+                        {% set inline_value = "true" %}
+                    {% endif %}
+                {% endif %}
                 <button class="open_subtree">
                     <svg class="ez-icon ez-icon--small">
                         <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
@@ -33,7 +40,9 @@
                     <button class="location_info">i</button>
                 {% endif %}
             </div>
-            {% include "@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig" ignore missing with { "parameters" : value } only %}
+            {% if inline_value is same as("false") %}
+                {% include "@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig" ignore missing with { "parameters" : value, "param_value_reached": 1 } only %}
+            {% endif %}
         </div>
 
 
