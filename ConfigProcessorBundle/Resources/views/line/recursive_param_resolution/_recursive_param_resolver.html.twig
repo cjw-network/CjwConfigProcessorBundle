@@ -23,12 +23,15 @@
                     </svg>
                 </span>
                 <span>{{ key |trim }}:</span>
-                {% if value|keys|length == 1 %}
-                    {% set arrayKey = value|keys[0] %}
-                    {% if not value[arrayKey] is iterable %}
-                        <span class="param_list_values inline_value">{{ value[arrayKey]|boolean }}</span>
-                        {% set inline_value = "true" %}
-                    {% endif %}
+                {% if value|keys|length > 0 %}
+                    {% set arrayKeys = value|keys %}
+
+                    {% for arrayKey in arrayKeys %}
+                        {% if not value[arrayKey] is iterable %}
+                            <span class="param_list_values inline_value">{{ value[arrayKey]|boolean }}</span>
+                            {% set inline_value = "true" %}
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
                 <button class="open_subtree">
                     <svg class="ez-icon ez-icon--small">
