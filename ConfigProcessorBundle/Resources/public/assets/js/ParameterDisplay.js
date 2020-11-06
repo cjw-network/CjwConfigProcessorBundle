@@ -148,9 +148,16 @@ class ParameterDisplay {
       const keysWithoutChildren = node.querySelectorAll(".param_list_keys");
 
       for (const key of keysWithoutChildren) {
-        key.removeChild(key.querySelector(".param_item_toggle"));
-        key.removeChild(key.querySelector(".open_subtree"));
+        if (key.querySelector(".param_item_toggle")) {
+          key.removeChild(key.querySelector(".param_item_toggle"));
+        }
+
+        if (key.querySelector(".open_subtree")) {
+          key.removeChild(key.querySelector(".open_subtree"));
+        }
+
         key.classList.add("param_list_key_without_child");
+
         key.onclick = (event) => {
           event.preventDefault();
           event.stopPropagation();

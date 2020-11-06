@@ -85,6 +85,11 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
                 array($this, "isString"),
                 array("is_safe" => array("html")),
             ),
+            new TwigFunction(
+                "is_content_iterable",
+                array($this, "isContentIterable"),
+                array("is_safe" => array("html")),
+            ),
         );
     }
 
@@ -145,12 +150,36 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
 
     //Helper functions in twig templates
 
-    public function isNumeric($value): bool {
-        return is_numeric($value);
+    public function isNumeric(...$value): bool {
+        if (count($value) === 1 && isset($value[0]) && is_array($value[0])) {
+            $value = $value[0];
+        }
+
+        foreach ($value as $singleValue) {
+            if (!is_numeric($singleValue)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function isString($value): bool {
         return is_string($value);
+    }
+
+    public function isContentIterable(...$value) {
+        if (count($value) === 1 && isset($value[0]) && is_array($value[0])) {
+            $value = $value[0];
+        }
+
+        foreach($value as $singleValue) {
+            if (is_array($singleValue)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function booleanFilter ($value) {

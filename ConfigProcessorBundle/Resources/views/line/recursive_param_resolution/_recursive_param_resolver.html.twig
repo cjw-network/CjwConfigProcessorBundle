@@ -2,13 +2,21 @@
 {% for key, value in parameters %}
 
     {# If there is no more associative key, the value of the path is reached, so treat that differently. #}
-    {% if key is same as(0) or is_numeric(key) or key is same as("parameter_value")%}
+    {% if is_numeric(key) or key is same as("parameter_value") %}
+{#        {% if "parameter_value" is same as(key) and not is_content_iterable(value) and value|keys|length > 1 and is_numeric(value|keys)  %}#}
+{#            <span>[</span>#}
+{#            {% for arrayValue in value %}#}
+{#                <div class="param_list_values dont_display" value="{{ arrayValue | boolean }}">- {{ arrayValue | boolean }}</div>#}
+{#            {% endfor %}#}
+{#            <span>]</span>#}
+{#        {% endif %}#}
+
         {# Is the value in itself an array? Then go through that one by one as well. #}
         {% if value is iterable %}
             {% include "@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig" ignore missing with { "parameters" : value } only %}
         {# Or is it just one single value? #}
         {% else %}
-            <div class="param_list_values dont_display" value="{{ value | boolean }}">{{ value | boolean }}</div>
+            <div class="param_list_values dont_display" value="{{ value | boolean }}">- {{ value | boolean }}</div>
         {% endif %}
 
     {# If the value can still be iterated upon, but the key has not reached a plain number yet, continue with the procedure #}
@@ -23,12 +31,12 @@
                     </svg>
                 </span>
                 <span>{{ key |trim }}:</span>
-                {% if value|keys|length > 0 %}
+                {% if value|keys|length == 1 %}
                     {% set arrayKeys = value|keys %}
 
                     {% for arrayKey in arrayKeys %}
                         {% if not value[arrayKey] is iterable %}
-                            <span class="param_list_values inline_value">{{ value[arrayKey]|boolean }}</span>
+                            <span class="param_list_values inline_value" value="{{ value[arrayKey]|boolean }}">{{ value[arrayKey]|boolean }}</span>
                             {% set inline_value = "true" %}
                         {% endif %}
                     {% endfor %}
@@ -44,26 +52,22 @@
                 {% endif %}
             </div>
             {% if inline_value is same as("false") %}
-                {% include "@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig" ignore missing with { "parameters" : value, "param_value_reached": 1 } only %}
+                {% include "@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig" ignore missing with { "parameters" : value } only %}
             {% endif %}
         </div>
 
 
-    {# As a catch-all, if the rest doesn't match but there is still content #}
+    {# As a catch-all, if the rest doesn't match but there is still content (hits mostly after the template is already traversing the parameter value) #}
     {% else %}
         <div class="param_list_items dont_display">
             <div class="param_list_keys" key="{{ key |trim }}">
-                <span class="param_item_toggle">
-                    <svg class="ez-icon ez-icon--small">
-                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#caret-next"></use>
-                    </svg>
-                </span>
-
+{#                <span class="param_item_toggle">#}
+{#                    <svg class="ez-icon ez-icon--small">#}
+{#                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#caret-next"></use>#}
+{#                    </svg>#}
+{#                </span>#}
                 <span>{{ key |trim }}:</span>
-            </div>
-
-            <div class="param_list_values dont_display" value="{{ value | boolean }}">
-                {{ value | boolean }}
+                <span class="param_list_values inline_value" value="{{ value|boolean }}">{{ value|boolean }}</span>
             </div>
         </div>
     {% endif %}
