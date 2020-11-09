@@ -24,6 +24,13 @@ class SearchBarUtility {
           });
         }, 750);
       });
+
+      searchField.addEventListener("keydown", (event) => {
+        if (event.keyCode === 13) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      });
     }
   }
 

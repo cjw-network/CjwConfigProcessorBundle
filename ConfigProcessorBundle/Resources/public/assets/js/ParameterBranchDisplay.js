@@ -1,5 +1,6 @@
 class ParameterBranchDisplay {
   subTreeButtons;
+  globalSubTreeOpenerButton;
 
   constructor(parameterToFocus) {
     if (parameterToFocus && parameterToFocus.length > 0) {
@@ -7,19 +8,10 @@ class ParameterBranchDisplay {
     } else {
       this.subTreeButtons = [];
     }
-  }
 
-  subTreeViewOpenClickListener() {
-    for (const subTreeButton of this.subTreeButtons) {
-      subTreeButton.onclick = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        this.openSubTreeInSeparateView(
-          subTreeButton.parentElement.parentElement
-        );
-      };
-    }
+    this.globalSubTreeOpenerButton = document.querySelector(
+      "#global_open_subtree"
+    );
   }
 
   subTreeOpenClickListener() {
@@ -34,104 +26,14 @@ class ParameterBranchDisplay {
     }
   }
 
-  //---------------------------------------------------------------------------------------------------------------
-  // Subtree-Viewport
-  //---------------------------------------------------------------------------------------------------------------
+  globalSubTreeOpenListener() {
+    if (this.globalSubTreeOpenerButton) {
+      this.globalSubTreeOpenerButton.onclick = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
 
-  openSubTreeInSeparateView(nodeToFocus) {
-    const viewPort = document.createElement("div");
-    viewPort.classList.add("subtree_viewport", "ez-sticky-container");
-
-    viewPort.appendChild(this.createSubTreeHeader());
-    viewPort.appendChild(this.prepareSubTreeContent(nodeToFocus));
-
-    const viewContainer = document.querySelector(".cjw_main_body");
-
-    const formerView = viewContainer?.querySelector(".subtree_viewport");
-    if (formerView) {
-      viewContainer.removeChild(formerView);
-    }
-
-    const rightSideMenu = document.querySelector(".ez-context-menu");
-
-    if (rightSideMenu) {
-      viewContainer?.insertBefore(viewPort, rightSideMenu);
-    } else {
-      viewContainer?.appendChild(viewPort);
-    }
-  }
-
-  createSubTreeHeader() {
-    const subtreeHeader = document.createElement("div");
-    subtreeHeader.classList.add("subtree_header", "ez-sticky-container");
-
-    const subtreeHeadline = document.createElement("span");
-    subtreeHeadline.innerText = "Subtree-View:";
-    subtreeHeadline.classList.add("subtree_headline");
-
-    const subtreeCloser = document.createElement("button");
-    subtreeCloser.innerText = "X";
-    subtreeCloser.classList.add("subtree_closer");
-    subtreeCloser.onclick = (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-
-      this.removeSeparateSubtreeViewer();
-    };
-
-    subtreeHeader.appendChild(subtreeHeadline);
-    subtreeHeader.appendChild(subtreeCloser);
-
-    return subtreeHeader;
-  }
-
-  prepareSubTreeContent(nodeToFocus) {
-    const duplicatedSubtree = nodeToFocus.cloneNode(true);
-
-    for (const child of duplicatedSubtree.querySelectorAll(".dont_display")) {
-      child.classList.remove("dont_display");
-    }
-
-    this.cleanUpSubtreeNodes(duplicatedSubtree);
-
-    return duplicatedSubtree;
-  }
-
-  cleanUpSubtreeNodes(upperNode) {
-    if (upperNode) {
-      const keys = upperNode.querySelectorAll(".param_list_keys");
-
-      for (const key of keys) {
-        // const toggler = key.querySelector(".param_item_toggle");
-        //
-        // if (toggler) {
-        //   key.removeChild(toggler);
-        // }
-
-        const subtreeViewButton = key.querySelector(".open_subtree");
-
-        if (subtreeViewButton) {
-          key.removeChild(subtreeViewButton);
-        }
-
-        const locationRetrieverButton = key.querySelector(".location_info");
-
-        if (locationRetrieverButton) {
-          key.removeChild(locationRetrieverButton);
-        }
-      }
-    }
-  }
-
-  removeSeparateSubtreeViewer() {
-    const mainBody = document.querySelector(".cjw_main_body");
-
-    if (mainBody) {
-      const viewport = document.querySelector(".subtree_viewport");
-
-      if (viewport) {
-        mainBody.removeChild(viewport);
-      }
+        this.openUpTheEntiretyOfTheSubtrees();
+      };
     }
   }
 
@@ -140,14 +42,7 @@ class ParameterBranchDisplay {
   //---------------------------------------------------------------------------------------------------------------
 
   openSubTree(nodeToFocus) {
-    // const searchBar = document.querySelector("#cjw_searchbar");
     const searchLimiter = nodeToFocus.querySelector(".param_list_keys");
-
-    // if (searchBar) {
-    //   searchBar.value = searchLimiter
-    //     ? searchLimiter.getAttribute("key") + ":"
-    //     : "";
-    // }
 
     this.displayEntireBranch(nodeToFocus);
 
@@ -195,6 +90,24 @@ class ParameterBranchDisplay {
           this.asynchronouslyDisplayEntireBranch(nodeList);
         });
       }
+    }
+  }
+
+  //---------------------------------------------------------------------------------------------------------------
+  // Global Subtree-Open
+  //---------------------------------------------------------------------------------------------------------------
+
+  openUpTheEntiretyOfTheSubtrees() {
+    let upperNodes;
+
+    if (document.querySelector(".first_list")) {
+      upperNodes = document.querySelectorAll(".first_list > .param_list_items");
+    } else {
+      upperNodes = document.querySelectorAll(".param_list > .param_list_items");
+    }
+
+    for (const upperNode of upperNodes) {
+      this.openSubTree(upperNode);
     }
   }
 }

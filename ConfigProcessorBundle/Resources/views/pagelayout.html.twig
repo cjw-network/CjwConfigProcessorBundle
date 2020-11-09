@@ -3,7 +3,7 @@
 {% trans_default_domain "cjw_processed_parameters_view" %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/css/bundle.css") }}>
+    <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/assets/css/bundle.css") }}>
 
     {% block line_template_stylesheets %}{% endblock %}
 {% endblock %}
@@ -46,8 +46,8 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src={{ asset("bundles/cjwconfigprocessor/js/app.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/js/SearchBarUtility.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/js/ScrollUpButtonDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/app.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SearchBarUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ScrollUpButtonDisplay.js") }}></script>
     {% block line_template_javascripts %}{% endblock %}
 {% endblock %}

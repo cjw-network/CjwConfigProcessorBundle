@@ -5,14 +5,17 @@ namespace App\CJW\ConfigProcessorBundle\Controller;
 
 
 use App\CJW\ConfigProcessorBundle\src\ConfigProcessCoordinator;
+use App\CJW\ConfigProcessorBundle\src\ParametersToFileWriter;
 use App\CJW\ConfigProcessorBundle\src\Utility\ControllerUtility;
 use Exception;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class ConfigProcessController extends AbstractController
 {
@@ -171,6 +174,24 @@ class ConfigProcessController extends AbstractController
             ]
         );
 
+    }
+
+    public function downloadParameterListAsTextFile(string $siteAccessOrAllParameters) {
+        if ($siteAccessOrAllParameters === "all_parameters") {
+            $resultingFile = ParametersToFileWriter::writeParametersToFile(ConfigProcessCoordinator::getProcessedParameters());
+        } else {
+            $resultingFile = ParametersToFileWriter::writeParametersToFile(ConfigProcessCoordinator::getParametersForSpecificSiteAccess($siteAccessOrAllParameters));
+        }
+
+        $response = new BinaryFileResponse($resultingFile);
+        $response->headers->set("Content-Type", "text/yaml");
+
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            basename($resultingFile)
+        );
+
+        return $response;
     }
 
     private function retrieveParamsForSiteAccesses (string $firstSiteAccess, string $secondSiteAccess) {

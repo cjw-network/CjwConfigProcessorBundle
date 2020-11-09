@@ -1,7 +1,7 @@
 {% extends "@CJWConfigProcessor/pagelayout.html.twig" %}
 
 {% block line_template_stylesheets %}
-    <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/css/parameter_display.css") }}>
+    <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/assets/css/parameter_display.css") }}>
 {% endblock %}
 
 {% block list_header %}
@@ -32,6 +32,16 @@
             <div class="ez-table-header__headline">
                 Parameterlist
             </div>
+            <button id="download_button">
+                <svg class="ez-icon ez-icon--medium-large">
+                    <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#download"></use>
+                </svg>
+            </button>
+            <button id="global_open_subtree">
+                <svg class="ez-icon ez-icon--medium-large">
+                    <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
+                </svg>
+            </button>
             {% block search_bar %}
                 {{ parent() }}
             {% endblock %}
@@ -44,8 +54,9 @@
 {% endblock %}
 
 {% block line_template_javascripts %}
-    <script src={{ asset("bundles/cjwconfigprocessor/js/app.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterDisplay.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterBranchDisplay.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/js/ParameterLocationRetrieval.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/app.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterBranchDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterLocationRetrieval.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/DownloadParametersUtility.js") }}></script>
 {% endblock %}

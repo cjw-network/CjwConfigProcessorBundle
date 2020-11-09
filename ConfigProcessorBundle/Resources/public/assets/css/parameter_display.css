@@ -1,8 +1,6 @@
 .param_list {
     display: flex;
     flex-direction: column;
-    /*border: 2px solid #e5e3e3;*/
-    /*border-radius: 5px;*/
 }
 
 .param_list_items {
@@ -19,7 +17,6 @@
     position: relative;
     align-items: center;
     color: #11546c;
-    /*border-bottom: 1px solid lightgrey;*/
 }
 
 .param_list_keys:hover {
@@ -29,7 +26,6 @@
 }
 
 .param_list_key_without_child {
-    /*color: black;*/
     text-indent: 20px;
 }
 
@@ -38,17 +34,14 @@
 }
 
 .param_list_values{
-    /*background-color: lightgreen;*/
     padding: 2px;
     margin-bottom: 4px;
-    /*border-radius: 5px;*/
     text-indent: 20px;
     color: green;
 }
 
 .param_list_values:not(.inline_value):hover {
     background-color: #e8f8f8;
-    /*color: white;*/
 }
 
 .inline_value {
@@ -60,9 +53,7 @@
 }
 
 #cjw_searchbar {
-    /*border-radius: 4px;*/
-    /*border: 1px solid #333;*/
-    width: 20vw;
+    width: 100%;
     transition: all 0.3s ease;
 }
 
@@ -81,14 +72,8 @@
     border: 1px transparent;
 }
 
-/*.param_item_toggle {*/
-/*    !*border: 1px solid #11546c;*!*/
-/*    !*padding-inline: 2px;*!*/
-/*}*/
-
 .location_info {
     background-color: white;
-    /*border: 2px solid #0a435b;*/
     border-radius: 100%;
     outline: white;
     border: 1px transparent;
@@ -109,11 +94,9 @@
 }
 
 .path_info {
-    /*background-color: #e5e3e3;*/
     color: black;
     border-radius: 5px;
     padding: 1px;
-    /*border: 2px #eaA415 solid;*/
     margin-bottom: 1px;
     font-size: 0.82rem;
     word-break: break-word;
@@ -136,6 +119,10 @@
     top: 0;
 }
 
+#download_button, #global_open_subtree {
+    border: 1px transparent;
+}
+
 @keyframes loading_parameters {
     0% {transform: rotate(0)}
     100% {transform: rotate(360deg)}
@@ -151,39 +138,3 @@
     animation-iteration-count: infinite;
     animation-timing-function: linear;
 }
-
-/*.subtree_viewport {*/
-/*    width: 40%;*/
-/*    background: white;*/
-/*    overflow-y: scroll;*/
-/*    top: 0;*/
-/*    font-size: 0.9rem;*/
-/*}*/
-
-/*.subtree_header {*/
-/*    margin-bottom: 10px;*/
-/*    margin-left: 5px;*/
-/*    padding-top: 5px;*/
-/*    border-bottom: 1px solid lightgrey;*/
-/*    height: auto;*/
-/*    top: 0;*/
-/*    background-color: white;*/
-/*    z-index: 100;*/
-/*}*/
-
-/*.subtree_headline {*/
-/*    font-size: 0.95rem;*/
-/*    font-weight: bold;*/
-/*}*/
-
-/*.subtree_closer {*/
-/*    position: absolute;*/
-/*    right: 0;*/
-/*    font-weight: bold;*/
-/*    bottom: 1px;*/
-/*    border: 2px black solid;*/
-/*}*/
-
-/*.subtree_closer:hover {*/
-/*    background-color: whitesmoke;*/
-/*}*/

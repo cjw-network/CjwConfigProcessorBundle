@@ -94,13 +94,21 @@ class ProcessedParamModel implements Serializable
      */
     public function reformatForOutput() {
         $outputArray = [];
+        $endOfBranch = $this->freeOfProcessedParamModels($this->parameters);
+
         foreach($this->parameters as $parameter) {
 
             // If there is no more Object as a parameter, then the end of the "branch" has been reached and the actual value can be returned
             if (!$parameter instanceof ProcessedParamModel) {
-//                return $parameter;
 
-                if (count($outputArray) > 0) {
+                if (!$endOfBranch) {
+                    if (!isset($outputArray["parameter_value"])) {
+                        $outputArray["parameter_value"] = [$parameter];
+                    } else {
+                        array_push($outputArray["parameter_value"],$parameter);
+                    }
+                    continue;
+                } else if (count($outputArray) > 0) {
                     $outputArray["parameter_value"] = $parameter;
                     return $outputArray;
                 } else {
@@ -268,5 +276,15 @@ class ProcessedParamModel implements Serializable
         array_push($this->parameters,$paramModel);
 
         return $paramModel;
+    }
+
+    private function freeOfProcessedParamModels(array $childrenToSearchThrough): bool {
+        foreach ($childrenToSearchThrough as $child) {
+            if ($child instanceof ProcessedParamModel) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

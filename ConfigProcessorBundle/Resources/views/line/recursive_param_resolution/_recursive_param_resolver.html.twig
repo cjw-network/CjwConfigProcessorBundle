@@ -3,13 +3,6 @@
 
     {# If there is no more associative key, the value of the path is reached, so treat that differently. #}
     {% if is_numeric(key) or key is same as("parameter_value") %}
-{#        {% if "parameter_value" is same as(key) and not is_content_iterable(value) and value|keys|length > 1 and is_numeric(value|keys)  %}#}
-{#            <span>[</span>#}
-{#            {% for arrayValue in value %}#}
-{#                <div class="param_list_values dont_display" value="{{ arrayValue | boolean }}">- {{ arrayValue | boolean }}</div>#}
-{#            {% endfor %}#}
-{#            <span>]</span>#}
-{#        {% endif %}#}
 
         {# Is the value in itself an array? Then go through that one by one as well. #}
         {% if value is iterable %}
@@ -61,11 +54,6 @@
     {% else %}
         <div class="param_list_items dont_display">
             <div class="param_list_keys" key="{{ key |trim }}">
-{#                <span class="param_item_toggle">#}
-{#                    <svg class="ez-icon ez-icon--small">#}
-{#                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#caret-next"></use>#}
-{#                    </svg>#}
-{#                </span>#}
                 <span>{{ key |trim }}:</span>
                 <span class="param_list_values inline_value" value="{{ value|boolean }}">{{ value|boolean }}</span>
             </div>

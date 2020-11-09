@@ -18,12 +18,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     parameterDisplay.cleanUpList();
     parameterLocationRetriever.setUpLocationRetrievalButtons();
-
-    // if (document.querySelector(".compare_display")) {
     paramBranchDisplay.subTreeOpenClickListener();
-    // } else {
-    //   paramBranchDisplay.subTreeViewOpenClickListener();
-    // }
+    paramBranchDisplay.globalSubTreeOpenListener();
+
+    if (!document.querySelector(".compare_display")) {
+      let downloadParametersUtility = new DownloadParametersUtility();
+      downloadParametersUtility.setUpDownloadButton();
+    }
 
     const loadingCircle = document.querySelector("#loading_circle");
 

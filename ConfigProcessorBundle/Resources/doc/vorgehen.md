@@ -21,13 +21,13 @@ Der aktuelle eZ-siteaccess kann aber viel leichter eingesehen werden: `$GLOBALS:
 
 - [x] Außerdem filtern nach site_access abhängige Werte (in unterschiedliches Arrays)
 
-- [ ] Im Backend Möglichkeit für Vergleich zwischen Site-Access-Werten verschaffen:
+- [x] Im Backend Möglichkeit für Vergleich zwischen Site-Access-Werten verschaffen:
 
   - [x] Site-Accesse vergleichen können (dafür Auswahl von verschiedenen und Schöpfung von Arrays mit zugehörigen Werten)
-  - [ ] Spezielles Filtern nach gleichen Parametern mit unterschiedlichen Werten zwischen den SAs
-  - [ ] Möglicherweise auch gleiche Werte zu den Parametern anzeigen können
-  - [ ] Nicht von den verglichenen SAs abhängige Werte rausfiltern oder gesondert darstellen
-  - [ ] Dynamische Suche in den Parametern (nach bestimmten Schlüsselworten oder Teilen der Parameter) und Anzeige aller möglichen Treffer mit Hierarchie (wo sie drin liegen (ezsettings -> Treffer oder so)).
+  - [x] Spezielles Filtern nach gleichen Parametern mit unterschiedlichen Werten zwischen den SAs
+  - [x] Möglicherweise auch gleiche Werte zu den Parametern anzeigen können
+  - [x] Nicht von den verglichenen SAs abhängige Werte rausfiltern oder gesondert darstellen
+  - [x] Dynamische Suche in den Parametern (nach bestimmten Schlüsselworten oder Teilen der Parameter) und Anzeige aller möglichen Treffer mit Hierarchie (wo sie drin liegen (ezsettings -> Treffer oder so)).
 
 - [x] Eventuell prüfen, wann und von wo die Werte eingelesen und verarbeitet werden (aus den YAMLs in den Config-Resolver von eZ / Symfony)
 
@@ -812,6 +812,11 @@ cjw_config_processor.controller:
   public: true
 ```
 
+**eZ-Backoffice Side-Menüs erstellen:**
+
+Um die Side-Menus von dem eZ-Backoffice für eigenen Menüpunkte nutzen zu können, benötigt man Eventlisteners, die mit denjenigen aus
+dem Knp-MenuBuilder-Bundle zusammenarbeiten, um das Menü zu bauen.
+
 ## Überführung des Bundles in den Live-Betrieb
 
 ### Konfiguration
@@ -841,3 +846,14 @@ cjw_config_processor_bundle:
 
 Dadurch wird Symfony signalisiert, wo es die Routen (und damit die Controller) des Bundles herbekommt. Damit können die eigentlichen
 Routen direkt im Bundle konfiguriert werden.
+
+**Assets:**
+
+Um die Seite im Frontend effektiv nutzen zu können, benötigt das Frontend assets, welche letztlich
+die Javascript-Dateien und die CSS-Dateien beinhalten. Diese verschiedenen Seiten werden in der Regel
+vom Bundle mitgeliefert.
+
+Damit diese allerdings ausgeliefert und in den:
+`{symfony_installation}/public/bundles`-
+Ordner und -Pfad gelangen, scheinen andere Bundles Skripte oder Symfony-Commandos einzubauen, welche
+dann Symlinks zu dem bundle-internen Assets-Ordner in den (oben angegebenen) Pfad einbetten.

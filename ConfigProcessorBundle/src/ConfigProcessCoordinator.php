@@ -179,7 +179,7 @@ class ConfigProcessCoordinator
             self::startProcess();
         }
 
-        return self::$siteAccessParameters;
+        return self::$siteAccessParameters?? [];
     }
 
     public static function getSiteAccessListForController(): array {

@@ -41,3 +41,8 @@ cjw_config_processing.location_retrieval:
   path: /cjw/config-processing/parameter_locations/{parameter}
   controller: cjw_location_retrieval.controller::retrieveLocationsForParameter
   methods: [GET]
+
+cjw_config_processing.download_parameters:
+  path: /cjw/config-processing/parameter_list/download/{siteAccessOrAllParameters}
+  controller: cjw_config_processor.controller::downloadParameterListAsTextFile
+  methods: [GET]

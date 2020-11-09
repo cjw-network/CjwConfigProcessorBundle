@@ -68,13 +68,7 @@ html {
 /*}*/
 
 .cjw_main_section {
-    /*width: 90%;*/
-    /*padding-left: 5px;*/
-    /*flex: 2 0 auto;*/
-    /*font-size: 0.97rem;*/
-    /*overflow-y: scroll;*/
     scroll-behavior: smooth;
-    /*background-color: #e5e3e3;*/
     height: auto;
 }
 
@@ -96,7 +90,7 @@ html {
     z-index: 100;
     margin-top: 5px;
     margin-bottom: 2px;
-    /*background-color: lightgrey;*/
+    width: 40%;
 }
 
 .cjw_footer {
@@ -113,17 +107,12 @@ html {
 }
 
 .first_search_result {
-    /*font-weight: bold;*/
-    /*background-color: lightgoldenrodyellow !important;*/
     background-color: #e3f6f6 !important;
-    /*background-color: #eaA415 !important;*/
-    /*background-color: #ea9412 !important;*/
     transition: all 0.5s ease !important;
     color: black !important;
 }
 
 .first_search_result:hover {
-    /*background-color: #106d95 !important;*/
     background-color: white !important;
 }
 
@@ -133,7 +122,6 @@ html {
     right: 50px;
     width: 50px;
     height: 50px;
-    /*background-color: #0a435b;*/
     background-color: #106d95;
     transition: 0.5s all ease;
 }
