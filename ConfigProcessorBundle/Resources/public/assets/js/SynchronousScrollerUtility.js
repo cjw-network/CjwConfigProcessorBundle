@@ -117,7 +117,7 @@ class SynchronousScrollerUtility {
                 0,
                 this.addInNodeStructure(
                   toBeComparedArray[i].parentElement,
-                  compareToArray[i - 1].parentElement
+                  compareToArray[previousIndex].parentElement
                 )
               );
             }
@@ -194,17 +194,10 @@ class SynchronousScrollerUtility {
 
   goThroughChildrenOfContainer(firstList, secondList) {
     for (let i = 0; i < firstList.length; ++i) {
-      const keyList = this.getDirectKeyChildrenOfContainersDirectChildren(
+      let keyList = this.getDirectKeyChildrenOfContainersDirectChildren(
         firstList[i]
       );
-      const secondKeyList = this.getDirectKeyChildrenOfContainersDirectChildren(
-        secondList[i]
-      );
-
-      const firstValueList = this.getValueChildrenOfContainersDirectChildren(
-        firstList[i]
-      );
-      const secondValueList = this.getValueChildrenOfContainersDirectChildren(
+      let secondKeyList = this.getDirectKeyChildrenOfContainersDirectChildren(
         secondList[i]
       );
 
@@ -212,25 +205,41 @@ class SynchronousScrollerUtility {
         if (secondKeyList.length === 0) {
           this.addInMultipleKeyNodesIntoList(
             keyList,
-            secondList[0].children[0]
+            secondList[i].children[0]
+          );
+        } else if (keyList.length === 0) {
+          this.addInMultipleKeyNodesIntoList(
+            secondKeyList,
+            firstList[i].children[0]
           );
         } else {
           this.goThroughKeyNodeLists(keyList, secondKeyList);
-        }
-
-        if (keyList.length === 0) {
-          this.addInMultipleKeyNodesIntoList(
-            secondKeyList,
-            firstList[0].children[0]
-          );
-        } else {
           this.goThroughKeyNodeLists(secondKeyList, keyList);
         }
       } else {
-        // if (firstValueList.length > 0 || secondValueList.length > 0) {
-        this.goThroughValuesOfNodeLists(firstValueList, secondValueList);
-        this.goThroughValuesOfNodeLists(secondValueList, firstValueList);
-        // }
+        const firstValueList = this.getValueChildrenOfContainersDirectChildren(
+          firstList[i]
+        );
+        const secondValueList = this.getValueChildrenOfContainersDirectChildren(
+          secondList[i]
+        );
+
+        if (firstValueList.length > 0 || secondValueList.length > 0) {
+          if (secondValueList.length === 0) {
+            this.addInMultipleValuesIntoList(
+              firstValueList,
+              secondList[i].children[0]
+            );
+          } else if (firstValueList.length === 0) {
+            this.addInMultipleValuesIntoList(
+              secondValueList,
+              firstList[i].children[0]
+            );
+          } else {
+            this.goThroughValuesOfNodeLists(firstValueList, secondValueList);
+            this.goThroughValuesOfNodeLists(secondValueList, firstValueList);
+          }
+        }
       }
     }
   }
@@ -331,6 +340,26 @@ class SynchronousScrollerUtility {
     }
   }
 
+  addInMultipleValuesIntoList(
+    arrayOfValues,
+    nodeAfterWhichToAdd = null,
+    listToBeAddedTo = null
+  ) {
+    if (arrayOfValues && (listToBeAddedTo || nodeAfterWhichToAdd)) {
+      for (const value of arrayOfValues) {
+        if (
+          value.parentElement.children[0].classList.contains("param_list_keys")
+        ) {
+          if (nodeAfterWhichToAdd) {
+            this.addInNodeStructure(value, nodeAfterWhichToAdd);
+          } else {
+            this.addInNodeStructure(value, null, listToBeAddedTo);
+          }
+        }
+      }
+    }
+  }
+
   getDirectKeyChildrenOfContainersDirectChildren(containerNode) {
     if (containerNode) {
       const result = [];
@@ -369,6 +398,8 @@ class SynchronousScrollerUtility {
               result.push(grandChild);
             }
           }
+        } else if (child.classList.contains("param_list_values")) {
+          result.push(child);
         }
       }
 
