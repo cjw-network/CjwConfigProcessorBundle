@@ -178,9 +178,16 @@ class ConfigProcessController extends AbstractController
 
     public function downloadParameterListAsTextFile(string $siteAccessOrAllParameters) {
         if ($siteAccessOrAllParameters === "all_parameters") {
-            $resultingFile = ParametersToFileWriter::writeParametersToFile(ConfigProcessCoordinator::getProcessedParameters());
+            $resultingFile = ParametersToFileWriter::writeParametersToFile(
+                ConfigProcessCoordinator::getProcessedParameters()
+            );
         } else {
-            $resultingFile = ParametersToFileWriter::writeParametersToFile(ConfigProcessCoordinator::getParametersForSpecificSiteAccess($siteAccessOrAllParameters));
+            $resultingFile = ParametersToFileWriter::writeParametersToFile(
+                ConfigProcessCoordinator::getParametersForSpecificSiteAccess(
+                    $siteAccessOrAllParameters
+                ),
+                $siteAccessOrAllParameters
+            );
         }
 
         $response = new BinaryFileResponse($resultingFile);

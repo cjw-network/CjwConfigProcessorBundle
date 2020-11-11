@@ -21,7 +21,6 @@ class ParameterBranchDisplay {
         event.stopPropagation();
 
         this.openSubTree(subTreeButton.parentElement.parentElement);
-        // this.flipSubtreeAction(subTreeButton, true);
       };
     }
   }

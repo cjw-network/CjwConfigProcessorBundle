@@ -4,6 +4,7 @@
 namespace App\CJW\ConfigProcessorBundle\src;
 
 
+use DateTime;
 use Symfony\Component\Filesystem\Filesystem;
 
 class ParametersToFileWriter
@@ -23,7 +24,7 @@ class ParametersToFileWriter
         }
     }
 
-    public static function writeParametersToFile (array $parametersToWrite): string {
+    public static function writeParametersToFile (array $parametersToWrite, string $siteAccess = ""): string {
         if (!self::$initialized) {
             self::initializeFileWriter();
         }
@@ -31,18 +32,31 @@ class ParametersToFileWriter
         $temporaryFile = self::$filesystem->tempnam(sys_get_temp_dir(),"parameter_list_", ".yaml");
 
         if ($temporaryFile) {
-            self::appendDataPerKey($temporaryFile,$parametersToWrite);
+            self::appendDataPerKey($temporaryFile,$parametersToWrite, $siteAccess);
         }
 
-        return $temporaryFile;
+        $tmpDir = pathinfo($temporaryFile,PATHINFO_DIRNAME);
+        $currentDate = new DateTime();
+        $currentDate = $currentDate->format("Y-m-d_H:i");
+        $siteAccess = strlen($siteAccess) > 0? $siteAccess."_" : "all_parameters"."_";
+        $targetName = $tmpDir."/parameter_list_".$siteAccess.$currentDate.".yaml";
+
+        self::$filesystem->rename($temporaryFile,$targetName);
+        return $targetName;
     }
 
-    private static function appendDataPerKey (string $pathToFileToWriteTo,array $parametersToWrite) {
+    private static function appendDataPerKey (string $pathToFileToWriteTo, array $parametersToWrite, string $siteAccess = "") {
         self::$filesystem->appendToFile($pathToFileToWriteTo,"parameters:\n");
 
         foreach (array_keys($parametersToWrite) as $key) {
             self::$filesystem->appendToFile($pathToFileToWriteTo,"\n");
-            self::writeSubTree($pathToFileToWriteTo, $parametersToWrite[$key],$key);
+            $keyDisplay = $key;
+
+            if (strlen($siteAccess) > 0) {
+                $keyDisplay .= ".".$siteAccess;
+            }
+
+            self::writeSubTree($pathToFileToWriteTo, $parametersToWrite[$key],$keyDisplay);
         }
     }
 
@@ -92,25 +106,6 @@ class ParametersToFileWriter
                 }
             }
         }
-
-//        foreach ($subTreeToWrite as $parameterKey => $parameterFollowUp) {
-//
-//            if ($parameterKey !== "parameter_value" && !is_numeric($parameterKey)) {
-//                $outputString = self::buildOutputString($parameterKey, $numberOfIndents);
-//                self::$filesystem->appendToFile($pathToFileToWriteTo, $outputString);
-//            }
-//
-//            if ($parameterFollowUp && is_array($parameterFollowUp)) {
-//                self::writeSubTree($pathToFileToWriteTo,$parameterFollowUp,$numberOfIndents+4);
-//            } else if (!is_array($parameterFollowUp)) {
-//                if (is_numeric($parameterKey)) {
-//                    $parameterFollowUp = "- ".$parameterFollowUp;
-//                    $parameterFollowUp = self::buildOutputString($parameterFollowUp, $numberOfIndents, false);
-//                }
-//
-//                self::$filesystem->appendToFile($pathToFileToWriteTo," ".$parameterFollowUp);
-//            }
-//        }
     }
 
     private static function buildOutputString (string $input, int $numberOfIndents, bool $isKey = false): string {

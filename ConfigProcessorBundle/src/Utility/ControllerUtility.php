@@ -63,7 +63,7 @@ class ControllerUtility
     }
 
     /**
-     * Taken of StackOverflow from
+     * Taken off StackOverflow from
      * @author Captain kurO
      * @url https://stackoverflow.com/questions/173400/how-to-check-if-php-array-is-associative-or-sequential/4254008#4254008
      * @param array $array

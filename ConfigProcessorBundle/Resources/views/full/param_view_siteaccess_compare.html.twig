@@ -93,11 +93,13 @@
         <div class="ez-table-header__headline">
             Parameterlist: {{ limiter }}
         </div>
-        <button id="global_open_subtree">
-            <svg class="ez-icon ez-icon--medium-large">
-                <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
-            </svg>
-        </button>
+        <div class="m-sub-items__actions">
+            <button id="global_open_subtree" class="c-action-btn c-action-btn--reveal">
+                <svg class="ez-icon ez-icon--medium-large">
+                    <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <div class="compare_display">
@@ -127,4 +129,5 @@
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SAListSplitScreen.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SiteAccessComparisonUtility.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SiteAccessDifferencesHighlighter.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SynchronousScrollerUtility.js") }}></script>
 {% endblock %}

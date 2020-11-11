@@ -54,7 +54,9 @@ class SiteAccessDifferencesHighlighter {
         const actualKey = key.getAttribute("key");
 
         const counterpartKey = secondListKeys.find(
-          (key) => key.getAttribute("key") === actualKey
+          (key) =>
+            key.getAttribute("key") === actualKey &&
+            !key.classList.contains("syncScrollAddition")
         );
 
         return !counterpartKey;
@@ -64,7 +66,9 @@ class SiteAccessDifferencesHighlighter {
         const actualKey = key.getAttribute("key");
 
         const counterpartKey = firstListKeys.find(
-          (key) => key.getAttribute("key") === actualKey
+          (key) =>
+            key.getAttribute("key") === actualKey &&
+            !key.classList.contains("syncScrollAddition")
         );
 
         return !counterpartKey;
@@ -72,6 +76,7 @@ class SiteAccessDifferencesHighlighter {
 
       results.push(...onlyFirstListKeys, ...onlySecondListKeys);
 
+      // performance dips dramatically (site becomes unusable, if handled outside of this function)
       for (const uniqueKey of results) {
         const unhighlightedKeys = uniqueKey.parentElement.querySelectorAll(
           ".param_list_keys:not(.difference)"
@@ -151,12 +156,10 @@ class SiteAccessDifferencesHighlighter {
 
   highlightSimilarNodes() {
     const similarNodesInFirstList = this.firstList.querySelectorAll(
-      // ".param_list_values:not(.difference)"
-      "div:not(.difference)"
+      "div:not(.difference):not(.syncScrollAddition)"
     );
     const similarNodesInSecondList = this.secondList.querySelectorAll(
-      // ".param_list_values:not(.difference)"
-      "div:not(.difference)"
+      "div:not(.difference):not(.syncScrollAddition)"
     );
 
     const results = [];
@@ -189,6 +192,7 @@ class SiteAccessDifferencesHighlighter {
         event.stopPropagation();
 
         this.removeHighlighting();
+        this.differenceHighlightButton.style.backgroundColor = "";
         this.flipListener(false);
       };
     } else {
@@ -196,6 +200,7 @@ class SiteAccessDifferencesHighlighter {
         event.stopPropagation();
 
         this.highlightDifferencesAndSimilarities();
+        this.differenceHighlightButton.style.backgroundColor = "#0c5472";
         this.flipListener();
       };
     }

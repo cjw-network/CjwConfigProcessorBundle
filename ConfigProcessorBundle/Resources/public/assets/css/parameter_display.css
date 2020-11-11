@@ -119,10 +119,6 @@
     top: 0;
 }
 
-#download_button, #global_open_subtree {
-    border: 1px transparent;
-}
-
 @keyframes loading_parameters {
     0% {transform: rotate(0)}
     100% {transform: rotate(360deg)}
@@ -137,4 +133,9 @@
     animation-duration: 2s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
+}
+
+.syncScrollAddition {
+    color: lightgrey;
+    text-decoration-line: line-through;
 }

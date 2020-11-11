@@ -32,19 +32,21 @@
             <div class="ez-table-header__headline">
                 Parameterlist
             </div>
-            <button id="download_button">
-                <svg class="ez-icon ez-icon--medium-large">
-                    <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#download"></use>
-                </svg>
-            </button>
-            <button id="global_open_subtree">
-                <svg class="ez-icon ez-icon--medium-large">
-                    <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
-                </svg>
-            </button>
             {% block search_bar %}
                 {{ parent() }}
             {% endblock %}
+            <div class="m-sub-items__actions">
+                <button id="download_button" class="c-action-btn c-action-btn--reveal">
+                    <svg class="ez-icon ez-icon--medium-large">
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#download"></use>
+                    </svg>
+                </button>
+                <button id="global_open_subtree" class="c-action-btn c-action-btn--reveal">
+                    <svg class="ez-icon ez-icon--medium-large">
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
+                    </svg>
+                </button>
+            </div>
         </div>
         <svg class="ez-icon ez-icon--large" id="loading_circle">
             <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#spinner"></use>

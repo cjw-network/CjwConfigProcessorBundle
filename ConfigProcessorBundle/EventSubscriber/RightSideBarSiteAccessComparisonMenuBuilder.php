@@ -18,6 +18,7 @@ class RightSideBarSiteAccessComparisonMenuBuilder extends AbstractBuilder
     const ITEM__COMMON_PARAMETERS_VIEW = 'Common Parameters Only';
     const ITEM__UNCOMMON_PARAMETERS_VIEW = 'Uncommon Parameters Only';
     const ITEM__HIGHLIGHT_DIFFERENCES = 'Highlight Differences';
+    const ITEM__SYNCHRONOUS_SCROLLING = 'Synchronous Scrolling';
 
     public function __construct(MenuItemFactory $factory, EventDispatcherInterface $eventDispatcher)
     {
@@ -87,6 +88,17 @@ class RightSideBarSiteAccessComparisonMenuBuilder extends AbstractBuilder
                             'class' => 'ez-btn--reveal',
                             'data-actions' => 'highlight',
                             "cjw_id" => "cjw_highlight_differences",
+                        ],
+                    ]
+                ),
+                $this->createMenuItem(
+                    self::ITEM__SYNCHRONOUS_SCROLLING,
+                    [
+                        'extras' => ['icon' => 'link', 'orderNumber' => 63],
+                        'attributes' => [
+                            'class' => 'ez-btn--reveal',
+                            'data-actions' => 'highlight',
+                            "cjw_id" => "cjw_synchronous_scrolling",
                         ],
                     ]
                 ),
