@@ -71,6 +71,61 @@ class SynchronousScrollerUtility {
     }
   }
 
+  goThroughChildrenOfContainer(firstList, secondList) {
+    for (let i = 0; i < firstList.length; ++i) {
+      let keyList = this.getDirectKeyChildrenOfContainersDirectChildren(
+        firstList[i]
+      );
+      let secondKeyList = this.getDirectKeyChildrenOfContainersDirectChildren(
+        secondList[i]
+      );
+
+      if (keyList.length > 0 || secondKeyList.length > 0) {
+        if (secondKeyList.length === 0) {
+          this.addInMultipleKeyNodesIntoList(
+            keyList,
+            secondList[i].children[0]
+          );
+        } else if (keyList.length === 0) {
+          this.addInMultipleKeyNodesIntoList(
+            secondKeyList,
+            firstList[i].children[0]
+          );
+        } else {
+          this.goThroughKeyNodeLists(keyList, secondKeyList);
+          this.goThroughKeyNodeLists(
+            this.getDirectKeyChildrenOfContainersDirectChildren(secondList[i]),
+            keyList
+          );
+        }
+      } else {
+        const firstValueList = this.getValueChildrenOfContainersDirectChildren(
+          firstList[i]
+        );
+        const secondValueList = this.getValueChildrenOfContainersDirectChildren(
+          secondList[i]
+        );
+
+        if (firstValueList.length > 0 || secondValueList.length > 0) {
+          if (secondValueList.length === 0) {
+            this.addInMultipleValuesIntoList(
+              firstValueList,
+              secondList[i].children[0]
+            );
+          } else if (firstValueList.length === 0) {
+            this.addInMultipleValuesIntoList(
+              secondValueList,
+              firstList[i].children[0]
+            );
+          } else {
+            this.goThroughValuesOfNodeLists(firstValueList, secondValueList);
+            this.goThroughValuesOfNodeLists(secondValueList, firstValueList);
+          }
+        }
+      }
+    }
+  }
+
   goThroughKeyNodeLists(listToBeCompared, listToCompareTo) {
     if (listToBeCompared && listToCompareTo) {
       const toBeComparedArray = Array.from(listToBeCompared);
@@ -101,14 +156,12 @@ class SynchronousScrollerUtility {
           // if -1 has been returned, signalling that the key is not present in the other list, add in a ghost node structure
           if (stepsUntilKey < 0) {
             const previousIndex = i - 1;
-            if (previousIndex <= 0) {
-              compareToArray.splice(
-                i,
-                0,
+            if (previousIndex < 0) {
+              compareToArray.unshift(
                 this.addInNodeStructure(
                   toBeComparedArray[i].parentElement,
                   null,
-                  compareToArray[0].parentElement
+                  compareToArray[0].parentElement.parentElement
                 )
               );
             } else {
@@ -166,10 +219,8 @@ class SynchronousScrollerUtility {
           if (stepsUntilValue < 0) {
             const previousIndex = i - 1;
 
-            if (previousIndex <= 0) {
-              secondValueList.splice(
-                i,
-                0,
+            if (previousIndex < 0) {
+              secondValueList.unshift(
                 this.addInNodeStructure(
                   firstValueList[i].parentElement,
                   null,
@@ -186,58 +237,6 @@ class SynchronousScrollerUtility {
                 )
               );
             }
-          }
-        }
-      }
-    }
-  }
-
-  goThroughChildrenOfContainer(firstList, secondList) {
-    for (let i = 0; i < firstList.length; ++i) {
-      let keyList = this.getDirectKeyChildrenOfContainersDirectChildren(
-        firstList[i]
-      );
-      let secondKeyList = this.getDirectKeyChildrenOfContainersDirectChildren(
-        secondList[i]
-      );
-
-      if (keyList.length > 0 || secondKeyList.length > 0) {
-        if (secondKeyList.length === 0) {
-          this.addInMultipleKeyNodesIntoList(
-            keyList,
-            secondList[i].children[0]
-          );
-        } else if (keyList.length === 0) {
-          this.addInMultipleKeyNodesIntoList(
-            secondKeyList,
-            firstList[i].children[0]
-          );
-        } else {
-          this.goThroughKeyNodeLists(keyList, secondKeyList);
-          this.goThroughKeyNodeLists(secondKeyList, keyList);
-        }
-      } else {
-        const firstValueList = this.getValueChildrenOfContainersDirectChildren(
-          firstList[i]
-        );
-        const secondValueList = this.getValueChildrenOfContainersDirectChildren(
-          secondList[i]
-        );
-
-        if (firstValueList.length > 0 || secondValueList.length > 0) {
-          if (secondValueList.length === 0) {
-            this.addInMultipleValuesIntoList(
-              firstValueList,
-              secondList[i].children[0]
-            );
-          } else if (firstValueList.length === 0) {
-            this.addInMultipleValuesIntoList(
-              secondValueList,
-              firstList[i].children[0]
-            );
-          } else {
-            this.goThroughValuesOfNodeLists(firstValueList, secondValueList);
-            this.goThroughValuesOfNodeLists(secondValueList, firstValueList);
           }
         }
       }
@@ -276,32 +275,24 @@ class SynchronousScrollerUtility {
     givenListToAddTo = null
   ) {
     let listToAddTo = givenListToAddTo;
+    listToAddTo = listToAddTo
+      ? this.confirmListToAddToOrDeliverNewOne(nodeToAdd, listToAddTo)
+      : listToAddTo;
 
     if (nodeAfterWhichToAdd && nodeAfterWhichToAdd.parentElement) {
       listToAddTo = nodeAfterWhichToAdd.parentElement;
-    } else if (!givenListToAddTo) {
+    } else if (!listToAddTo) {
       return;
     }
 
     const dupShadowNode = nodeToAdd.cloneNode(true);
     dupShadowNode.classList.add("syncScrollAddition");
 
-    const subNodes = dupShadowNode.querySelectorAll("div, span");
-
-    for (const node of subNodes) {
-      node.classList.add("syncScrollAddition");
-    }
-
-    const subTreeAndLocationButtons = dupShadowNode.querySelectorAll(
-      ".open_subtree, .location_info"
-    );
-    for (const button of subTreeAndLocationButtons) {
-      button.parentElement.removeChild(button);
-    }
+    this.cleanUpDuplicatedNode(dupShadowNode);
 
     if (!nodeAfterWhichToAdd) {
-      if (listToAddTo.children) {
-        const firstNodeOfList = listToAddTo.children[0];
+      const firstNodeOfList = this.getListsFirstNonKeyNode(listToAddTo);
+      if (firstNodeOfList) {
         listToAddTo.insertBefore(dupShadowNode, firstNodeOfList);
       } else {
         listToAddTo.appendChild(dupShadowNode);
@@ -360,6 +351,23 @@ class SynchronousScrollerUtility {
     }
   }
 
+  cleanUpDuplicatedNode(duplicateNode) {
+    if (duplicateNode) {
+      const subNodes = duplicateNode.querySelectorAll("div, span");
+
+      for (const node of subNodes) {
+        node.classList.add("syncScrollAddition");
+      }
+
+      const subTreeAndLocationButtons = duplicateNode.querySelectorAll(
+        ".open_subtree, .location_info, .param_item_toggle"
+      );
+      for (const button of subTreeAndLocationButtons) {
+        button.parentElement.removeChild(button);
+      }
+    }
+  }
+
   getDirectKeyChildrenOfContainersDirectChildren(containerNode) {
     if (containerNode) {
       const result = [];
@@ -404,6 +412,62 @@ class SynchronousScrollerUtility {
       }
 
       return result;
+    }
+  }
+
+  confirmListToAddToOrDeliverNewOne(nodeToAdd, listToBeAddedTo) {
+    if (nodeToAdd && listToBeAddedTo) {
+      if (
+        nodeToAdd.parentElement &&
+        listToBeAddedTo.classList.contains("param_list_items")
+      ) {
+        const nodeParent = nodeToAdd.parentElement;
+        const keyOfParent = nodeParent.children[0];
+
+        if (!keyOfParent.classList.contains("param_list_keys")) {
+          return null;
+        }
+
+        const firstKeyOfListToBeAddedTo = listToBeAddedTo.children[0];
+
+        if (
+          !firstKeyOfListToBeAddedTo.classList.contains("param_list_keys") ||
+          firstKeyOfListToBeAddedTo.getAttribute("key") !==
+            keyOfParent.getAttribute("key")
+        ) {
+          return this.confirmListToAddToOrDeliverNewOne(
+            nodeToAdd,
+            listToBeAddedTo.parentElement
+          );
+        } else {
+          return listToBeAddedTo;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  getListsFirstNonKeyNode(listToBeAddedTo) {
+    if (listToBeAddedTo && listToBeAddedTo.children) {
+      const firstChild = listToBeAddedTo.children[0];
+      if (firstChild.classList.contains("param_list_keys")) {
+        let nextChild = firstChild;
+        let i = 0;
+
+        while (
+          nextChild.classList.contains("param_list_keys") &&
+          i + 1 < listToBeAddedTo.children.length
+        ) {
+          nextChild = listToBeAddedTo.children[++i];
+        }
+
+        return nextChild;
+      } else {
+        return firstChild;
+      }
+    } else {
+      return null;
     }
   }
 }

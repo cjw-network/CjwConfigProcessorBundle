@@ -45,7 +45,7 @@
 }
 
 .inline_value {
-    display: inline-block;
+    /*display: inline-block;*/
     line-height: normal;
     padding: 0;
     margin: 0;
