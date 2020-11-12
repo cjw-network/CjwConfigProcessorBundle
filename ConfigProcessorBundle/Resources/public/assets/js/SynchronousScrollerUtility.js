@@ -1,6 +1,9 @@
 class SynchronousScrollerUtility {
+  /** This is the button on the page, which is responsible for toggling the behaviour on and off. */
   syncScrollButton;
+  /** Simply the container for the first list of site access variables. */
   comparisonViewFirstList;
+  /** Simply the container for the second list of site access variables. */
   comparisonViewSecondList;
 
   constructor() {
@@ -12,18 +15,25 @@ class SynchronousScrollerUtility {
     this.comparisonViewSecondList = document.querySelector(".second_list");
   }
 
+  /**
+   * This function serves as the entry point for the utility as it is responsible for adding the desired
+   * functionality to the toggle-button in order to set off the rest of the function when the behaviour is triggered.
+   */
   setUpSynchronousScrollButton() {
     if (this.syncScrollButton) {
       this.syncScrollButton.onclick = (event) => {
+        // Just to prevent any unwanted side-effects
         event.preventDefault();
         event.stopPropagation();
 
+        // If the behaviour is already active, the behaviour is toggled off and the effects of the function are reverte
         if (this.syncScrollButton.getAttribute("syncScroll") === "active") {
           this.syncScrollButton.setAttribute("syncScroll", "disabled");
           this.syncScrollButton.style.backgroundColor = "";
           this.removeShadowNodes();
         } else {
           this.syncScrollButton.setAttribute("syncScroll", "active");
+          // Just make sure, that the there is some visual feedback on the button to signal the behaviour is active
           this.syncScrollButton.style.backgroundColor = "#0c5472";
           this.prepareListsForSyncScrolling();
         }
@@ -31,6 +41,10 @@ class SynchronousScrollerUtility {
     }
   }
 
+  /**
+   * Practically the main function of the entire Utility. This function goes through the entire list
+   * of keys and sets off the rest of the processes to activate the synchronous scrolling behaviour.
+   */
   prepareListsForSyncScrolling() {
     /** Go through the top nodes first and determine the missing pieces right there */
     let firstList = document.querySelectorAll(
@@ -60,6 +74,10 @@ class SynchronousScrollerUtility {
     this.goThroughChildrenOfContainer(firstList, secondList);
   }
 
+  /**
+   * Function to remove every artifact created by the behaviour. It basically serves as a cleanup
+   * function for when the mode is shut off.
+   */
   removeShadowNodes() {
     const shadowNodes = document.querySelectorAll(
       ".param_list_items .syncScrollAddition"
@@ -71,6 +89,12 @@ class SynchronousScrollerUtility {
     }
   }
 
+  /**
+   * This function takes two lists and goes through every key and subkey as well
+   * as their values in order to determine, where nodes are missing and add the missing nodes in.
+   * @param firstList A param_list_items-container which contains a value or a key or both.
+   * @param secondList A second param_list_items-container which contains a value or a key or both.
+   */
   goThroughChildrenOfContainer(firstList, secondList) {
     for (let i = 0; i < firstList.length; ++i) {
       let keyList = this.getDirectKeyChildrenOfContainersDirectChildren(
@@ -80,25 +104,35 @@ class SynchronousScrollerUtility {
         secondList[i]
       );
 
+      // Is there at least one key in any of the lists
       if (keyList.length > 0 || secondKeyList.length > 0) {
+        // If the second list does not contain keys, the first must contain them and therefore, we simply add the missing keys from list one
         if (secondKeyList.length === 0) {
           this.addInMultipleKeyNodesIntoList(
             keyList,
             secondList[i].children[0]
           );
-        } else if (keyList.length === 0) {
+        }
+        // If the first list does not contain keys, the second one must and so their nodes are simply added
+        else if (keyList.length === 0) {
           this.addInMultipleKeyNodesIntoList(
             secondKeyList,
             firstList[i].children[0]
           );
-        } else {
+        }
+        // In this instance, both lists contain keys (we don't know which belongs to which, so both have to be checked)
+        else {
           this.goThroughKeyNodeLists(keyList, secondKeyList);
+          // Since the second list could have been changed during the function before, the list of keys is updated prior to going into the function
           this.goThroughKeyNodeLists(
             this.getDirectKeyChildrenOfContainersDirectChildren(secondList[i]),
             keyList
           );
         }
-      } else {
+      }
+      // If there are no keys in either list, there are either only values or there is nothing left at all (a dead end)
+      // There cannot be a combination of a key and a value in the same container, since these are generally combined to one div
+      else {
         const firstValueList = this.getValueChildrenOfContainersDirectChildren(
           firstList[i]
         );
@@ -106,7 +140,9 @@ class SynchronousScrollerUtility {
           secondList[i]
         );
 
+        // Are there any values or is it a dead end
         if (firstValueList.length > 0 || secondValueList.length > 0) {
+          // Same story as before, if there are no values in the one list, there is no more need for any checks or comparisons
           if (secondValueList.length === 0) {
             this.addInMultipleValuesIntoList(
               firstValueList,
@@ -126,17 +162,28 @@ class SynchronousScrollerUtility {
     }
   }
 
+  /**
+   * Serves to go through two lists of param_list_keys and checks for missing keys in either list, adding missing nodes
+   * as synchronous scroll additions and checking the child nodes and keys of equal nodes from the lists.
+   *
+   * @param listToBeCompared This is the first list of keys which is gone through.
+   * @param listToCompareTo This is the list of keys which is checked against.
+   */
   goThroughKeyNodeLists(listToBeCompared, listToCompareTo) {
     if (listToBeCompared && listToCompareTo) {
+      // For more functions and operations with the list, ensure both are being transferred into arrays
       const toBeComparedArray = Array.from(listToBeCompared);
       const compareToArray = Array.from(listToCompareTo);
 
+      // The keys of the first list is gone through actively and they are checked against the keys of the second list
       for (let i = 0; i < toBeComparedArray.length; ++i) {
         const firstKey = toBeComparedArray[i].getAttribute("key");
         let secondKey = null;
         try {
+          // If there are no keys in at this position in the second list, the list has probably ended and thus only additions have to be made
           secondKey = compareToArray[i].getAttribute("key");
         } catch (error) {
+          // Since it is ensured by the functions before this that there is not an empty second list, take the last item of that list
           compareToArray.push(
             this.addInNodeStructure(
               toBeComparedArray[i].parentElement,
@@ -156,6 +203,7 @@ class SynchronousScrollerUtility {
           // if -1 has been returned, signalling that the key is not present in the other list, add in a ghost node structure
           if (stepsUntilKey < 0) {
             const previousIndex = i - 1;
+            // If the previous key is smaller than 0, then the node has to be added to the beginning of the list
             if (previousIndex < 0) {
               compareToArray.unshift(
                 this.addInNodeStructure(
@@ -185,6 +233,13 @@ class SynchronousScrollerUtility {
     }
   }
 
+  /**
+   * The value version of {@see goThroughKeyNodeLists}. Where lists of values are gone through and missing ones are added to the
+   * lists.
+   *
+   * @param firstValueList The first list of values which is gone through primarily.
+   * @param secondValueList The second list of values which are checked against the ones from the first list.
+   */
   goThroughValuesOfNodeLists(firstValueList, secondValueList) {
     if (firstValueList && secondValueList) {
       if (firstValueList.length === 0 && secondValueList.length === 0) {
@@ -243,6 +298,13 @@ class SynchronousScrollerUtility {
     }
   }
 
+  /**
+   * Takes a given key and list and searches a key with the same "key"-value as the one given.
+   * If it is found, the index of the key in the list is given back.
+   * @param key The key to be searched for in the given list.
+   * @param compareList The array of keys in which to search for the key.
+   * @returns {number} Returns a number which represents the index of the key or "-1" if the key couldn't be found.
+   */
   indexOfKeyInOtherList(key, compareList) {
     if (compareList && compareList.length > 0) {
       const result = compareList.findIndex((compareKey) => {
@@ -255,6 +317,14 @@ class SynchronousScrollerUtility {
     return -1;
   }
 
+  /**
+   * The value counterpart of {@see indexOfKeyInOtherList}, which searches for a given value which matches the
+   * "value"-value of the given node in the given list.
+   *
+   * @param {HTMLElement} value The given value for which to search in the list.
+   * @param {array} compareList The list in which the value is to be searched for.
+   * @returns {number} Returns the index of the found value in the array or "-1" if no value could be found.
+   */
   indexOfValueInOtherList(value, compareList) {
     if (compareList && compareList.length > 0) {
       const result = compareList.findIndex((compareValue) => {
@@ -269,6 +339,14 @@ class SynchronousScrollerUtility {
     return -1;
   }
 
+  /**
+   * Adds the duplicate of the given node either into the list of nodes which is given to it or after the node given to the function.
+   *
+   * @param {HTMLElement} nodeToAdd The html element node to add to the given lists.
+   * @param {HTMLElement} nodeAfterWhichToAdd Another html element, after which the nodeToAdd will be added.
+   * @param {HTMLElement} givenListToAddTo An html element into which to add the given node.
+   * @returns {HTMLElement} Returns a duplicate node to the nodeToAdd from the list the node has been added to.
+   */
   addInNodeStructure(
     nodeToAdd,
     nodeAfterWhichToAdd = null,
@@ -291,6 +369,7 @@ class SynchronousScrollerUtility {
     this.cleanUpDuplicatedNode(dupShadowNode);
 
     if (!nodeAfterWhichToAdd) {
+      // Since not every browser supports directly adding in the node in the beginning of the list, the first node is taken as the point to add before.
       const firstNodeOfList = this.getListsFirstNonKeyNode(listToAddTo);
       if (firstNodeOfList) {
         listToAddTo.insertBefore(dupShadowNode, firstNodeOfList);
@@ -311,6 +390,15 @@ class SynchronousScrollerUtility {
     return dupShadowNode.children[0];
   }
 
+  /**
+   * Takes a list of keys which are to be added into the given list-element or after a given node.
+   * Even though both values are optional, at least one must be given or otherwise the
+   * function will not do anything.
+   *
+   * @param {array<HTMLElement>} arrayOfKeys An array of key elements which will be added to the given lists.
+   * @param {HTMLElement} nodeAfterWhichToAdd An element after which to add the keys given to the function.
+   * @param {HTMLElement} listToBeAddedTo An element which serves as a list into which the keys are being added.
+   */
   addInMultipleKeyNodesIntoList(
     arrayOfKeys,
     nodeAfterWhichToAdd = null,
@@ -331,6 +419,15 @@ class SynchronousScrollerUtility {
     }
   }
 
+  /**
+   * The value counter part to the {@see addInMultipleKeyNodesIntoList}, which takes a list of values and adds them into
+   * a given list or after a given node. Even though both values are optional, at least one must be given or otherwise the
+   * function will not do anything.
+   *
+   * @param {array<HTMLElement>} arrayOfValues An array of value nodes which is going to be added to the given nodes.
+   * @param {HTMLElement} nodeAfterWhichToAdd A node after which the given values are going to be added.
+   * @param {HTMLElement} listToBeAddedTo An element which serves as the list the values are being added into.
+   */
   addInMultipleValuesIntoList(
     arrayOfValues,
     nodeAfterWhichToAdd = null,
@@ -351,6 +448,12 @@ class SynchronousScrollerUtility {
     }
   }
 
+  /**
+   * Helper function which takes a node and clears the node and all of its children of the
+   * control elements of the original node-structure.
+   *
+   * @param {HTMLElement} duplicateNode The node which has been duplicated and is supposed to be cleared.
+   */
   cleanUpDuplicatedNode(duplicateNode) {
     if (duplicateNode) {
       const subNodes = duplicateNode.querySelectorAll("div, span");
@@ -368,6 +471,13 @@ class SynchronousScrollerUtility {
     }
   }
 
+  /**
+   * Takes a given container and searches for the direct param_list_keys under the direct children
+   * param_list_items within the container.
+   *
+   * @param {HTMLElement} containerNode The node in which to search for the keys.
+   * @returns {array<HTMLElement>} Returns either the keys found in the children of the container or an empty array in case no keys are found.
+   */
   getDirectKeyChildrenOfContainersDirectChildren(containerNode) {
     if (containerNode) {
       const result = [];
@@ -391,6 +501,13 @@ class SynchronousScrollerUtility {
     }
   }
 
+  /**
+   * Value counterpart to {@see getDirectKeyChildrenOfContainersDirectChildren}, which takes a given container element
+   * and searches within its direct param_list_items children for value nodes.
+   *
+   * @param {HTMLElement} containerNode The given container node in which to search for values.
+   * @returns {array<HTMLElement>} Returns an array with the found values or an empty array if no values have been found.
+   */
   getValueChildrenOfContainersDirectChildren(containerNode) {
     if (containerNode) {
       const result = [];
@@ -415,6 +532,15 @@ class SynchronousScrollerUtility {
     }
   }
 
+  /**
+   * Checks a given list and node for whether the given list actually resembles the counterpart parent element of the list
+   * the node is going to be added in. If that is not the case, the function tries to find the fitting parent element in the
+   * direct hierarchie of the given list.
+   *
+   * @param {HTMLElement} nodeToAdd The node which is going to be added to the given list.
+   * @param {HTMLElement} listToBeAddedTo The container node which serves as the list the given node is going to be added into.
+   * @returns {null|HTMLElement} Returns the list the node can be added in or null, if no adequate container could be found.
+   */
   confirmListToAddToOrDeliverNewOne(nodeToAdd, listToBeAddedTo) {
     if (nodeToAdd && listToBeAddedTo) {
       if (
@@ -448,6 +574,12 @@ class SynchronousScrollerUtility {
     return null;
   }
 
+  /**
+   * Finds the first node of a given container node which is not a param_list_key and returns the found node.
+   *
+   * @param {HTMLElement} listToBeAddedTo The container node in which to search for the first node.
+   * @returns {null|HTMLElement} Returns either the found first non-key-node or null if non could be found.
+   */
   getListsFirstNonKeyNode(listToBeAddedTo) {
     if (listToBeAddedTo && listToBeAddedTo.children) {
       const firstChild = listToBeAddedTo.children[0];
