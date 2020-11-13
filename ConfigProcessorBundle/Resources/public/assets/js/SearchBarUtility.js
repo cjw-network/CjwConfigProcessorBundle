@@ -1,40 +1,32 @@
 class SearchBarUtility {
-  // header;
   mainSection;
+  searchField;
+  timeout;
 
   constructor() {
-    // this.header = document.querySelector(".cjw_header");
     this.mainSection = document.querySelector(".cjw_main_section");
+    this.searchField = document.querySelector("#cjw_searchbar");
   }
 
   setUpSearchBar() {
     if (this.mainSection) {
-      const searchField = document.querySelector("#cjw_searchbar");
-      let timeout = null;
+      this.timeout = null;
 
-      searchField.addEventListener("input", (event) => {
-        event.preventDefault();
-
-        clearTimeout(timeout);
-
-        timeout = setTimeout(() => {
-          searchField.disabled = true;
-          this.reactToSearchInput(event.target.value).then(() => {
-            searchField.disabled = false;
-          });
-        }, 750);
-      });
-
-      searchField.addEventListener("keydown", (event) => {
-        if (event.keyCode === 13) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
+      this.searchField.addEventListener(
+        "input",
+        this.controlInputEvent.bind(this)
+      );
+      this.searchField.addEventListener(
+        "keydown",
+        this.handleKeyEvent.bind(this)
+      );
+      this.searchField.addEventListener("keyup", () => {
+        this.searchField.classList.remove("keyEventHandled");
       });
     }
   }
 
-  async reactToSearchInput(originalQueryText) {
+  async reactToSearchInput(originalQueryText, searchMode) {
     const queryText = originalQueryText.trim();
 
     if (queryText.length === 0) {
@@ -43,8 +35,9 @@ class SearchBarUtility {
     }
 
     if (
-      new RegExp(/^[.:]/).test(queryText) ||
-      new RegExp(/[.:]$/).test(queryText)
+      searchMode === "key" &&
+      (new RegExp(/^[.:]/).test(queryText) ||
+        new RegExp(/[.:]$/).test(queryText))
     ) {
       return;
     }
@@ -52,19 +45,25 @@ class SearchBarUtility {
     if (this.mainSection) {
       this.removeNodeHighlightings();
 
-      const keys = queryText.split(/[.:]/);
       let searchText = queryText;
       let searchPool = this.mainSection;
 
-      if (keys && keys.length > 1) {
-        searchText = keys.splice(keys.length - 1, 1)[0];
-        searchPool = this.lookForKeyHierachie(keys);
+      if (searchMode === "key") {
+        const keys = queryText.split(/[.:]/);
+
+        if (keys && keys.length > 1) {
+          searchText = keys.splice(keys.length - 1, 1)[0];
+          searchPool = this.lookForKeyHierachie(keys);
+        }
       }
 
-      await this.removeRemainingIrrelevantResults(searchText);
+      await this.removeRemainingIrrelevantResults(searchText, searchMode);
 
-      // const possibleResults = this.mainSection.querySelectorAll(`[key*="${searchText.trim()}" i]`);
-      const possibleResults = this.conductSearch(searchPool, searchText);
+      const possibleResults = this.conductSearch(
+        searchPool,
+        searchText,
+        searchMode
+      );
 
       if (possibleResults && possibleResults.length > 0) {
         possibleResults[0].scrollIntoView();
@@ -127,9 +126,9 @@ class SearchBarUtility {
     return results;
   }
 
-  async removeRemainingIrrelevantResults(searchText) {
+  async removeRemainingIrrelevantResults(searchText, searchMode = "key") {
     let nonRelevantVisibleResults = this.mainSection.querySelectorAll(
-      `div:not(.dont_display):not([key*="${searchText}" i]), [key]`
+      `div:not(.dont_display):not([${searchMode}*="${searchText}" i]), [${searchMode}]`
     );
     nonRelevantVisibleResults = Array.from(
       nonRelevantVisibleResults
@@ -138,16 +137,14 @@ class SearchBarUtility {
     for (const nonRelevantResult of nonRelevantVisibleResults) {
       nonRelevantResult.classList.add("dont_display");
     }
-
-    // await this.removeNodesAsynchronously(0,nonRelevantVisibleResults);
   }
 
-  conductSearch(searchPool, searchText) {
+  conductSearch(searchPool, searchText, searchMode = "key") {
     const possibleResults = [];
 
     if (searchPool === this.mainSection) {
       const temporaryResultCarrier = searchPool.querySelectorAll(
-        `[key*="${searchText.trim()}" i]`
+        `[${searchMode}*="${searchText.trim()}" i]:not(.syncScrollAddition)`
       );
 
       if (temporaryResultCarrier) {
@@ -156,7 +153,7 @@ class SearchBarUtility {
     } else {
       for (const pool of searchPool) {
         const temporaryResultCarrier = pool.querySelectorAll(
-          `[key*="${searchText.trim()}" i]`
+          `[${searchMode}*="${searchText.trim()}" i]:not(.syncScrollAddition)`
         );
 
         if (temporaryResultCarrier) {
@@ -201,25 +198,6 @@ class SearchBarUtility {
     }
   }
 
-  // async removeNodesAsynchronously(counter, nodeList) {
-  //     if (nodeList && nodeList.length > counter >= 0) {
-  //         do {
-  //             if (nodeList[counter]) {
-  //                 nodeList[counter].classList.add("dont_display");
-  //             }
-  //             ++counter;
-  //
-  //         } while (counter < nodeList.length && (counter % 40 !== 0))
-  //
-  //
-  //         await setTimeout(() => {
-  //             this.removeNodesAsynchronously(counter, nodeList);
-  //         })
-  //
-  //
-  //     }
-  // }
-
   async resetList() {
     await this.removeRemainingIrrelevantResults("");
     const rootNodes = document.querySelectorAll(
@@ -240,6 +218,45 @@ class SearchBarUtility {
 
     for (const lastResult of lastResults) {
       lastResult.classList.remove("first_search_result");
+    }
+  }
+
+  controlInputEvent(event) {
+    event.preventDefault();
+    const searchMode = this.searchField.classList.contains("cjw_key_search")
+      ? "key"
+      : "value";
+
+    clearTimeout(this.timeout);
+
+    this.timeout = setTimeout(() => {
+      this.searchField.disabled = true;
+      this.reactToSearchInput(event.target.value, searchMode).then(() => {
+        this.searchField.disabled = false;
+      });
+    }, 750);
+  }
+
+  handleKeyEvent(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      event.stopPropagation();
+    } else if (
+      event.keyCode === 77 &&
+      event.altKey &&
+      !this.searchField.classList.contains("keyEventHandled")
+    ) {
+      if (this.searchField.classList.contains("cjw_key_search")) {
+        this.searchField.classList.remove("cjw_key_search");
+        this.searchField.classList.add("cjw_value_search");
+        this.searchField.placeholder = "Search Value...";
+      } else {
+        this.searchField.classList.remove("cjw_value_search");
+        this.searchField.classList.add("cjw_key_search");
+        this.searchField.placeholder = "Search Key...";
+      }
+
+      this.searchField.classList.add("keyEventHandled");
     }
   }
 }

@@ -57,10 +57,19 @@
     transition: all 0.3s ease;
 }
 
-#cjw_searchbar:focus, #cjw_searchbar:hover {
-    border-color: #f8ad88;
+.cjw_key_search:focus, .cjw_key_search:hover {
+    /*border-color: #f8ad88;*/
+    border-color: #52bfec;
     outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(241,90,16,0.25);
+    /*box-shadow: 0 0 0 0.2rem rgba(241,90,16,0.25);*/
+    box-shadow: 0 0 0 0.2rem #81C5FF;
+    transition: all 0.3s ease;
+}
+
+.cjw_value_search:focus, .cjw_value_search:hover {
+    border-color: #3dc739;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem #7ccb83;
     transition: all 0.3s ease;
 }
 
