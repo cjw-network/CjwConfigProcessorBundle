@@ -21,15 +21,20 @@
     margin-left: 10px;
 }
 
+.addition {
+    /*background-color: #ffe1bc;*/
+    background-color: #d0f5bc;
+}
+
 .difference {
-    background-color: #ffe1bc;
+    background-color: #e3f6f6;
     /*color: white;*/
 }
 
-.similarity {
-    background-color: #e3f0fd;
-    /*color: white;*/
-}
+/*.similarity {*/
+/*    background-color: #e3f0fd;*/
+/*    !*color: white;*!*/
+/*}*/
 
 .cjw_site_access_selectors {
     margin-top: 25px;

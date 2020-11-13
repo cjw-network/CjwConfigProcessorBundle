@@ -2,6 +2,7 @@ class SiteAccessDifferencesHighlighter {
   firstList;
   secondList;
   differenceHighlightButton;
+  utility;
 
   constructor() {
     this.firstList = document.querySelector(".first_list");
@@ -9,6 +10,7 @@ class SiteAccessDifferencesHighlighter {
     this.differenceHighlightButton = document.querySelector(
       "[cjw_id = cjw_highlight_differences]"
     );
+    this.utility = new Utility();
   }
 
   setUpHighlighterButton() {
@@ -28,13 +30,29 @@ class SiteAccessDifferencesHighlighter {
     const results = [];
 
     const uniqueKeys = this.findOutMissingKeys(
-      Array.from(this.firstList.querySelectorAll(".param_list_keys")),
-      Array.from(this.secondList.querySelectorAll(".param_list_keys"))
+      Array.from(
+        this.firstList.querySelectorAll(
+          ".param_list_keys:not(.syncScrollAddition)"
+        )
+      ),
+      Array.from(
+        this.secondList.querySelectorAll(
+          ".param_list_keys:not(.syncScrollAddition)"
+        )
+      )
     );
 
     const uniqueValues = this.findOutDifferentValues(
-      Array.from(this.firstList.querySelectorAll(".param_list_values")),
-      Array.from(this.secondList.querySelectorAll(".param_list_values"))
+      Array.from(
+        this.firstList.querySelectorAll(
+          ".param_list_values:not(.syncScrollAddition)"
+        )
+      ),
+      Array.from(
+        this.secondList.querySelectorAll(
+          ".param_list_values:not(.syncScrollAddition)"
+        )
+      )
     );
 
     results.push(...uniqueKeys, ...uniqueValues);
@@ -50,45 +68,41 @@ class SiteAccessDifferencesHighlighter {
     ) {
       const results = [];
 
-      const onlyFirstListKeys = firstListKeys.filter((key) => {
-        const actualKey = key.getAttribute("key");
+      const onlyFirstListKeys = this.filterKeysAccrossLists(
+        firstListKeys,
+        this.secondList
+      );
 
-        const counterpartKey = secondListKeys.find(
-          (key) =>
-            key.getAttribute("key") === actualKey &&
-            !key.classList.contains("syncScrollAddition")
-        );
-
-        return !counterpartKey;
-      });
-
-      const onlySecondListKeys = secondListKeys.filter((key) => {
-        const actualKey = key.getAttribute("key");
-
-        const counterpartKey = firstListKeys.find(
-          (key) =>
-            key.getAttribute("key") === actualKey &&
-            !key.classList.contains("syncScrollAddition")
-        );
-
-        return !counterpartKey;
-      });
+      const onlySecondListKeys = this.filterKeysAccrossLists(
+        secondListKeys,
+        this.firstList
+      );
 
       results.push(...onlyFirstListKeys, ...onlySecondListKeys);
 
-      // performance dips dramatically (site becomes unusable, if handled outside of this function)
-      for (const uniqueKey of results) {
-        const unhighlightedKeys = uniqueKey.parentElement.querySelectorAll(
-          ".param_list_keys:not(.difference)"
-        );
-
-        for (const unhighlightedKey of unhighlightedKeys) {
-          unhighlightedKey.classList.add("difference");
-        }
-      }
-
       return results;
     }
+  }
+
+  filterKeysAccrossLists(keyList, listOfPotentialTwinKeys) {
+    const results = [];
+    if (keyList && keyList.length > 0 && listOfPotentialTwinKeys) {
+      for (const key of keyList) {
+        const potentialTwinKeys = listOfPotentialTwinKeys.querySelectorAll(
+          `[key="${key.getAttribute("key")}"]:not(.syncScrollAddition)`
+        );
+
+        if (
+          !potentialTwinKeys ||
+          potentialTwinKeys.length === 0 ||
+          !this.utility.findCounterpartNode(key, potentialTwinKeys)
+        ) {
+          results.push(key);
+        }
+      }
+    }
+
+    return results;
   }
 
   findOutDifferentValues(firstListValues, secondListValues) {
@@ -99,15 +113,15 @@ class SiteAccessDifferencesHighlighter {
     ) {
       const results = [];
 
-      const onlyFirstListValues = firstListValues.filter((value) => {
-        // if a counter part as a value has been found, it will return "false" (since then the value is not unique), it returns "true" if it is unique
-        return this.filterValuesAcrossLists(value, secondListValues);
-      });
+      const onlyFirstListValues = this.filterValuesAcrossLists(
+        firstListValues,
+        this.secondList
+      );
 
-      const onlySecondListValues = secondListValues.filter((value) => {
-        // if a counter part as a value has been found, it will return "false" (since then the value is not unique), it returns "true" if it is unique
-        return this.filterValuesAcrossLists(value, firstListValues);
-      });
+      const onlySecondListValues = this.filterValuesAcrossLists(
+        secondListValues,
+        this.firstList
+      );
 
       results.push(...onlyFirstListValues, ...onlySecondListValues);
 
@@ -115,32 +129,60 @@ class SiteAccessDifferencesHighlighter {
     }
   }
 
-  filterValuesAcrossLists(value, compareValueList) {
-    if (value && compareValueList) {
-      const correspondingKey = value.parentElement?.children[0]?.getAttribute(
-        "key"
-      );
+  filterValuesAcrossLists(valueList, listOfPotentialTwinValues) {
+    const results = [];
+    if (valueList && valueList.length > 0 && listOfPotentialTwinValues) {
+      for (const value of valueList) {
+        let valueKeyParent;
 
-      const actualValue = value.getAttribute("value");
+        if (value.classList.contains("inline_value")) {
+          valueKeyParent = value.parentElement;
+        } else {
+          valueKeyParent = value.parentElement.children[0];
+        }
 
-      const counterPartValue = compareValueList.find((node) => {
-        return this.findCounterPartValue(node, correspondingKey, actualValue);
-      });
+        const potentialTwinValues = listOfPotentialTwinValues.querySelectorAll(
+          `[value='${value.getAttribute("value")}']:not(.syncScrollAddition)`
+        );
 
-      // does counterPartValue equate to "true", meaning an object has been found, or not
-      return !counterPartValue;
+        if (!potentialTwinValues || potentialTwinValues.length === 0) {
+          results.push(value);
+        }
+
+        for (const potentialValue of potentialTwinValues) {
+          if (
+            this.findCounterPartValue(
+              potentialValue,
+              valueKeyParent,
+              value.getAttribute("value")
+            )
+          ) {
+            break;
+          }
+        }
+      }
     }
 
-    return false;
+    return results;
   }
 
   findCounterPartValue(node, comparisonKey, comparisonValue) {
     if (node) {
-      const ownKey = node.parentElement?.children[0]?.getAttribute("key");
+      let ownKey;
+      if (node.classList.contains("inline_value")) {
+        ownKey = node.parentElement;
+      } else {
+        ownKey = node.parentElement.children[0];
+      }
+      // .getAttribute("key");
 
       const ownActualValue = node.getAttribute("value");
 
-      return ownKey === comparisonKey && ownActualValue === comparisonValue;
+      return (
+        !node.classList.contains("syncScrollAddition") &&
+        ownActualValue === comparisonValue &&
+        this.utility.findCounterpartNode(comparisonKey, [ownKey])
+      );
     }
 
     return false;
@@ -149,17 +191,46 @@ class SiteAccessDifferencesHighlighter {
   highlightUniqueNodes(uniqueNodeList) {
     if (uniqueNodeList) {
       for (const uniqueNode of uniqueNodeList) {
-        uniqueNode.classList.add("difference");
+        uniqueNode.classList.add("addition");
+
+        this.highlightParentKeys(uniqueNode);
+      }
+    }
+  }
+
+  highlightParentKeys(uniqueNode) {
+    if (uniqueNode) {
+      const uniqueParent = uniqueNode.parentElement;
+
+      if (uniqueParent.parentElement) {
+        let upperKey = uniqueParent.parentElement.children[0];
+
+        if (uniqueNode.classList.contains("inline_value")) {
+          upperKey = uniqueParent;
+        } else if (uniqueNode.classList.contains("param_list_values")) {
+          upperKey = uniqueParent.children[0];
+        }
+
+        if (
+          !upperKey.classList.contains("param_list_items") &&
+          !upperKey.classList.contains("addition") &&
+          !upperKey.classList.contains("difference")
+        ) {
+          upperKey.classList.add("difference");
+          if (!upperKey.classList.contains("top_nodes")) {
+            this.highlightParentKeys(upperKey);
+          }
+        }
       }
     }
   }
 
   highlightSimilarNodes() {
     const similarNodesInFirstList = this.firstList.querySelectorAll(
-      "div:not(.difference):not(.syncScrollAddition)"
+      "div:not(.difference):not(.addition):not(.syncScrollAddition)"
     );
     const similarNodesInSecondList = this.secondList.querySelectorAll(
-      "div:not(.difference):not(.syncScrollAddition)"
+      "div:not(.difference):not(.addition):not(.syncScrollAddition)"
     );
 
     const results = [];
@@ -175,7 +246,9 @@ class SiteAccessDifferencesHighlighter {
 
   removeHighlighting() {
     const highlightedSimilarNodes = document.querySelectorAll(".similarity");
-    const highlightedUniqueNodes = document.querySelectorAll(".difference");
+    const highlightedUniqueNodes = document.querySelectorAll(
+      ".difference, .addition"
+    );
 
     for (const highlightedNode of highlightedSimilarNodes) {
       highlightedNode.classList.remove("similarity");
@@ -183,6 +256,7 @@ class SiteAccessDifferencesHighlighter {
 
     for (const highlightedNode of highlightedUniqueNodes) {
       highlightedNode.classList.remove("difference");
+      highlightedNode.classList.remove("addition");
     }
   }
 
