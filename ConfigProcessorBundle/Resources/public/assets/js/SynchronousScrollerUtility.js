@@ -5,6 +5,11 @@ class SynchronousScrollerUtility {
   comparisonViewFirstList;
   /** Simply the container for the second list of site access variables. */
   comparisonViewSecondList;
+  /**
+   * Instance of the utility class for access to certain functions in that class.
+   * @see Utility
+   */
+  utility;
 
   constructor() {
     this.syncScrollButton = document.querySelector(
@@ -13,6 +18,8 @@ class SynchronousScrollerUtility {
 
     this.comparisonViewFirstList = document.querySelector(".first_list");
     this.comparisonViewSecondList = document.querySelector(".second_list");
+
+    this.utility = new Utility();
   }
 
   /**
@@ -72,6 +79,8 @@ class SynchronousScrollerUtility {
     secondList = Array.from(secondList);
 
     this.goThroughChildrenOfContainer(firstList, secondList);
+
+    this.provideAppropriateOnclicksForAddedNodes();
   }
 
   /**
@@ -92,15 +101,16 @@ class SynchronousScrollerUtility {
   /**
    * This function takes two lists and goes through every key and subkey as well
    * as their values in order to determine, where nodes are missing and add the missing nodes in.
+   *
    * @param firstList A param_list_items-container which contains a value or a key or both.
    * @param secondList A second param_list_items-container which contains a value or a key or both.
    */
   goThroughChildrenOfContainer(firstList, secondList) {
     for (let i = 0; i < firstList.length; ++i) {
-      let keyList = this.getDirectKeyChildrenOfContainersDirectChildren(
+      let keyList = this.utility.getDirectKeyChildrenOfContainersDirectChildren(
         firstList[i]
       );
-      let secondKeyList = this.getDirectKeyChildrenOfContainersDirectChildren(
+      let secondKeyList = this.utility.getDirectKeyChildrenOfContainersDirectChildren(
         secondList[i]
       );
 
@@ -125,7 +135,9 @@ class SynchronousScrollerUtility {
           this.goThroughKeyNodeLists(keyList, secondKeyList);
           // Since the second list could have been changed during the function before, the list of keys is updated prior to going into the function
           this.goThroughKeyNodeLists(
-            this.getDirectKeyChildrenOfContainersDirectChildren(secondList[i]),
+            this.utility.getDirectKeyChildrenOfContainersDirectChildren(
+              secondList[i]
+            ),
             keyList
           );
         }
@@ -133,10 +145,10 @@ class SynchronousScrollerUtility {
       // If there are no keys in either list, there are either only values or there is nothing left at all (a dead end)
       // There cannot be a combination of a key and a value in the same container, since these are generally combined to one div
       else {
-        const firstValueList = this.getValueChildrenOfContainersDirectChildren(
+        const firstValueList = this.utility.getValueChildrenOfContainersDirectChildren(
           firstList[i]
         );
-        const secondValueList = this.getValueChildrenOfContainersDirectChildren(
+        const secondValueList = this.utility.getValueChildrenOfContainersDirectChildren(
           secondList[i]
         );
 
@@ -234,11 +246,13 @@ class SynchronousScrollerUtility {
   }
 
   /**
-   * The value version of {@see goThroughKeyNodeLists}. Where lists of values are gone through and missing ones are added to the
+   * The value version of goThroughKeyNodeLists. Where lists of values are gone through and missing ones are added to the
    * lists.
    *
    * @param firstValueList The first list of values which is gone through primarily.
    * @param secondValueList The second list of values which are checked against the ones from the first list.
+   *
+   * @see goThroughKeyNodeLists
    */
   goThroughValuesOfNodeLists(firstValueList, secondValueList) {
     if (firstValueList && secondValueList) {
@@ -299,8 +313,38 @@ class SynchronousScrollerUtility {
   }
 
   /**
+   * Takes all added nodes of the process and adds an appropriate onclick listener
+   * to all of them, to ensure the correct functionality, when synchronously opening the
+   * subtrees.
+   */
+  provideAppropriateOnclicksForAddedNodes() {
+    const additionsMade = document.querySelectorAll(
+      ".syncScrollAddition:not(.param_list_keys)"
+    );
+    const parameterDisplay = new ParameterDisplay();
+
+    for (const addition of additionsMade) {
+      if (addition.classList.contains("param_list_values")) {
+        const firstChildOfParentContainer = addition.parentElement.children[0];
+
+        if (
+          firstChildOfParentContainer.classList.contains(
+            "param_list_key_without_child"
+          )
+        ) {
+          firstChildOfParentContainer.onclick = "";
+          parameterDisplay.setAppropriateOnClick(addition.parentElement);
+        }
+      }
+
+      parameterDisplay.setAppropriateOnClick(addition);
+    }
+  }
+
+  /**
    * Takes a given key and list and searches a key with the same "key"-value as the one given.
    * If it is found, the index of the key in the list is given back.
+   *
    * @param key The key to be searched for in the given list.
    * @param compareList The array of keys in which to search for the key.
    * @returns {number} Returns a number which represents the index of the key or "-1" if the key couldn't be found.
@@ -318,12 +362,14 @@ class SynchronousScrollerUtility {
   }
 
   /**
-   * The value counterpart of {@see indexOfKeyInOtherList}, which searches for a given value which matches the
+   * The value counterpart of indexOfKeyInOtherList, which searches for a given value which matches the
    * "value"-value of the given node in the given list.
    *
    * @param {HTMLElement} value The given value for which to search in the list.
    * @param {array} compareList The list in which the value is to be searched for.
    * @returns {number} Returns the index of the found value in the array or "-1" if no value could be found.
+   *
+   * @see indexOfKeyInOtherList
    */
   indexOfValueInOtherList(value, compareList) {
     if (compareList && compareList.length > 0) {
@@ -420,13 +466,15 @@ class SynchronousScrollerUtility {
   }
 
   /**
-   * The value counter part to the {@see addInMultipleKeyNodesIntoList}, which takes a list of values and adds them into
+   * The value counter part to the addInMultipleKeyNodesIntoList, which takes a list of values and adds them into
    * a given list or after a given node. Even though both values are optional, at least one must be given or otherwise the
    * function will not do anything.
    *
    * @param {array<HTMLElement>} arrayOfValues An array of value nodes which is going to be added to the given nodes.
    * @param {HTMLElement} nodeAfterWhichToAdd A node after which the given values are going to be added.
    * @param {HTMLElement} listToBeAddedTo An element which serves as the list the values are being added into.
+   *
+   * @see addInMultipleKeyNodesIntoList
    */
   addInMultipleValuesIntoList(
     arrayOfValues,
@@ -468,67 +516,6 @@ class SynchronousScrollerUtility {
       for (const button of subTreeAndLocationButtons) {
         button.parentElement.removeChild(button);
       }
-    }
-  }
-
-  /**
-   * Takes a given container and searches for the direct param_list_keys under the direct children
-   * param_list_items within the container.
-   *
-   * @param {HTMLElement} containerNode The node in which to search for the keys.
-   * @returns {array<HTMLElement>} Returns either the keys found in the children of the container or an empty array in case no keys are found.
-   */
-  getDirectKeyChildrenOfContainersDirectChildren(containerNode) {
-    if (containerNode) {
-      const result = [];
-
-      if (!containerNode.children || containerNode.children.length === 0) {
-        return result;
-      }
-
-      for (const child of containerNode.children) {
-        if (child.classList.contains("param_list_items")) {
-          if (
-            child.children[0] &&
-            child.children[0].classList.contains("param_list_keys")
-          ) {
-            result.push(child.children[0]);
-          }
-        }
-      }
-
-      return result;
-    }
-  }
-
-  /**
-   * Value counterpart to {@see getDirectKeyChildrenOfContainersDirectChildren}, which takes a given container element
-   * and searches within its direct param_list_items children for value nodes.
-   *
-   * @param {HTMLElement} containerNode The given container node in which to search for values.
-   * @returns {array<HTMLElement>} Returns an array with the found values or an empty array if no values have been found.
-   */
-  getValueChildrenOfContainersDirectChildren(containerNode) {
-    if (containerNode) {
-      const result = [];
-
-      if (!containerNode.children || containerNode.children.length === 0) {
-        return result;
-      }
-
-      for (const child of containerNode.children) {
-        if (child.classList.contains("param_list_items")) {
-          for (const grandChild of child.children) {
-            if (grandChild.classList.contains("param_list_values")) {
-              result.push(grandChild);
-            }
-          }
-        } else if (child.classList.contains("param_list_values")) {
-          result.push(child);
-        }
-      }
-
-      return result;
     }
   }
 

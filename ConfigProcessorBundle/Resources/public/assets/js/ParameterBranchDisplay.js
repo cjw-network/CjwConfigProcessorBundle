@@ -41,24 +41,11 @@ class ParameterBranchDisplay {
   //---------------------------------------------------------------------------------------------------------------
 
   openSubTree(nodeToFocus) {
-    const searchLimiter = nodeToFocus.querySelector(".param_list_keys");
-
-    this.displayEntireBranch(nodeToFocus);
-
-    if (document.querySelector(".second_list")) {
-      // let testText = `[key="${searchLimiter.getAttribute("key")}"]`;
-      const desiredNodes = document.querySelectorAll(
-        `[key="${searchLimiter.getAttribute("key")}"]`
-      );
-
-      if (desiredNodes.length > 1) {
-        const desiredNode =
-          desiredNodes[0].parentElement === nodeToFocus
-            ? desiredNodes[1].parentElement
-            : desiredNodes[0].parentElement;
-
-        this.displayEntireBranch(desiredNode);
-      }
+    if (nodeToFocus.querySelector(".param_list_items:not(.dont_display)")) {
+      let clickEvent = new Event("click");
+      nodeToFocus.dispatchEvent(clickEvent);
+    } else {
+      this.displayEntireBranch(nodeToFocus);
     }
   }
 

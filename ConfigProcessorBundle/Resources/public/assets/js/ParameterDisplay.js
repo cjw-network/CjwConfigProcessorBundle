@@ -1,5 +1,11 @@
 class ParameterDisplay {
-  paramBranchDisplay;
+  utility;
+
+  constructor() {
+    if (document.querySelector(".first_list, .second_list")) {
+      this.utility = new Utility();
+    }
+  }
 
   cleanUpList() {
     const topNodes = document.querySelectorAll(
@@ -65,7 +71,7 @@ class ParameterDisplay {
     }
   }
 
-  getListEntryNodes(targetNode) {
+  getListEntryNodes(targetNode, counterClick = false) {
     if (targetNode && targetNode.children.length > 0) {
       const toggler = targetNode.querySelector(
         ".param_list_keys > .param_item_toggle"
@@ -85,10 +91,14 @@ class ParameterDisplay {
 
         this.closeListEntryNodes(event.currentTarget);
       };
+
+      if (this.utility && !counterClick) {
+        this.handleSynchronousClicking(targetNode);
+      }
     }
   }
 
-  closeListEntryNodes(targetNode) {
+  closeListEntryNodes(targetNode, counterClick = false) {
     if (targetNode && targetNode.children.length > 0) {
       const toggler = targetNode.querySelector(
         ".param_list_keys > .param_item_toggle"
@@ -96,7 +106,6 @@ class ParameterDisplay {
 
       if (toggler) {
         this.setTogglerSymbol("next", toggler);
-        // toggler.innerText = "+";
       }
 
       const childNodes = targetNode.querySelectorAll(
@@ -128,6 +137,31 @@ class ParameterDisplay {
 
         this.getListEntryNodes(event.currentTarget);
       };
+
+      if (this.utility && !counterClick) {
+        this.handleSynchronousClicking(targetNode, true);
+      }
+    }
+  }
+
+  handleSynchronousClicking(targetNode, closeAgain = false) {
+    if (this.utility) {
+      const keyOfTargetNode = targetNode.children[0];
+      const listOfPotentialNodes = document.querySelectorAll(
+        `[key="${keyOfTargetNode.getAttribute("key")}"]`
+      );
+      const counterpartNode = this.utility.findCounterpartNode(
+        keyOfTargetNode,
+        listOfPotentialNodes
+      );
+
+      if (counterpartNode) {
+        if (!closeAgain) {
+          this.getListEntryNodes(counterpartNode.parentElement, true);
+        } else {
+          this.closeListEntryNodes(counterpartNode.parentElement, true);
+        }
+      }
     }
   }
 

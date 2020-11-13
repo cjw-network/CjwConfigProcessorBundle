@@ -136,6 +136,10 @@
 }
 
 .syncScrollAddition {
-    color: lightgrey;
-    text-decoration-line: line-through;
+    color: white;
+    /*text-decoration-line: line-through;*/
+}
+
+.syncScrollAddition:not(.param_list_key_without_child) {
+    text-indent: 20px;
 }
