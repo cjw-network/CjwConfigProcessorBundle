@@ -22,7 +22,7 @@ html {
     font-size: 0.96rem;
 }
 
-.searchbar > input {
+.searchbar > .cjw_searchbar_container {
     margin-left: 10px;
     width: 25vw;
     box-sizing: border-box;
@@ -35,6 +35,37 @@ html {
     height: auto;
     z-index: 100;
     width: 40%;
+}
+
+.cjw_searchbar_container {
+    position: relative;
+    /*width: 25vw;*/
+}
+
+#cjw_searchbar_label {
+    position: absolute;
+    right: 10px;
+    top: 20%;
+    border-left: 1px transparent;
+}
+
+#cjw_searchbar_label:hover {
+    cursor: pointer;
+    background-color: white;
+    border-left: 3px solid white;
+    transition: all 0.2s ease-in-out;
+}
+
+#cjw_searchbar_label > svg {
+    fill: lightgrey;
+    fill-opacity: 40%;
+    transition: all 0.2s ease-in;
+}
+
+#cjw_searchbar_label > svg:hover {
+    fill: black;
+    fill-opacity: 100%;
+    transition: all 0.2s ease-in;
 }
 
 .cjw_footer {

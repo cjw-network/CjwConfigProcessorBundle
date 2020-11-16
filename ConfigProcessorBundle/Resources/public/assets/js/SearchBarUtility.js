@@ -1,11 +1,13 @@
 class SearchBarUtility {
   mainSection;
   searchField;
+  modeSwitchButton;
   timeout;
 
   constructor() {
     this.mainSection = document.querySelector(".cjw_main_section");
     this.searchField = document.querySelector("#cjw_searchbar");
+    this.modeSwitchButton = document.querySelector("#cjw_searchbar_label");
   }
 
   /**
@@ -21,6 +23,11 @@ class SearchBarUtility {
         "input",
         this.controlInputEvent.bind(this)
       );
+      //The switch button should do the same as the key combination for the searchbar
+      this.modeSwitchButton.addEventListener(
+        "click",
+        this.handleModeSwitchOnClick.bind(this)
+      );
       //Event listener which handles the search mode being switched and the enter-key event
       this.searchField.addEventListener(
         "keydown",
@@ -28,8 +35,62 @@ class SearchBarUtility {
       );
       // Event listener for the debouncing of the key down event (otherwise the event is triggered too often)
       this.searchField.addEventListener("keyup", () => {
-        this.searchField.classList.remove("keyEventHandled");
+        this.searchField.classList.remove("switchModeHandled");
       });
+    }
+  }
+
+  controlInputEvent(event) {
+    event.preventDefault();
+    const searchMode = this.searchField.classList.contains("cjw_key_search")
+      ? "key"
+      : "value";
+
+    clearTimeout(this.timeout);
+
+    this.timeout = setTimeout(() => {
+      this.searchField.disabled = true;
+      this.reactToSearchInput(event.target.value, searchMode).then(() => {
+        this.searchField.disabled = false;
+      });
+    }, 750);
+  }
+
+  handleModeSwitchOnClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!this.searchField.classList.contains("switchModeHandled")) {
+      this.switchSearchMode();
+      this.searchField.classList.add("switchModeHandled");
+    } else {
+      this.searchField.classList.remove("switchModeHandled");
+    }
+  }
+
+  handleKeyEvent(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      event.stopPropagation();
+    } else if (
+      event.keyCode === 77 &&
+      event.altKey &&
+      !this.searchField.classList.contains("switchModeHandled")
+    ) {
+      this.switchSearchMode();
+      this.searchField.classList.add("switchModeHandled");
+    }
+  }
+
+  switchSearchMode() {
+    if (this.searchField.classList.contains("cjw_key_search")) {
+      this.searchField.classList.remove("cjw_key_search");
+      this.searchField.classList.add("cjw_value_search");
+      this.searchField.placeholder = "Search Value...";
+    } else {
+      this.searchField.classList.remove("cjw_value_search");
+      this.searchField.classList.add("cjw_key_search");
+      this.searchField.placeholder = "Search Key...";
     }
   }
 
@@ -242,45 +303,6 @@ class SearchBarUtility {
 
     for (const lastResult of lastResults) {
       lastResult.classList.remove("search_result");
-    }
-  }
-
-  controlInputEvent(event) {
-    event.preventDefault();
-    const searchMode = this.searchField.classList.contains("cjw_key_search")
-      ? "key"
-      : "value";
-
-    clearTimeout(this.timeout);
-
-    this.timeout = setTimeout(() => {
-      this.searchField.disabled = true;
-      this.reactToSearchInput(event.target.value, searchMode).then(() => {
-        this.searchField.disabled = false;
-      });
-    }, 750);
-  }
-
-  handleKeyEvent(event) {
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      event.stopPropagation();
-    } else if (
-      event.keyCode === 77 &&
-      event.altKey &&
-      !this.searchField.classList.contains("keyEventHandled")
-    ) {
-      if (this.searchField.classList.contains("cjw_key_search")) {
-        this.searchField.classList.remove("cjw_key_search");
-        this.searchField.classList.add("cjw_value_search");
-        this.searchField.placeholder = "Search Value...";
-      } else {
-        this.searchField.classList.remove("cjw_value_search");
-        this.searchField.classList.add("cjw_key_search");
-        this.searchField.placeholder = "Search Key...";
-      }
-
-      this.searchField.classList.add("keyEventHandled");
     }
   }
 }

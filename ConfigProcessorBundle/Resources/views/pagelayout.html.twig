@@ -29,8 +29,15 @@
 
                 {% block param_content %}
                     {% block search_bar %}
-                        <form class="searchbar">
-                            <input id="cjw_searchbar" class="form-control cjw_key_search" type="text" placeholder="Search Key...">
+                        <form class="searchbar d-inline-flex">
+                            <div class="cjw_searchbar_container input-group-btn d-inline-flex">
+                                <label id="cjw_searchbar_label" for="cjw_searchbar">
+                                    <svg class="ez-icon ez-icon--small-medium">
+                                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#filters"></use>
+                                    </svg>
+                                </label>
+                                <input id="cjw_searchbar" name="cjw_searchbar" class="form-control cjw_key_search" type="text" placeholder="Search Key...">
+                            </div>
                         </form>
                     {% endblock %}
                 {% endblock %}
