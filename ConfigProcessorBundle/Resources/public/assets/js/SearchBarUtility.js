@@ -8,55 +8,77 @@ class SearchBarUtility {
     this.searchField = document.querySelector("#cjw_searchbar");
   }
 
+  /**
+   * Sets up the searchbar. That means it provides the searchbar with the necessary listeneres and functions
+   * for it to handle its task.
+   */
   setUpSearchBar() {
-    if (this.mainSection) {
+    if (this.mainSection && this.searchField) {
       this.timeout = null;
 
+      // Event listener for the actual text being put into the searchbar
       this.searchField.addEventListener(
         "input",
         this.controlInputEvent.bind(this)
       );
+      //Event listener which handles the search mode being switched and the enter-key event
       this.searchField.addEventListener(
         "keydown",
         this.handleKeyEvent.bind(this)
       );
+      // Event listener for the debouncing of the key down event (otherwise the event is triggered too often)
       this.searchField.addEventListener("keyup", () => {
         this.searchField.classList.remove("keyEventHandled");
       });
     }
   }
 
-  async reactToSearchInput(originalQueryText, searchMode) {
+  /**
+   * Reacts to a given search text. It takes the text and uses it to search for nodes on the site which fit the
+   * search text. It is basically the main trigger for the search.
+   *
+   * @param {string} originalQueryText The text being put into the search field without any changes by the code.
+   * @param {string} searchMode The mode with which to search.
+   * @returns {Promise<void>} Returns a promise which can be ignored as it does not provide much.
+   */
+  async reactToSearchInput(originalQueryText, searchMode = "key") {
     const queryText = originalQueryText.trim();
 
+    // If the search field input has been emptied, empty the list of results too
     if (queryText.length === 0) {
       await this.resetList();
       return;
     }
 
+    // This is responsible for handling the subtree-search, where multiple segments of the key are entered into the search field
     if (
       searchMode === "key" &&
       (new RegExp(/^[.:]/).test(queryText) ||
         new RegExp(/[.:]$/).test(queryText))
     ) {
+      // since when the input ends on an "end"-symbol for the subtree-segment, there shouldn't be a display of anything
       return;
     }
 
     if (this.mainSection) {
+      // remove prior search results first
       this.removeNodeHighlightings();
 
       let searchText = queryText;
       let searchPool = this.mainSection;
 
+      // In the case the user is searching for a key
       if (searchMode === "key") {
         const keys = queryText.split(/[.:]/);
 
         if (keys && keys.length > 1) {
+          // the last segment of the search text is the one the user actually searches for, so remove that and treat the rest as subtree segments to go through
           searchText = keys.splice(keys.length - 1, 1)[0];
           searchPool = this.lookForKeyHierachie(keys);
         }
       }
 
+      // remove every visible node, which does not fit the search text
       await this.removeRemainingIrrelevantResults(searchText, searchMode);
 
       const possibleResults = this.conductSearch(
@@ -65,19 +87,21 @@ class SearchBarUtility {
         searchMode
       );
 
+      // Simply display the first result of the search (if there is one)
       if (possibleResults && possibleResults.length > 0) {
         possibleResults[0].scrollIntoView();
       }
 
+      // build the rest of the search results
       await this.createNodeListToRootAsynchronously(0, possibleResults);
     }
   }
 
   removeNodeHighlightings() {
-    const highlightedNodes = document.querySelectorAll(".first_search_result");
+    const highlightedNodes = document.querySelectorAll(".search_result");
 
     for (const highlightedNode of highlightedNodes) {
-      highlightedNode.classList.remove("first_search_result");
+      highlightedNode.classList.remove("search_result");
     }
   }
 
@@ -172,7 +196,7 @@ class SearchBarUtility {
 
         if (result) {
           this.createNodeListToRoot(result);
-          result.classList.add("first_search_result");
+          result.classList.add("search_result");
         }
 
         ++counter;
@@ -214,10 +238,10 @@ class SearchBarUtility {
       }
     }
 
-    const lastResults = document.querySelectorAll(".first_search_result");
+    const lastResults = document.querySelectorAll(".search_result");
 
     for (const lastResult of lastResults) {
-      lastResult.classList.remove("first_search_result");
+      lastResult.classList.remove("search_result");
     }
   }
 

@@ -50,13 +50,13 @@ html {
     overflow: hidden;
 }
 
-.first_search_result {
+.search_result {
     background-color: #e3f6f6 !important;
     transition: all 0.5s ease !important;
     color: black !important;
 }
 
-.first_search_result:hover {
+.search_result:hover {
     background-color: white !important;
 }
 

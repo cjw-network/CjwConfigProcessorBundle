@@ -149,6 +149,7 @@ class SiteAccessDifferencesHighlighter {
           results.push(value);
         }
 
+        let counterpartExists = false;
         for (const potentialValue of potentialTwinValues) {
           if (
             this.findCounterPartValue(
@@ -157,8 +158,13 @@ class SiteAccessDifferencesHighlighter {
               value.getAttribute("value")
             )
           ) {
+            counterpartExists = true;
             break;
           }
+        }
+
+        if (!counterpartExists) {
+          results.push(value);
         }
       }
     }
@@ -174,7 +180,6 @@ class SiteAccessDifferencesHighlighter {
       } else {
         ownKey = node.parentElement.children[0];
       }
-      // .getAttribute("key");
 
       const ownActualValue = node.getAttribute("value");
 

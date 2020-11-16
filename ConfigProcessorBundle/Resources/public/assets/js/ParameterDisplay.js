@@ -178,7 +178,7 @@ class ParameterDisplay {
       }
     }
 
-    if (!doesHaveChildren) {
+    if (node.classList.contains("param_list_items") && !doesHaveChildren) {
       const keysWithoutChildren = node.querySelectorAll(".param_list_keys");
 
       for (const key of keysWithoutChildren) {
