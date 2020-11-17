@@ -23,7 +23,17 @@ class ConfigProcessLocationInfoController extends AbstractController
 
     public function retrieveLocationsForParameter (string $parameter, string $withSiteAccess) {
         $saPresent = ($withSiteAccess && $withSiteAccess !== "false")?? false;
-        $locations = LocationRetrievalCoordinator::getParameterLocations($parameter, $saPresent);
+        $group = null;
+
+        if ($saPresent && $this->container->hasParameter("ezpublish.siteaccess.groups_by_siteaccess")) {
+            $siteAccessGroups = $this->container->getParameter("ezpublish.siteaccess.groups_by_siteaccess");
+            $siteAccess = explode(".",$parameter)[1];
+            if ($siteAccessGroups && isset($siteAccessGroups[$siteAccess])) {
+                $group = $siteAccessGroups[$siteAccess];
+            }
+        }
+
+        $locations = LocationRetrievalCoordinator::getParameterLocations($parameter, $group, $saPresent);
 
         if ($locations) {
             foreach ($locations as $location => $value) {

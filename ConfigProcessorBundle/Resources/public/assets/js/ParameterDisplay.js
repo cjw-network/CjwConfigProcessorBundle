@@ -13,12 +13,6 @@ class ParameterDisplay {
     );
 
     this.setTopNodesAsynchronously(0, topNodes);
-
-    const inlineValues = document.querySelectorAll(".inline_value");
-
-    for (const inlineValue of inlineValues) {
-      this.clearAttributes(inlineValue);
-    }
   }
 
   async setTopNodesAsynchronously(counter, nodeList) {
@@ -225,14 +219,16 @@ class ParameterDisplay {
   clearAttributes(node) {
     if (node) {
       if (
-        node.classList.contains("param_list_keys") &&
-        node.getAttribute("key").includes("\\")
+        node.classList.contains("param_list_keys")
+        // node.getAttribute("key").includes("\\")
       ) {
-        node.setAttribute("originalKey", node.getAttribute("key"));
-        node.setAttribute(
-          "key",
-          node.getAttribute("key").replaceAll("\\", " ")
-        );
+        if (node.getAttribute("key").includes("\\")) {
+          node.setAttribute("originalKey", node.getAttribute("key"));
+          node.setAttribute(
+            "key",
+            node.getAttribute("key").replaceAll("\\", " ")
+          );
+        }
 
         const inlineValueChild = node.querySelector(".inline_value");
         if (inlineValueChild) {

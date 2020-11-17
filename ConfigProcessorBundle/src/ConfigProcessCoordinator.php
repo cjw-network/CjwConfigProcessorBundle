@@ -5,7 +5,6 @@ namespace App\CJW\ConfigProcessorBundle\src;
 
 
 use App\CJW\ConfigProcessorBundle\ParameterAccessBag;
-use App\CJW\LocationAwareConfigLoadBundle\src\ConfigPathUtility;
 use Exception;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Psr\Cache\InvalidArgumentException;
@@ -88,7 +87,12 @@ class ConfigProcessCoordinator
         }
 
         if (!self::$cache) {
-            self::$cache = new PhpFilesAdapter();
+            try {
+                $cacheDir = $symContainer->get("kernel")->getCacheDir()."/cjw/config-processor-bundle/";
+                self::$cache = new PhpFilesAdapter("",0,$cacheDir);
+            } catch (Exception $error) {
+                self::$cache = new PhpFilesAdapter();
+            }
         }
 
         self::$initialized = true;

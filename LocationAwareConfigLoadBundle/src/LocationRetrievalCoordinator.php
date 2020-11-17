@@ -50,7 +50,6 @@ class LocationRetrievalCoordinator
         }
 
         try {
-            // TODO Revamp this, maybe?:
             // If parameters are returned (meaning that the kernel has booted and thus new parameters could have entered), delete the parameters present
             if (is_array(self::$parametersAndLocations) && count(self::$parametersAndLocations) > 0) {
                 self::$cache->delete("parametersAndLocations");
@@ -82,12 +81,12 @@ class LocationRetrievalCoordinator
         return self::$parametersAndLocations;
     }
 
-    public static function getParameterLocations (string $parameterName, bool $withSiteAccess = false) {
+    public static function getParameterLocations (string $parameterName, array $siteAccessGroups = null, bool $withSiteAccess = false) {
         if (!self::$initialized) {
             self::initializeCoordinator();
         }
 
-        return self::getLocationsForSpecificParameter($parameterName, $withSiteAccess);
+        return self::getLocationsForSpecificParameter($parameterName, $siteAccessGroups, $withSiteAccess);
     }
 
     /**
@@ -97,7 +96,7 @@ class LocationRetrievalCoordinator
      * @param string $parameterName
      * @return array Returns an array which is filled with all encountered locations during the configuration-loading-process.
      */
-    private static function getLocationsForSpecificParameter (string $parameterName, bool $withSiteAccess = false) {
+    private static function getLocationsForSpecificParameter (string $parameterName, array $siteAccessGroups = null, bool $withSiteAccess = false) {
         $parameterKeySegments = explode(".", $parameterName);
 
         if (is_array($parameterKeySegments) && count($parameterKeySegments) > 1) {
@@ -116,24 +115,21 @@ class LocationRetrievalCoordinator
                     }
                 }
 
-//                if (class_exists("App\CJW\ConfigProcessorBundle\src\ConfigProcessCoordinator")) {
-//                    $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
-//                    $saList = ConfigProcessCoordinator::getSiteAccessListForController($parameterKeySegments[1]);
-//
-//                    foreach ($saList as $singleSiteAccess) {
-//                        if ($singleSiteAccess !== "default" && $singleSiteAccess !== $parameterKeySegments[1] && $singleSiteAccess !== "global") {
-//                            $resultCarrier = self::getLocationsFromRewrittenSiteAccessParameter($singleSiteAccess,$parameterKeySegments);
-//
-//                            if (count($resultCarrier) > 0) {
-//                                $siteAccess = $singleSiteAccess;
-//                            }
-//
-//                            foreach($resultCarrier as $resultKey => $resultParameter) {
-//                                $results[$resultKey] = $resultParameter;
-//                            }
-//                        }
-//                    }
-//                }
+                if ($withSiteAccess && $siteAccessGroups) {
+                    foreach ($siteAccessGroups as $singleSiteAccessGroup) {
+                        if ($singleSiteAccessGroup !== "default" && $singleSiteAccessGroup !== $parameterKeySegments[1] && $singleSiteAccessGroup !== "global") {
+                            $resultCarrier = self::getLocationsFromRewrittenSiteAccessParameter($singleSiteAccessGroup,$parameterKeySegments);
+
+                            if (count($resultCarrier) > 0) {
+                                $siteAccess = $singleSiteAccessGroup;
+                            }
+
+                            foreach($resultCarrier as $resultKey => $resultParameter) {
+                                $results[$resultKey] = $resultParameter;
+                            }
+                        }
+                    }
+                }
 
                 $resultCarrier = (isset(self::$parametersAndLocations[$parameterName])) ?
                     self::$parametersAndLocations[$parameterName] : [];

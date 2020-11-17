@@ -504,10 +504,16 @@ class SynchronousScrollerUtility {
    */
   cleanUpDuplicatedNode(duplicateNode) {
     if (duplicateNode) {
+      duplicateNode.classList.remove("addition");
+
       const subNodes = duplicateNode.querySelectorAll("div, span");
 
       for (const node of subNodes) {
         node.classList.add("syncScrollAddition");
+
+        if (node.classList.contains("addition")) {
+          node.classList.remove("addition");
+        }
       }
 
       const subTreeAndLocationButtons = duplicateNode.querySelectorAll(
