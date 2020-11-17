@@ -4,6 +4,7 @@
 namespace App\CJW\LocationAwareConfigLoadBundle\src;
 
 
+use App\CJW\ConfigProcessorBundle\src\ConfigProcessCoordinator;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Symfony\Component\Cache\Exception\CacheException;
@@ -24,6 +25,10 @@ class LocationRetrievalCoordinator
     /** @var bool */
     private static $initialized = false;
 
+    /**
+     * "Initiates" the class and sets all missing and non-instantiated attributes of the class prior to the rest
+     * of its functions being called.
+     */
     public static function initializeCoordinator(): void {
         if (!self::$customConfigLoader) {
             self::$customConfigLoader = new LoadInitializer($_SERVER["APP_ENV"], (bool)$_SERVER["APP_DEBUG"]);
@@ -77,12 +82,12 @@ class LocationRetrievalCoordinator
         return self::$parametersAndLocations;
     }
 
-    public static function getParameterLocations (string $parameterName) {
+    public static function getParameterLocations (string $parameterName, bool $withSiteAccess = false) {
         if (!self::$initialized) {
             self::initializeCoordinator();
         }
 
-        return self::getLocationsForSpecificParameter($parameterName);
+        return self::getLocationsForSpecificParameter($parameterName, $withSiteAccess);
     }
 
     /**
@@ -92,24 +97,85 @@ class LocationRetrievalCoordinator
      * @param string $parameterName
      * @return array Returns an array which is filled with all encountered locations during the configuration-loading-process.
      */
-    private static function getLocationsForSpecificParameter (string $parameterName) {
+    private static function getLocationsForSpecificParameter (string $parameterName, bool $withSiteAccess = false) {
         $parameterKeySegments = explode(".", $parameterName);
 
         if (is_array($parameterKeySegments) && count($parameterKeySegments) > 1) {
-            if (!isset(self::$parametersAndLocations[$parameterName]) && ($parameterKeySegments[1] !== "default" || $parameterKeySegments[1] !== "global")) {
-                $parameterKeySegments[1] = "global";
-                $newTryParameterName = join(".",$parameterKeySegments);
+            $results = $resultCarrier = [];
+            $siteAccess = "";
 
-                if (!isset(self::$parametersAndLocations[$newTryParameterName])) {
-                    $parameterKeySegments[1] = "default";
-                    $newTryParameterName = join(".",$parameterKeySegments);
+                if ($withSiteAccess && $parameterKeySegments[1] !== "default") {
+                    $resultCarrier = self::getLocationsFromRewrittenSiteAccessParameter("default",$parameterKeySegments);
+
+                    if (count($resultCarrier) > 0) {
+                        $siteAccess = "default";
+                    }
+
+                    foreach($resultCarrier as $resultKey => $resultParameter) {
+                        $results[$resultKey] = $resultParameter;
+                    }
                 }
 
-                return isset(self::$parametersAndLocations[$newTryParameterName])? self::$parametersAndLocations[$newTryParameterName] : null;
+//                if (class_exists("App\CJW\ConfigProcessorBundle\src\ConfigProcessCoordinator")) {
+//                    $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
+//                    $saList = ConfigProcessCoordinator::getSiteAccessListForController($parameterKeySegments[1]);
+//
+//                    foreach ($saList as $singleSiteAccess) {
+//                        if ($singleSiteAccess !== "default" && $singleSiteAccess !== $parameterKeySegments[1] && $singleSiteAccess !== "global") {
+//                            $resultCarrier = self::getLocationsFromRewrittenSiteAccessParameter($singleSiteAccess,$parameterKeySegments);
+//
+//                            if (count($resultCarrier) > 0) {
+//                                $siteAccess = $singleSiteAccess;
+//                            }
+//
+//                            foreach($resultCarrier as $resultKey => $resultParameter) {
+//                                $results[$resultKey] = $resultParameter;
+//                            }
+//                        }
+//                    }
+//                }
+
+                $resultCarrier = (isset(self::$parametersAndLocations[$parameterName])) ?
+                    self::$parametersAndLocations[$parameterName] : [];
+
+                if ($withSiteAccess && count($resultCarrier) > 0) {
+                    $siteAccess= $parameterKeySegments[1];
+                }
+
+                foreach($resultCarrier as $resultKey => $resultValue) {
+                    $results[$resultKey] = $resultValue;
+                }
+
+                if ($withSiteAccess && $parameterKeySegments[1] !== "global") {
+                    $resultCarrier = self::getLocationsFromRewrittenSiteAccessParameter("global",$parameterKeySegments);
+
+                    if (count($resultCarrier) > 0) {
+                        $siteAccess= "global";
+                    }
+
+                    foreach($resultCarrier as $resultKey => $resultValue) {
+                        $results[$resultKey] = $resultValue;
+                    }
+                }
+
+
+            if ($withSiteAccess && count($results) > 0) {
+                $results["siteaccess"] = "The values mostly stem from the '".$siteAccess."' siteaccess.";
             }
+            return count($results) > 0? $results : null;
+        } else {
+            return isset(self::$parametersAndLocations[$parameterName]) ? self::$parametersAndLocations[$parameterName]: null;
+        }
+    }
+
+    private static function getLocationsFromRewrittenSiteAccessParameter(string $newSiteAccess, array $originalParameterKeySegments) {
+        if ($originalParameterKeySegments[1] !== $newSiteAccess) {
+            $originalParameterKeySegments[1] = $newSiteAccess;
+
+            $newParameterTry = join(".", $originalParameterKeySegments);
+            return isset(self::$parametersAndLocations[$newParameterTry]) ? self::$parametersAndLocations[$newParameterTry] : [];
         }
 
-        // Only if that parameter exists as a key in the array, will that parameters paths and values be returned, otherwise null
-        return isset(self::$parametersAndLocations[$parameterName])? self::$parametersAndLocations[$parameterName] : null;
+        return [];
     }
 }

@@ -38,7 +38,7 @@ cjw_config_processing.compare_site_accesses.uncommons_only:
   methods: [GET]
 
 cjw_config_processing.location_retrieval:
-  path: /cjw/config-processing/parameter_locations/{parameter}
+  path: /cjw/config-processing/parameter_locations/{parameter}/{withSiteAccess?}
   controller: cjw_location_retrieval.controller::retrieveLocationsForParameter
   methods: [GET]
 

@@ -13,6 +13,12 @@ class ParameterDisplay {
     );
 
     this.setTopNodesAsynchronously(0, topNodes);
+
+    const inlineValues = document.querySelectorAll(".inline_value");
+
+    for (const inlineValue of inlineValues) {
+      this.clearAttributes(inlineValue);
+    }
   }
 
   async setTopNodesAsynchronously(counter, nodeList) {
@@ -169,6 +175,7 @@ class ParameterDisplay {
     let doesHaveChildren = false;
 
     for (const child of node.children) {
+      this.clearAttributes(child);
       if (
         child.classList.contains("param_list_items") ||
         child.classList.contains("param_list_values")
@@ -212,6 +219,35 @@ class ParameterDisplay {
         event.preventDefault();
         event.stopPropagation();
       };
+    }
+  }
+
+  clearAttributes(node) {
+    if (node) {
+      if (
+        node.classList.contains("param_list_keys") &&
+        node.getAttribute("key").includes("\\")
+      ) {
+        node.setAttribute("originalKey", node.getAttribute("key"));
+        node.setAttribute(
+          "key",
+          node.getAttribute("key").replaceAll("\\", " ")
+        );
+
+        const inlineValueChild = node.querySelector(".inline_value");
+        if (inlineValueChild) {
+          this.clearAttributes(inlineValueChild);
+        }
+      } else if (
+        node.classList.contains("param_list_values") &&
+        node.getAttribute("value").includes("\\")
+      ) {
+        node.setAttribute("originalValue", node.getAttribute("value"));
+        node.setAttribute(
+          "value",
+          node.getAttribute("value").replaceAll("\\", " ")
+        );
+      }
     }
   }
 

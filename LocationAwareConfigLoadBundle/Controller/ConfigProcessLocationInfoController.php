@@ -21,15 +21,18 @@ class ConfigProcessLocationInfoController extends AbstractController
         LocationRetrievalCoordinator::initializeCoordinator();
     }
 
-    public function retrieveLocationsForParameter (string $parameter) {
-        $locations = LocationRetrievalCoordinator::getParameterLocations($parameter);
+    public function retrieveLocationsForParameter (string $parameter, string $withSiteAccess) {
+        $saPresent = ($withSiteAccess && $withSiteAccess !== "false")?? false;
+        $locations = LocationRetrievalCoordinator::getParameterLocations($parameter, $saPresent);
 
         if ($locations) {
             foreach ($locations as $location => $value) {
-                $newKey = substr($location,strlen($this->projectDir));
+                if ($location !== "siteaccess") {
+                    $newKey = substr($location,strlen($this->projectDir));
 
-                $locations[$newKey] = $value;
-                unset($locations[$location]);
+                    $locations[$newKey] = $value;
+                    unset($locations[$location]);
+                }
             }
         }
 

@@ -20,7 +20,12 @@ class ParameterLocationRetrieval {
         event.preventDefault();
         event.stopPropagation();
 
-        this.locationRetrievalRequest(button);
+        let withSiteAccess = false;
+        if (document.querySelector("[siteaccess]")) {
+          withSiteAccess = true;
+        }
+
+        this.locationRetrievalRequest(button, withSiteAccess);
       };
     }
   }
@@ -37,12 +42,13 @@ class ParameterLocationRetrieval {
 
       while (parentKey) {
         if (parentKey.classList.contains("param_list_keys")) {
-          resolvedName = `${parentKey.getAttribute("key")}.${resolvedName}`;
-        } else if (
-          parentKey.previousElementSibling.classList.contains("param_list_keys")
-        ) {
-          parentKey = parentKey.previousElementSibling;
-          resolvedName = `${parentKey.getAttribute("key")}.${resolvedName}`;
+          let keyAttribute = parentKey.getAttribute("key");
+
+          if (parentKey.getAttribute("originalKey")) {
+            keyAttribute = parentKey.getAttribute("originalKey");
+          }
+
+          resolvedName = `${keyAttribute}.${resolvedName}`;
         } else {
           while (
             parentKey.previousElementSibling &&
@@ -78,14 +84,17 @@ class ParameterLocationRetrieval {
     }
   }
 
-  async locationRetrievalRequest(targetButton) {
+  async locationRetrievalRequest(targetButton, withSiteAccess = false) {
     let parameterName = encodeURI(
       targetButton.getAttribute("fullparametername")
     );
 
     if (targetButton) {
       const res = await fetch(
-        "/cjw/config-processing/parameter_locations/" + parameterName,
+        "/cjw/config-processing/parameter_locations/" +
+          parameterName +
+          "/" +
+          withSiteAccess,
         {
           method: "GET",
         }
@@ -93,7 +102,6 @@ class ParameterLocationRetrieval {
 
       if (res) {
         const responseJson = await res.json();
-        // console.log(responseJson);
         let pathOverview = await this.buildLocationList(responseJson);
 
         if (!pathOverview) {
@@ -101,11 +109,12 @@ class ParameterLocationRetrieval {
             unknown:
               "No path has been found for the current parameter. This might mean, that it does not originally belong to the current site access, default or global.",
           });
+        } else {
+          this.checkForActiveValue(targetButton.parentElement, pathOverview);
         }
 
         targetButton.parentElement.appendChild(pathOverview);
         targetButton.innerText = "x";
-        // targetButton.classList.remove("location_info");
         targetButton.classList.add("close_location_info");
 
         targetButton.onclick = (event) => {
@@ -115,19 +124,12 @@ class ParameterLocationRetrieval {
           this.removePathInfo(targetButton.parentElement, pathOverview);
           targetButton.innerText = "i";
           targetButton.classList.remove("close_location_info");
-          // targetButton.classList.add("location_info");
         };
-
-        // alert(
-        //   "No path could be found for the chosen parameter with the chosen siteaccess or 'default' and 'global'." +
-        //     "This might mean, that the parameter belongs to the corresponding siteaccess group and not the actual access."
-        // );
-        // targetButton.disabled = true;
       }
     }
   }
 
-  async buildLocationList(responseBody) {
+  buildLocationList(responseBody) {
     if (responseBody) {
       const paths = Object.keys(responseBody);
 
@@ -152,14 +154,80 @@ class ParameterLocationRetrieval {
           container.appendChild(carrier);
         }
 
-        // const newDocument = await window.open("","ParameterLocations")
-        // newDocument.document.querySelector("body").appendChild(container);
-
         return container;
       } else {
         return paths;
       }
     }
+  }
+
+  checkForActiveValue(keyForWhichToSearch, valueNodeList) {
+    if (
+      keyForWhichToSearch &&
+      keyForWhichToSearch.classList.contains("param_list_keys") &&
+      valueNodeList
+    ) {
+      let potentialValues = keyForWhichToSearch.querySelectorAll(
+        ".inline_value"
+      );
+      const allValuesFromNodeList = valueNodeList.querySelectorAll(
+        ".path_info_value"
+      );
+
+      if (!potentialValues || potentialValues.length === 0) {
+        const keyParent = keyForWhichToSearch.parentElement;
+        potentialValues = keyParent.querySelectorAll(".param_list_values");
+      }
+
+      for (const actualValue of potentialValues) {
+        let actualValuesValue = actualValue.getAttribute("value");
+
+        if (actualValue.getAttribute("originalValue")) {
+          actualValuesValue = actualValue.getAttribute("originalValue");
+        }
+
+        for (const value of allValuesFromNodeList) {
+          let valuesAreEqual = this.compareGivenValues(
+            actualValuesValue,
+            value.innerText
+          );
+
+          if (
+            !valuesAreEqual &&
+            !(value.innerText === "[object Object]") &&
+            !new RegExp(/^%.*%$/).test(value.innerText)
+          ) {
+            value.style.opacity = "0.75";
+            const keyToValue = value.parentElement.children[0];
+            keyToValue.style.opacity = "0.75";
+            keyToValue.style.borderBottom = "1px transparent";
+          } else {
+            value.style.fontWeight = "bold";
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Compares two given values (strings) and determines whether the two are equal or not. It does also assume,
+   * that (is only valid for the second value) if a value contains commas that it could be a list of values chained together
+   * and thus returns whether the first given value is contained in the list.
+   *
+   * @param {string} nodesValue One given value of the comparison.
+   * @param {string} compareValue The second given value of the comparison.
+   * @returns {boolean} Returns a boolean which states whether the two values are equal or not.
+   */
+  compareGivenValues(nodesValue, compareValue) {
+    if (compareValue.includes(",")) {
+      const multipleInnerValues = compareValue.split(",");
+
+      if (multipleInnerValues.includes(nodesValue)) {
+        return true;
+      }
+    }
+
+    return compareValue === nodesValue;
   }
 
   removePathInfo(targetButtonParent, pathContainerToRemove) {
@@ -176,7 +244,12 @@ class ParameterLocationRetrieval {
         event.preventDefault();
         event.stopPropagation();
 
-        this.locationRetrievalRequest(targetButton);
+        let withSiteAccess = false;
+        if (document.querySelector("[siteaccess]")) {
+          withSiteAccess = true;
+        }
+
+        this.locationRetrievalRequest(targetButton, withSiteAccess);
       };
     }
   }

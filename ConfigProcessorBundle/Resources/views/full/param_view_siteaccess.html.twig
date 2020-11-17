@@ -40,7 +40,6 @@
                     <label class="ez-label" for="first_site_access_selection">Site Access 1</label>
                     <select id="first_site_access_selection" name="first_site_access_selection" class="form-control">
                         <option value="0" disabled="disabled">- siteaccess.list -</option>
-
                         {% for oneSiteAccess in allSiteAccesses %}
                             {% if oneSiteAccess is same as(siteAccess) %}
                                 <option value="{{ oneSiteAccess }}" selected="selected">{{ oneSiteAccess }}</option>
@@ -48,9 +47,7 @@
                                 <option value="{{ oneSiteAccess }}">{{ oneSiteAccess }}</option>
                             {% endif %}
                         {% endfor %}
-
                         <option value="0" disabled="disabled">- siteaccess.groups -</option>
-
                         {% for saGroup in allSiteAccessGroups|keys %}
                             {% if saGroup is same as(siteAccess) %}
                                 <option value="{{ saGroup }}" selected="selected">{{ saGroup }}</option>
@@ -65,23 +62,18 @@
                     <select id="second_site_access_selection" name="second_site_access_selection" class="form-control">
                         <option value="0" disabled="disabled">- siteaccess.list -</option>
                         <option value="1" disabled="disabled" selected="selected" hidden="hidden"></option>
-
                         {% for oneSiteAccess in allSiteAccesses %}
                             <option value="{{ oneSiteAccess }}">{{ oneSiteAccess }}</option>
                         {% endfor %}
-
                         <option value="0" disabled="disabled">- siteaccess.groups -</option>
-
                         {% for saGroup in allSiteAccessGroups|keys %}
                             <option value="{{ saGroup }}">{{ saGroup }}</option>
                         {% endfor %}
                     </select>
                 </div>
-{#                <div class="input-group-btn d-inline-flex">#}
-                    {% block search_bar %}
-                        {{ parent() }}
-                    {% endblock %}
-{#                </div>#}
+                {% block search_bar %}
+                    {{ parent() }}
+                {% endblock %}
             </form>
         </div>
 

@@ -182,8 +182,8 @@ class ConfigProcessCoordinator
         return self::$siteAccessParameters?? [];
     }
 
-    public static function getSiteAccessListForController(): array {
-        return self::getSiteAccesses();
+    public static function getSiteAccessListForController(string $specificSiteAccess = null): array {
+        return self::getSiteAccesses($specificSiteAccess);
     }
 
     /*****************************************************************************************
