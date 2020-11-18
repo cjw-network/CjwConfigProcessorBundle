@@ -6,7 +6,7 @@ namespace App\CJW\ConfigProcessorBundle\Controller;
 
 use App\CJW\ConfigProcessorBundle\src\ConfigProcessCoordinator;
 use App\CJW\ConfigProcessorBundle\src\ParametersToFileWriter;
-use App\CJW\ConfigProcessorBundle\src\Utility\ControllerUtility;
+use App\CJW\ConfigProcessorBundle\src\Utility\Utility;
 use Exception;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Psr\Cache\InvalidArgumentException;
@@ -57,8 +57,8 @@ class ConfigProcessController extends AbstractController
         $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
 
         $currentSiteAccess = $request->attributes->get("siteaccess")->name;
-        $siteAccesses = ControllerUtility::determinePureSiteAccesses($processedParameters);
-        $groups = ControllerUtility::determinePureSiteAccessGroups($processedParameters);
+        $siteAccesses = Utility::determinePureSiteAccesses($processedParameters);
+        $groups = Utility::determinePureSiteAccessGroups($processedParameters);
 
         return $this->render(
             "@CJWConfigProcessor/full/param_view_siteaccess.html.twig",
@@ -73,15 +73,15 @@ class ConfigProcessController extends AbstractController
 
     public function getSpecificSAParameters (string $siteAccess) {
         try {
-            $specSAParameters = ConfigProcessCoordinator::getParametersForSpecificSiteAccess($siteAccess);
+            $specSAParameters = ConfigProcessCoordinator::getParametersForSiteAccess($siteAccess);
         } catch (InvalidArgumentException | Exception $error) {
             $specSAParameters = [];
         }
 
         $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
 
-        $siteAccesses = ControllerUtility::determinePureSiteAccesses($processedParameters);
-        $groups = ControllerUtility::determinePureSiteAccessGroups($processedParameters);
+        $siteAccesses = Utility::determinePureSiteAccesses($processedParameters);
+        $groups = Utility::determinePureSiteAccessGroups($processedParameters);
 
         return $this->render(
             "@CJWConfigProcessor/full/param_view_siteaccess.html.twig",
@@ -103,8 +103,8 @@ class ConfigProcessController extends AbstractController
 
         $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
 
-        $siteAccesses = ControllerUtility::determinePureSiteAccesses($processedParameters);
-        $groups = ControllerUtility::determinePureSiteAccessGroups($processedParameters);
+        $siteAccesses = Utility::determinePureSiteAccesses($processedParameters);
+        $groups = Utility::determinePureSiteAccessGroups($processedParameters);
 
         return $this->render(
             "@CJWConfigProcessor/full/param_view_siteaccess_compare.html.twig",
@@ -123,15 +123,15 @@ class ConfigProcessController extends AbstractController
     public function compareSiteAccessesCommonsOnly (string $firstSiteAccess, string $secondSiteAccess) {
 
         $resultParameters = $this->retrieveParamsForSiteAccesses($firstSiteAccess,$secondSiteAccess);
-        $resultParameters = ControllerUtility::removeUncommonParameters($resultParameters[0],$resultParameters[1]);
+        $resultParameters = Utility::removeUncommonParameters($resultParameters[0],$resultParameters[1]);
 
         $firstSiteAccessParameters = $resultParameters[0];
         $secondSiteAccessParameters = $resultParameters[1];
 
         $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
 
-        $siteAccesses = ControllerUtility::determinePureSiteAccesses($processedParameters);
-        $groups = ControllerUtility::determinePureSiteAccessGroups($processedParameters);
+        $siteAccesses = Utility::determinePureSiteAccesses($processedParameters);
+        $groups = Utility::determinePureSiteAccessGroups($processedParameters);
 
         return $this->render(
             "@CJWConfigProcessor/full/param_view_siteaccess_compare.html.twig",
@@ -151,15 +151,15 @@ class ConfigProcessController extends AbstractController
     public function compareSiteAccessesUncommonsOnly (string $firstSiteAccess, string $secondSiteAccess) {
 
         $resultParameters = $this->retrieveParamsForSiteAccesses($firstSiteAccess,$secondSiteAccess);
-        $resultParameters = ControllerUtility::removeCommonParameters($resultParameters[0],$resultParameters[1]);
+        $resultParameters = Utility::removeCommonParameters($resultParameters[0],$resultParameters[1]);
 
         $firstSiteAccessParameters = $resultParameters[0];
         $secondSiteAccessParameters = $resultParameters[1];
 
         $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
 
-        $siteAccesses = ControllerUtility::determinePureSiteAccesses($processedParameters);
-        $groups = ControllerUtility::determinePureSiteAccessGroups($processedParameters);
+        $siteAccesses = Utility::determinePureSiteAccesses($processedParameters);
+        $groups = Utility::determinePureSiteAccessGroups($processedParameters);
 
         return $this->render(
             "@CJWConfigProcessor/full/param_view_siteaccess_compare.html.twig",
@@ -183,7 +183,7 @@ class ConfigProcessController extends AbstractController
             );
         } else {
             $resultingFile = ParametersToFileWriter::writeParametersToFile(
-                ConfigProcessCoordinator::getParametersForSpecificSiteAccess(
+                ConfigProcessCoordinator::getParametersForSiteAccess(
                     $siteAccessOrAllParameters
                 ),
                 $siteAccessOrAllParameters
@@ -206,8 +206,8 @@ class ConfigProcessController extends AbstractController
         $secondSiteAccessParameters = [];
 
         try {
-            $firstSiteAccessParameters = ConfigProcessCoordinator::getParametersForSpecificSiteAccess($firstSiteAccess);
-            $secondSiteAccessParameters = ConfigProcessCoordinator::getParametersForSpecificSiteAccess($secondSiteAccess);
+            $firstSiteAccessParameters = ConfigProcessCoordinator::getParametersForSiteAccess($firstSiteAccess);
+            $secondSiteAccessParameters = ConfigProcessCoordinator::getParametersForSiteAccess($secondSiteAccess);
         } catch (InvalidArgumentException | Exception $error) {
             $firstSiteAccessParameters = (count($firstSiteAccessParameters) > 0)? $firstSiteAccessParameters : [];
             $secondSiteAccessParameters = (count($secondSiteAccessParameters) > 0)? $secondSiteAccessParameters : [];

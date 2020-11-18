@@ -5,6 +5,7 @@ namespace App\CJW\ConfigProcessorBundle\src;
 
 
 use App\CJW\ConfigProcessorBundle\ParameterAccessBag;
+use App\CJW\ConfigProcessorBundle\src\Utility\Utility;
 use Exception;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Psr\Cache\InvalidArgumentException;
@@ -132,15 +133,17 @@ class ConfigProcessCoordinator
     }
 
     /**
-     * Allows parameters to be retrieved for a given site-access.
+     * Takes the processed parameters and searches for all parameters and their values that
+     * belong to the current or a given site access.
      *
-     * @param string $siteAccess
-     * @return array
-     * @throws InvalidArgumentException
-     * @throws Exception
+     * @param string|null $siteAccess Optional argument which states which site access should be used for the parameter value retrieval.
+     * @return array Returns an array which includes the site access parameters.
+     * @throws InvalidArgumentException Throws an exception, when the Coordinator has not been initialized prior to calling this function.
      */
-    public static function getParametersForSpecificSiteAccess(string $siteAccess): array {
-        $siteAccess = strtolower($siteAccess);
+    public static function getParametersForSiteAccess(string $siteAccess = null): array {
+        if ($siteAccess) {
+            $siteAccess = strtolower($siteAccess);
+        }
 
         $processedParamObj = self::$cache->get(
             "cjw_processed_param_objects",
@@ -149,11 +152,15 @@ class ConfigProcessCoordinator
             }
         );
 
-        return self::$siteAccessParamProcessor->processSiteAccessBased(
+        $saParameters = self::$siteAccessParamProcessor->processSiteAccessBased(
             self::getSiteAccesses($siteAccess),
             $processedParamObj,
             $siteAccess
         );
+
+        $customParameters = self::getCustomParameters();
+
+        return array_replace_recursive($saParameters,$customParameters);
     }
 
     /**
@@ -246,25 +253,47 @@ class ConfigProcessCoordinator
         return $siteAccesses;
     }
 
-    /**
-     * Takes the processed parameters and searches for all parameters and their values that
-     * belong to the current site access.
-     *
-     * @return array Returns a formatted array that can be displayed in twig templates.
-     * @throws InvalidArgumentException
-     * @throws Exception
-     */
-    private static function getParametersForSiteAccess(): array {
+//    /**
+//     * Takes the processed parameters and searches for all parameters and their values that
+//     * belong to the current site access.
+//     *
+//     * @return array Returns a formatted array that can be displayed in twig templates.
+//     * @throws InvalidArgumentException
+//     * @throws Exception
+//     */
+//    private static function getParametersForSiteAccess(): array {
+//
+//        $processedParamObj = self::$cache->get("cjw_processed_param_objects", function() {
+//            return self::$configProcessor->getProcessedParameters();
+//        });
+//
+//        return self::$siteAccessParamProcessor->processSiteAccessBased(
+//            self::getSiteAccesses(),
+//            $processedParamObj,
+//        );
+//    }
 
-        $processedParamObj = self::$cache->get("cjw_processed_param_objects", function(ItemInterface $item) {
-            $item->expiresAfter(3600);
-            return self::$configProcessor->getProcessedParameters();
-        });
+    private static function getCustomParameters () {
+        if (
+            self::$symContainer->hasParameter("cjw.custom_site_access_parameters.active") &&
+            self::$symContainer->getParameter("cjw.custom_site_access_parameters.active") === true &&
+            self::$symContainer->hasParameter("cjw.custom_site_access_parameters.parameters")
+        ) {
+            $customParameterKeys = self::$symContainer->getParameter("cjw.custom_site_access_parameters.parameters");
 
-        return self::$siteAccessParamProcessor->processSiteAccessBased(
-            self::getSiteAccesses(),
-            $processedParamObj,
-        );
+            $processedParameters = self::$processedParameters;
+            $customParameters = Utility::getCustomParameters($customParameterKeys,$processedParameters);
+
+            $customParametersProcessor = new CustomSiteAccessParamProcessor(
+                self::$symContainer,
+                $customParameters,
+                ["default", "admin_group", "admin", "global"]
+            );
+
+            return $customParametersProcessor->processGivenParameters();
+        }
+
+        return [];
     }
 
     /**

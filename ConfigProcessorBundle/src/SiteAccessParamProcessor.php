@@ -26,8 +26,6 @@ class SiteAccessParamProcessor
     public function __construct(ConfigResolverInterface $resolver)
     {
         $this->ezConfigResolver = $resolver;
-//        $this->siteAccessParameters = [];
-//        $this->uniqueSiteAccessParameters = [];
     }
 
     /**

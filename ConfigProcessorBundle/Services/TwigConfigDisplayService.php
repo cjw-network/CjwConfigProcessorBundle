@@ -142,7 +142,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
 
     public function getParametersForSpecificSiteAccess(string $siteAccess): array {
         try {
-            return ConfigProcessCoordinator::getParametersForSpecificSiteAccess($siteAccess);
+            return ConfigProcessCoordinator::getParametersForSiteAccess($siteAccess);
         } catch (Exception $error) {
             return [];
         }

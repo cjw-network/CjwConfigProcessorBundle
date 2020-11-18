@@ -76,8 +76,6 @@ class ProcessedParamModel implements Serializable
 
         // Is there anything to add?
         if(count($valueArray) > 0) {
-//            array_push($modelToAddTo->parameters, $valueArray);
-
             if (count($valueArray) === 1 && key_exists(0,$valueArray)) {
                 $modelToAddTo->parameters["parameter_value"] = $valueArray[0];
             } else {
@@ -94,7 +92,7 @@ class ProcessedParamModel implements Serializable
      */
     public function reformatForOutput() {
         $outputArray = [];
-        $endOfBranch = $this->freeOfProcessedParamModels($this->parameters);
+        $endOfBranch = $this->isFreeOfProcessedParamModels($this->parameters);
 
         foreach($this->parameters as $parameter) {
 
@@ -131,7 +129,10 @@ class ProcessedParamModel implements Serializable
      */
     public function filterForSiteAccess(string $siteaccess) {
         foreach ($this->parameters as $parameter) {
-            if ($parameter instanceof ProcessedParamModel && $parameter->getKey() === $siteaccess) {
+            if (
+                $parameter instanceof ProcessedParamModel &&
+                $parameter->getKey() === $siteaccess
+            ) {
                 return $parameter;
             }
         }
@@ -172,7 +173,7 @@ class ProcessedParamModel implements Serializable
      *
      * @return array Returns an array of strings which represent the full parameter names of every one of the object's parameters.
      */
-    public function getAllFullParameterNames()
+    public function getAllFullParameterNames(): array
     {
         $parameterNameArray = [];
 
@@ -218,11 +219,11 @@ class ProcessedParamModel implements Serializable
         ) = unserialize($serialized);
     }
 
-    /***********************************************
+    /*************************************************************************
      *
      * Private methods of the class which are called by the public functions.
      *
-     ***********************************************/
+     *************************************************************************/
 
     /**
      * Takes an array of keys and processes them. Constructs a sort of tree based on the keys.
@@ -231,7 +232,7 @@ class ProcessedParamModel implements Serializable
      * @param array $keys Given list of keys after which to construct the "key-list" tree-like structure in the parameters.
      * @return ProcessedParamModel Returns the model where the last key of the given list is stored.
      */
-    private function constructByKeys(array $keys) {
+    private function constructByKeys(array $keys): ProcessedParamModel {
         $paramCarrier = $this->determineIfKeyIsPresent($keys);
         $foundOnLevel = array_search($paramCarrier->key,$keys);
 
@@ -272,13 +273,13 @@ class ProcessedParamModel implements Serializable
      * @param ProcessedParamModel $paramModel The model to add to the parameters (typically means there have been more keys in the given key list then are present in the existing parameters.
      * @return ProcessedParamModel Returns itself in order to allow further operations on itself.
      */
-    private function addParamModel(ProcessedParamModel $paramModel) {
+    private function addParamModel(ProcessedParamModel $paramModel): ProcessedParamModel {
         array_push($this->parameters,$paramModel);
 
         return $paramModel;
     }
 
-    private function freeOfProcessedParamModels(array $childrenToSearchThrough): bool {
+    private function isFreeOfProcessedParamModels(array $childrenToSearchThrough): bool {
         foreach ($childrenToSearchThrough as $child) {
             if ($child instanceof ProcessedParamModel) {
                 return false;
