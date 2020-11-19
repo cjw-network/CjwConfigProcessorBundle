@@ -91,42 +91,4 @@ class Utility
             return [];
         }
     }
-
-    public static function getCustomParameters (array $customParameterKeys, array $processedParameters) {
-        $customParameters = [];
-        foreach ($customParameterKeys as $customKey) {
-            $keyPartArray = explode(".", $customKey);
-            if (count($keyPartArray) > 0) {
-                $result = self::getParameterThroughParts($keyPartArray, $processedParameters);
-
-                if (count ($result) > 0) {
-                    $key = array_keys($result)[0];
-                    if (!isset($customParameters[$key])) {
-                        $customParameters[$key] = $result[$key];
-                    } else {
-                        $customParameters = array_replace_recursive($customParameters, $result);
-                    }
-                }
-            }
-        }
-
-        return $customParameters;
-    }
-
-    private static function getParameterThroughParts (array $keyParts, array $processedParameters, bool $withinCustomArray = false) {
-        $customParametersSoFar = [];
-
-        if (count($keyParts) > 0) {
-            if (key_exists($keyParts[0], $processedParameters)) {
-                $key = $keyParts[0];
-                unset($keyParts[0]);
-                $keyParts= array_values($keyParts);
-                $customParametersSoFar[$key] = self::getParameterThroughParts($keyParts,$processedParameters[$key], true);
-            }
-        } else if ($withinCustomArray) {
-            return $processedParameters;
-        }
-
-        return $customParametersSoFar;
-    }
 }

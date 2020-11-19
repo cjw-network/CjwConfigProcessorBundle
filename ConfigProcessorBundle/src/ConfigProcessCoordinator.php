@@ -5,14 +5,12 @@ namespace App\CJW\ConfigProcessorBundle\src;
 
 
 use App\CJW\ConfigProcessorBundle\ParameterAccessBag;
-use App\CJW\ConfigProcessorBundle\src\Utility\Utility;
 use Exception;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Contracts\Cache\ItemInterface;
 
 class ConfigProcessCoordinator
 {
@@ -152,13 +150,15 @@ class ConfigProcessCoordinator
             }
         );
 
+        $siteAccessList = self::getSiteAccesses($siteAccess);
+
         $saParameters = self::$siteAccessParamProcessor->processSiteAccessBased(
-            self::getSiteAccesses($siteAccess),
+            $siteAccessList,
             $processedParamObj,
             $siteAccess
         );
 
-        $customParameters = self::getCustomParameters();
+        $customParameters = self::getCustomParameters($siteAccessList);
 
         return array_replace_recursive($saParameters,$customParameters);
     }
@@ -253,44 +253,30 @@ class ConfigProcessCoordinator
         return $siteAccesses;
     }
 
-//    /**
-//     * Takes the processed parameters and searches for all parameters and their values that
-//     * belong to the current site access.
-//     *
-//     * @return array Returns a formatted array that can be displayed in twig templates.
-//     * @throws InvalidArgumentException
-//     * @throws Exception
-//     */
-//    private static function getParametersForSiteAccess(): array {
-//
-//        $processedParamObj = self::$cache->get("cjw_processed_param_objects", function() {
-//            return self::$configProcessor->getProcessedParameters();
-//        });
-//
-//        return self::$siteAccessParamProcessor->processSiteAccessBased(
-//            self::getSiteAccesses(),
-//            $processedParamObj,
-//        );
-//    }
-
-    private static function getCustomParameters () {
+    private static function getCustomParameters (array $siteAccessList) {
         if (
             self::$symContainer->hasParameter("cjw.custom_site_access_parameters.active") &&
             self::$symContainer->getParameter("cjw.custom_site_access_parameters.active") === true &&
             self::$symContainer->hasParameter("cjw.custom_site_access_parameters.parameters")
         ) {
             $customParameterKeys = self::$symContainer->getParameter("cjw.custom_site_access_parameters.parameters");
-
             $processedParameters = self::$processedParameters;
-            $customParameters = Utility::getCustomParameters($customParameterKeys,$processedParameters);
 
             $customParametersProcessor = new CustomSiteAccessParamProcessor(
                 self::$symContainer,
-                $customParameters,
-                ["default", "admin_group", "admin", "global"]
+                $siteAccessList
             );
 
-            return $customParametersProcessor->processGivenParameters();
+            $customParameters = $customParametersProcessor->getCustomParameters($customParameterKeys,$processedParameters);
+
+            if (
+                self::$symContainer->hasParameter("cjw.custom_site_access_parameters.scan_parameters") &&
+                self::$symContainer->getParameter("cjw.custom_site_access_parameters.scan_parameters") === true
+            ) {
+                return $customParametersProcessor->scanAndEditForSiteAccessDependency($customParameters);
+            } else {
+                return $customParameters;
+            }
         }
 
         return [];
