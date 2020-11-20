@@ -9,6 +9,7 @@ function main() {
   ) {
     setUpParameterDisplays();
     setUpDownloadAndSyncScrollerButtons();
+    setUpFavourAndCopyButtons();
     handleLoadingDisplay();
   }
 
@@ -47,6 +48,14 @@ function setUpDownloadAndSyncScrollerButtons() {
     let synchronousScroller = new SynchronousScrollerUtility();
     synchronousScroller.setUpSynchronousScrollButton();
   }
+}
+
+function setUpFavourAndCopyButtons() {
+  let copyButtonUtility = new CopyButtonUtility();
+  let favourButtonUtility = new FavourButtonUtility();
+
+  copyButtonUtility.setUpCopyButtons();
+  favourButtonUtility.setUpFavourButtons();
 }
 
 function handleLoadingDisplay() {

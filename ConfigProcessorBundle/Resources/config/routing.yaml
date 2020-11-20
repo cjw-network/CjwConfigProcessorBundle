@@ -8,11 +8,6 @@ cjw_config_processing.param_list:
   controller: cjw_config_processor.controller::getParameterList
   methods: [GET]
 
-cjw_config_processing.site_access_selection:
-  path: /cjw/config-processing/siteaccess_list
-  controller: cjw_config_processor.controller::siteAccessSelection
-  methods: [GET]
-
 cjw_config_processing.site_access_param_list:
   path: /cjw/config-processing/parameter_list/siteaccess/current
   controller: cjw_config_processor.controller::getCurrentSAParameters
@@ -37,12 +32,23 @@ cjw_config_processing.compare_site_accesses.uncommons_only:
   controller: cjw_config_processor.controller::compareSiteAccessesUncommonsOnly
   methods: [GET]
 
-cjw_config_processing.location_retrieval:
-  path: /cjw/config-processing/parameter_locations/{parameter}/{withSiteAccess?}
-  controller: cjw_location_retrieval.controller::retrieveLocationsForParameter
+cjw_config_processing.param_list_favourites:
+  path: /cjw/config-processing/parameter_list/favourites/{siteAccess?}
+  controller: cjw_config_processor.controller::getFavourites
   methods: [GET]
+
+cjw_config_processing.save_favourites:
+  path: /cjw/config-processing/parameter_list/save/favourites
+  controller: cjw_config_processor.controller::saveFavourites
+  methods: [POST]
 
 cjw_config_processing.download_parameters:
   path: /cjw/config-processing/parameter_list/download/{siteAccessOrAllParameters}
   controller: cjw_config_processor.controller::downloadParameterListAsTextFile
+  methods: [GET]
+
+# Location Retrieval from different controller:
+cjw_config_processing.location_retrieval:
+  path: /cjw/config-processing/parameter_locations/{parameter}/{withSiteAccess?}
+  controller: cjw_location_retrieval.controller::retrieveLocationsForParameter
   methods: [GET]

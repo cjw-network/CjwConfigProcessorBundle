@@ -36,6 +36,11 @@
                 {{ parent() }}
             {% endblock %}
             <div class="m-sub-items__actions">
+                <button id="commit_favourites" class="c-action-btn c-action-btn--reveal">
+                    <svg class="ez-icon ez-icon--medium-large">
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#save"></use>
+                    </svg>
+                </button>
                 <button id="download_button" class="c-action-btn c-action-btn--reveal">
                     <svg class="ez-icon ez-icon--medium-large">
                         <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#download"></use>
@@ -51,6 +56,24 @@
         <svg class="ez-icon ez-icon--large" id="loading_circle">
             <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#spinner"></use>
         </svg>
+        {% if favourites is defined and favourites|length > 0 %}
+            <div class="param_list_items dont_display favourite_container">
+                <div class="param_list_keys" key="favourites">
+                    <span class="param_item_toggle">
+                        <svg class="ez-icon ez-icon--small">
+                            <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#caret-next"></use>
+                        </svg>
+                    </span>
+                    <span>favourites:</span>
+                    <button class="parameter_buttons open_subtree">
+                        <svg class="ez-icon ez-icon--small">
+                            <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
+                        </svg>
+                    </button>
+                </div>
+                {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : favourites} only %}
+            </div>
+        {% endif %}
        {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : parameterList} only %}
     </div>
 {% endblock %}
@@ -61,4 +84,6 @@
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterBranchDisplay.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterLocationRetrieval.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/DownloadParametersUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/FavourButtonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/CopyButtonUtility.js") }}></script>
 {% endblock %}

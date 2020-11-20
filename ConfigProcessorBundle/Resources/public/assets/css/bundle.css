@@ -68,6 +68,13 @@ html {
     transition: all 0.2s ease-in;
 }
 
+#cjw_copy_to_clipboard {
+    /*display: none;*/
+    position: absolute;
+    top: -1000px;
+    left: -1000px;
+}
+
 .cjw_footer {
     position: fixed;
     bottom: 0;

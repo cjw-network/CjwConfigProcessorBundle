@@ -1,4 +1,10 @@
 class ParameterLocationRetrieval {
+  utility;
+
+  constructor() {
+    this.utility = new Utility();
+  }
+
   setUpLocationRetrievalButtons() {
     const locationRetrievalButtons = document.querySelectorAll(
       ".location_info"
@@ -48,6 +54,10 @@ class ParameterLocationRetrieval {
             keyAttribute = parentKey.getAttribute("originalKey");
           }
 
+          if (siteAccess && resolvedName.length === 0) {
+            keyAttribute = siteAccess + "." + keyAttribute;
+          }
+
           resolvedName = `${keyAttribute}.${resolvedName}`;
         } else {
           while (
@@ -65,14 +75,6 @@ class ParameterLocationRetrieval {
         }
 
         if (parentKey.classList.contains("top_nodes")) {
-          if (siteAccess && siteAccess.length > 0) {
-            const siteAccessAddBorder = resolvedName.indexOf(".");
-            resolvedName = `${resolvedName.substring(
-              0,
-              siteAccessAddBorder + 1
-            )}${siteAccess}${resolvedName.substring(siteAccessAddBorder)}`;
-          }
-
           break;
         } else if (parentKey.parentElement) {
           parentKey = parentKey.parentElement.previousElementSibling;
@@ -85,19 +87,15 @@ class ParameterLocationRetrieval {
   }
 
   async locationRetrievalRequest(targetButton, withSiteAccess = false) {
-    let parameterName = encodeURI(
-      targetButton.getAttribute("fullparametername")
-    );
+    let parameterName = targetButton.getAttribute("fullparametername");
 
     if (targetButton) {
-      const res = await fetch(
-        "/cjw/config-processing/parameter_locations/" +
-          parameterName +
-          "/" +
-          withSiteAccess,
-        {
-          method: "GET",
-        }
+      const res = await this.utility.performFetchRequestWithoutBody(
+        "/cjw/config-processing/parameter_locations/",
+        "GET",
+        true,
+        parameterName,
+        withSiteAccess
       );
 
       if (res) {
@@ -114,6 +112,7 @@ class ParameterLocationRetrieval {
         }
 
         targetButton.parentElement.appendChild(pathOverview);
+        targetButton.parentElement.classList.add("path_info_carrier");
         targetButton.innerText = "x";
         targetButton.classList.add("close_location_info");
 
@@ -234,6 +233,8 @@ class ParameterLocationRetrieval {
     if (targetButtonParent && pathContainerToRemove) {
       targetButtonParent.removeChild(pathContainerToRemove);
     }
+
+    targetButtonParent.classList.remove("path_info_carrier");
 
     const targetButton = targetButtonParent.querySelector(
       ".close_location_info"

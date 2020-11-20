@@ -7,9 +7,14 @@
     background-color: white;
 }
 
-.focussed_items {
-    background-color: whitesmoke;
+.favourite_container {
+    margin-bottom: 10px;
+    border: 1px solid lightcyan;
 }
+
+/*.focussed_items {*/
+/*    background-color: whitesmoke;*/
+/*}*/
 
 .param_list_keys {
     padding: 2px;
@@ -73,20 +78,38 @@
     transition: all 0.3s ease;
 }
 
-.open_subtree {
+.parameter_buttons {
     position: absolute;
-    right: 30px;
-    top: auto;
     outline: white;
     border: 1px transparent;
+    z-index: 10;
+}
+
+.open_subtree {
+    right: 30px;
+    top: auto;
+}
+
+.favour_parameter {
+    right: 70px;
+    top: auto;
+    opacity: 15%;
+}
+
+.copy_param_name {
+    right: 50px;
+    top: auto;
+    opacity: 15%;
+}
+
+.favour_parameter:hover, .copy_param_name:hover {
+    opacity: 100%;
+    transition: 0.3s all ease;
 }
 
 .location_info {
     background-color: white;
     border-radius: 100%;
-    outline: white;
-    border: 1px transparent;
-    position: absolute;
     right: 10px;
     top: auto;
     padding-left: 9px;
@@ -113,6 +136,11 @@
 
 .path_info_key {
     border-bottom: 1px solid #11546c;
+}
+
+.path_info_carrier {
+    background-color: rgb(210, 242, 253);
+    transition: 0.3s all ease;
 }
 
 .cjw_site_access_selectors {

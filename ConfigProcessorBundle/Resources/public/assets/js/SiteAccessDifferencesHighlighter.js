@@ -142,7 +142,7 @@ class SiteAccessDifferencesHighlighter {
         }
 
         const potentialTwinValues = listOfPotentialTwinValues.querySelectorAll(
-          `[value='${value.getAttribute("value")}']:not(.syncScrollAddition)`
+          `[value="${value.getAttribute("value")}"]:not(.syncScrollAddition)`
         );
 
         if (!potentialTwinValues || potentialTwinValues.length === 0) {

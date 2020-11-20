@@ -46,10 +46,6 @@ class ConfigProcessLocationInfoController extends AbstractController
             }
         }
 
-        $response = new Response(json_encode($locations));
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
-
+        return $this->json($locations);
     }
 }

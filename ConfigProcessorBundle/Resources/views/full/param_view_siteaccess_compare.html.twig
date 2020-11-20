@@ -94,6 +94,11 @@
             Parameterlist: {{ limiter }}
         </div>
         <div class="m-sub-items__actions">
+            <button id="commit_favourites" class="c-action-btn c-action-btn--reveal">
+                <svg class="ez-icon ez-icon--medium-large">
+                    <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#save"></use>
+                </svg>
+            </button>
             <button id="global_open_subtree" class="c-action-btn c-action-btn--reveal">
                 <svg class="ez-icon ez-icon--medium-large">
                     <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
@@ -130,4 +135,6 @@
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SiteAccessComparisonUtility.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SiteAccessDifferencesHighlighter.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SynchronousScrollerUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/FavourButtonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/CopyButtonUtility.js") }}></script>
 {% endblock %}

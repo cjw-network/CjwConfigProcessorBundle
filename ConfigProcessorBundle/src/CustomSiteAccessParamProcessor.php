@@ -16,13 +16,15 @@ class CustomSiteAccessParamProcessor
     private $allSiteAccesses;
 
     public function __construct(
-        ContainerInterface $symContainer,
-        array $siteAccessList
+        ContainerInterface $symContainer = null,
+        array $siteAccessList = []
     ) {
         $this->symContainer = $symContainer;
         $this->currentActiveSiteAccessList = $siteAccessList;
-        $this->allSiteAccesses = [];
-        $this->constructListOfAllSiteAccesses();
+
+        if ($this->symContainer) {
+            $this->constructListOfAllSiteAccesses();
+        }
     }
 
 
@@ -109,7 +111,11 @@ class CustomSiteAccessParamProcessor
     ) {
         $indexOfCurrentHightestAccess = 0;
         foreach ($parameters as $parameterKey => $parameterValue) {
-            if (!in_array($parameterKey, $this->allSiteAccesses) && is_array($parameterValue)) {
+            if (
+                !in_array($parameterKey, $this->allSiteAccesses) &&
+                is_array($parameterValue) &&
+                key_exists($parameterKey, $comparisonParameters)
+            ) {
                 $comparisonParameters[$parameterKey] = $this->addSiteAccessParametersBackIntoStructure(
                     $parameterValue,
                     $comparisonParameters[$parameterKey]

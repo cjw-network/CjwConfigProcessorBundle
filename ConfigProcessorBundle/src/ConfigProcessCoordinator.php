@@ -197,6 +197,68 @@ class ConfigProcessCoordinator
         return self::getSiteAccesses($specificSiteAccess);
     }
 
+    public static function getFavourites (string $siteAccess = null): array {
+        if (
+            self::$symContainer->hasParameter("cjw.allow_favourite_parameters") &&
+            self::$symContainer->getParameter("cjw.allow_favourite_parameters") === true &&
+            self::$symContainer->hasParameter("cjw.favourite_parameters.parameters")
+        ) {
+            if (!self::$processedParameters) {
+                self::startProcess();
+            }
+
+            $favouriteRetrievalProcessor = new CustomSiteAccessParamProcessor(
+                self::$symContainer,
+                self::getSiteAccesses($siteAccess)
+            );
+
+            $favouriteParameters = self::$cache->get(
+                "cjw_custom_favourite_parameters",
+                function () use ($favouriteRetrievalProcessor) {
+                    $favouriteKeys = self::$symContainer->getParameter("cjw.favourite_parameters.parameters");
+
+                    return $favouriteRetrievalProcessor->getCustomParameters(
+                        $favouriteKeys,
+                        self::$processedParameters
+                    );
+                }
+            );
+
+            if ($siteAccess) {
+                $favouriteParameters =
+                    $favouriteRetrievalProcessor->scanAndEditForSiteAccessDependency($favouriteParameters);
+            }
+
+            return $favouriteParameters;
+        }
+
+        return [];
+    }
+
+    public static function setFavourites (array $favouriteParameterKeys) {
+        if (!self::$processedParameters) {
+            self::startProcess();
+        }
+
+        if (
+            self::$symContainer->hasParameter("cjw.allow_favourite_parameters") &&
+            self::$symContainer->getParameter("cjw.allow_favourite_parameters") === true
+        ) {
+            try {
+                self::$cache->delete("cjw_custom_favourite_parameters");
+            } catch (InvalidArgumentException $e) {
+            } finally {
+                self::$cache->get("cjw_custom_favourite_parameters", function() use ($favouriteParameterKeys) {
+                    $favouriteRetrievalProcessor = new CustomSiteAccessParamProcessor();
+                    return $favouriteRetrievalProcessor->getCustomParameters(
+                        $favouriteParameterKeys,
+                        self::$processedParameters
+                    );
+                });
+            }
+        }
+    }
+
     /*****************************************************************************************
      *
      * Private methods of the class which are called by the public functions.
@@ -239,13 +301,25 @@ class ConfigProcessCoordinator
         try {
             if (!$desiredSiteAccess) {
                 $siteAccesses = self::$processedParameters["ezpublish"]["siteaccess"]["list"]["parameter_value"];
-                array_push($siteAccesses, ...array_keys(self::$processedParameters["ezpublish"]["siteaccess"]["groups"]["parameter_value"]));
+                array_push(
+                    $siteAccesses,
+                    ...array_keys(
+                        self::$processedParameters["ezpublish"]["siteaccess"]["groups"]["parameter_value"]
+                    )
+                );
             } else {
                 $siteAccesses = array($desiredSiteAccess);
-                array_push($siteAccesses,...self::$processedParameters["ezpublish"]["siteaccess"]["groups_by_siteaccess"]["parameter_value"][$desiredSiteAccess]);
+                array_push(
+                    $siteAccesses,
+                    ...self::$processedParameters["ezpublish"]["siteaccess"]["groups_by_siteaccess"]["parameter_value"][$desiredSiteAccess]
+                );
             }
 
-            array_push($siteAccesses, "default", "global");
+            array_push(
+                $siteAccesses,
+                "default",
+                "global"
+            );
         } catch (Exception $error) {
             // Fallback SAs if the others are not accessible via the array route
             $siteAccesses = array("default","global");
@@ -267,7 +341,11 @@ class ConfigProcessCoordinator
                 $siteAccessList
             );
 
-            $customParameters = $customParametersProcessor->getCustomParameters($customParameterKeys,$processedParameters);
+            $customParameters =
+                $customParametersProcessor->getCustomParameters(
+                    $customParameterKeys,
+                    $processedParameters
+                );
 
             if (
                 self::$symContainer->hasParameter("cjw.custom_site_access_parameters.scan_parameters") &&

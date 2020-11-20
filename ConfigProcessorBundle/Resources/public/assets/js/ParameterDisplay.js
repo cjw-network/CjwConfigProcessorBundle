@@ -218,33 +218,75 @@ class ParameterDisplay {
 
   clearAttributes(node) {
     if (node) {
-      if (
-        node.classList.contains("param_list_keys")
-        // node.getAttribute("key").includes("\\")
-      ) {
-        if (node.getAttribute("key").includes("\\")) {
+      if (node.classList.contains("param_list_keys")) {
+        let replacementText = node.getAttribute("key");
+        const symbolArray = this.getMissingAndReplacementSymbols(
+          replacementText
+        );
+
+        if (symbolArray.length > 0) {
           node.setAttribute("originalKey", node.getAttribute("key"));
-          node.setAttribute(
-            "key",
-            node.getAttribute("key").replaceAll("\\", " ")
-          );
+
+          let missingSymbol = null;
+          for (const symbol of symbolArray) {
+            if (!missingSymbol) {
+              missingSymbol = symbol;
+            } else {
+              replacementText = replacementText.replaceAll(
+                missingSymbol,
+                symbol
+              );
+              missingSymbol = null;
+            }
+          }
+
+          node.setAttribute("key", replacementText);
         }
 
         const inlineValueChild = node.querySelector(".inline_value");
         if (inlineValueChild) {
           this.clearAttributes(inlineValueChild);
         }
-      } else if (
-        node.classList.contains("param_list_values") &&
-        node.getAttribute("value").includes("\\")
-      ) {
-        node.setAttribute("originalValue", node.getAttribute("value"));
-        node.setAttribute(
-          "value",
-          node.getAttribute("value").replaceAll("\\", " ")
+      } else if (node.classList.contains("param_list_values")) {
+        let replacementText = node.getAttribute("value");
+        const symbolArray = this.getMissingAndReplacementSymbols(
+          replacementText
         );
+
+        if (symbolArray.length > 0) {
+          node.setAttribute("originalValue", node.getAttribute("value"));
+
+          let missingSymbol = null;
+          for (const symbol of symbolArray) {
+            if (!missingSymbol) {
+              missingSymbol = symbol;
+            } else {
+              replacementText = replacementText.replaceAll(
+                missingSymbol,
+                symbol
+              );
+              missingSymbol = null;
+            }
+          }
+        }
+
+        node.setAttribute("value", replacementText);
       }
     }
+  }
+
+  getMissingAndReplacementSymbols(nodeAttribute) {
+    const symbolArray = [];
+
+    if (nodeAttribute.includes("\\")) {
+      symbolArray.push("\\", " ");
+    }
+
+    if (nodeAttribute.includes('"')) {
+      symbolArray.push('"', "'");
+    }
+
+    return symbolArray;
   }
 
   setTogglerSymbol(nextOrDown, togglerNode) {

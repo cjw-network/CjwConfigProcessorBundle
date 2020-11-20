@@ -37,20 +37,6 @@ class DownloadParametersUtility {
       );
       downloader.click();
       return false;
-
-      // const res = await fetch(
-      //   "/cjw/config-processing/parameter_list/download/" +
-      //     siteAccessOrAllParameters,
-      //   {
-      //     method: "GET",
-      //   }
-      // );
-      //
-      // if (res && res.status !== 200) {
-      //   alert("something went wrong with the download");
-      //
-      //   this.downloadButton.disabled = true;
-      // }
     }
   }
 }

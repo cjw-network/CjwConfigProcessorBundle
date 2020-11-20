@@ -122,4 +122,97 @@ class Utility {
 
     return null;
   }
+
+  createSVGElement(pathToIcon = null, pathAddition = "", useEzClasses = false) {
+    const pathToResource =
+      pathToIcon ?? "/bundles/ezplatformadminui/img/ez-icons.svg#";
+
+    const svgElement = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg"
+    );
+    const useElement = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "use"
+    );
+
+    useElement.setAttributeNS(
+      "http://www.w3.org/1999/xlink",
+      "xlink:href",
+      `${pathToResource}${pathAddition}`
+    );
+
+    svgElement.appendChild(useElement);
+
+    if (useEzClasses) {
+      svgElement.classList.add("ez-icon", "ez-icon--small");
+    }
+
+    return svgElement;
+  }
+
+  /**
+   *
+   * @param {string} url
+   * @param {boolean} symfonyParameterMode
+   * @param {string} method
+   * @param {string} urlParameters
+   * @returns {Promise<Response>}
+   */
+  async performFetchRequestWithoutBody(
+    url,
+    method = "GET",
+    symfonyParameterMode = false,
+    ...urlParameters
+  ) {
+    url = this.addInUrlParameters(url, urlParameters, symfonyParameterMode);
+    url = encodeURI(url);
+
+    return await fetch(url, {
+      method: method,
+    });
+  }
+
+  /**
+   *
+   * @param {string} url
+   * @param {boolean} symfonyParameterMode
+   * @param {string} method
+   * @param body
+   * @param {string} urlParameters
+   * @returns {Promise<Response>}
+   */
+  async performFetchRequestWithBody(
+    url,
+    method = "POST",
+    body,
+    symfonyParameterMode = false,
+    ...urlParameters
+  ) {
+    url = this.addInUrlParameters(url, urlParameters, symfonyParameterMode);
+    url = encodeURI(url);
+    body = JSON.stringify(body);
+
+    return await fetch(url, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: body,
+    });
+  }
+
+  addInUrlParameters(url, urlParameters, symfonyParameterMode = false) {
+    if (urlParameters) {
+      for (let urlParameter of urlParameters) {
+        if (symfonyParameterMode && !url.endsWith("/")) {
+          url += "/";
+        }
+
+        url += urlParameter;
+      }
+    }
+
+    return url;
+  }
 }
