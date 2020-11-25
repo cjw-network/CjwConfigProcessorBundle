@@ -5,25 +5,27 @@
 {% endblock %}
 
 {% block list_header %}
-    {% if not siteAccess is defined or siteAccess is empty %}#}
-        {% set siteAccess = "unknown" %}
-    {% endif %}
-
-    <div class="ez-header">
+  <div class="ez-header favourite_parameters_header">
         <div class="container">
             <ol class="breadcrumb px-4">
                 <li class="breadcrumb-item">Admin</li>
                 <li class="breadcrumb-item">CJW Config Processing</li>
                 <li class="breadcrumb-item">Parameterlist</li>
-                <li class="breadcrumb-item active">Site Access "{{ siteAccess }}"</li>
+                <li class="breadcrumb-item">Favourites</li>
+                {% if not siteAccess is defined or siteAccess is empty %}
+                    {% set siteAccess = "- no.siteaccess -" %}
+                    <li class="breadcrumb-item active">No Site Access</li>
+                {% else %}
+                    <li class="breadcrumb-item active">Site Access "{{ siteAccess }}"</li>
+                {% endif %}
             </ol>
             <div class="ez-page-title py-3 px-4">
                 <div class="ez-page-title__content-item">
                     <svg class="ez-icon ez-icon-content-type">
-                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#content-type"></use>
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#bookmark-active"></use>
                     </svg>
                     <h1 class="ez-page-title__content-name">
-                        Parameterlist: Site Access "{{ siteAccess }}"
+                        Parameterlist: Favourite Parameters
                     </h1>
                 </div>
             </div>
@@ -32,13 +34,17 @@
 {% endblock %}
 
 {% block param_content %}
-    <div siteaccess="{{ siteAccess }}" class="param_list tab-content container mt-4 px-5">
-
+    {% if not siteAccess is same as("- no.siteaccess -") %}
+        <div class="param_list tab-content container mt-4 px-5" siteaccess="{{ siteAccess }}" list="favourites">
+    {% else %}
+        <div class="param_list tab-content container mt-4 px-5" list="favourites">
+    {% endif %}
         <div class="p-3 mb-5 ez-sticky-container cjw_site_access_selectors">
-            <form class="form-inline ez-form-inline justify-content-between">
+            <form class="form-inline ez-form-inline justify-content-around">
                 <div class="d-inline-flex">
-                    <label class="ez-label" for="first_site_access_selection">Site Access 1</label>
-                    <select id="first_site_access_selection" name="first_site_access_selection" class="form-control">
+                    <label class="ez-label" for="favourites_site_access_selection">Site Access</label>
+                    <select id="favourites_site_access_selection" name="favourite_site_access_selection" class="form-control">
+                        <option value="- no.siteaccess -">- no.siteaccess -</option>
                         <option value="0" disabled="disabled">- siteaccess.list -</option>
                         {% for oneSiteAccess in allSiteAccesses %}
                             {% if oneSiteAccess is same as(siteAccess) %}
@@ -57,29 +63,15 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="d-inline-flex">
-                    <label class="ez-label" for="second_site_access_selection">Site Access 2</label>
-                    <select id="second_site_access_selection" name="second_site_access_selection" class="form-control">
-                        <option value="0" disabled="disabled">- siteaccess.list -</option>
-                        <option value="1" disabled="disabled" selected="selected" hidden="hidden"></option>
-                        {% for oneSiteAccess in allSiteAccesses %}
-                            <option value="{{ oneSiteAccess }}">{{ oneSiteAccess }}</option>
-                        {% endfor %}
-                        <option value="0" disabled="disabled">- siteaccess.groups -</option>
-                        {% for saGroup in allSiteAccessGroups|keys %}
-                            <option value="{{ saGroup }}">{{ saGroup }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
                 {% block search_bar %}
                     {{ parent() }}
                 {% endblock %}
             </form>
         </div>
 
-        <div class="ez-table-header">
+        <div class="ez-table-header cjw_table_head_without_searchbar">
             <div class="ez-table-header__headline">
-                Parameterlist
+                Parameterlist: Favourite Parameters
             </div>
             <div class="m-sub-items__actions">
                 <button id="commit_favourites" class="c-action-btn c-action-btn--reveal">
@@ -99,29 +91,13 @@
                 </button>
             </div>
         </div>
-
         <svg class="ez-icon ez-icon--large" id="loading_circle">
             <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#spinner"></use>
         </svg>
-        {% if favourites is defined and favourites|length > 0 %}
-            <div class="param_list_items favourite_container">
-                <div>
-                    Favourites
-                </div>
-                {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : favourites} only %}
-            </div>
-        {% endif %}
-        {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : siteAccessParameters} only %}
+        {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : parameterList} only %}
     </div>
 {% endblock %}
 
-{% block right_sidebar %}
-    <div class="pt-4 px-0 bg-secondary ez-context-menu">
-        <div class="ez-sticky-container">
-            {{ knp_menu_render('cjw_config_processing.menu.site_access_comparison.sidebar_right', {'template': '@ezdesign/ui/menu/sidebar_right.html.twig'}) }}
-        </div>
-    </div>
-{% endblock %}
 
 {% block line_template_javascripts %}
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/app.js") }}></script>
@@ -129,8 +105,8 @@
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterBranchDisplay.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterLocationRetrieval.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/DownloadParametersUtility.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SAListSplitScreen.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/FavourButtonUtility.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/CopyButtonUtility.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/FavouritesHandlingUtility.js") }}></script>
 {% endblock %}
+

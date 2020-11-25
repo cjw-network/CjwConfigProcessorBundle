@@ -19,6 +19,7 @@ class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationConta
     /* Menu items */
     const ITEM__PARAMETERLIST = 'Parameter List';
     const ITEM__PARAMETER_LIST_SITE_ACCESS = 'Parameter List: Site Access';
+    const ITEM__PARAMETER_LIST_FAVOURITES = 'Parameter List: Favourites';
 
     public function __construct(
         MenuItemFactory $factory,
@@ -50,6 +51,13 @@ class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationConta
                 [
                     "route" => "cjw_config_processing.param_list",
                     "extras" => ["icon" => "list"],
+                ]
+            ),
+            self::ITEM__PARAMETER_LIST_FAVOURITES => $this->createMenuItem(
+                self::ITEM__PARAMETER_LIST_FAVOURITES,
+                [
+                    "route" => "cjw_config_processing.param_list_favourites",
+                    "extras" => ["icon" => "bookmark-manager"],
                 ]
             ),
         ];

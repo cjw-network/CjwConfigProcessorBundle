@@ -13,12 +13,16 @@ use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class ConfigProcessController extends AbstractController
 {
+    private $showFavouritesOutsideDedicatedView;
+
     public function __construct (
         ContainerInterface $symContainer,
         ConfigResolverInterface $ezConfigResolver,
@@ -27,6 +31,12 @@ class ConfigProcessController extends AbstractController
     {
         $this->container = $symContainer;
         ConfigProcessCoordinator::initializeCoordinator($symContainer,$ezConfigResolver,$symRequestStack);
+
+        if ($this->container->hasParameter("cjw.favourite_parameters.display_everywhere")) {
+            $this->showFavouritesOutsideDedicatedView = $this->container->getParameter("cjw.favourite_parameters.display_everywhere");
+        } else {
+            $this->showFavouritesOutsideDedicatedView = false;
+        }
     }
 
     public function getStartPage () {
@@ -37,48 +47,30 @@ class ConfigProcessController extends AbstractController
 
     public function getParameterList () {
         $parameters = ConfigProcessCoordinator::getProcessedParameters();
-
-        return $this->render("@CJWConfigProcessor/full/param_view.html.twig", ["parameterList" => $parameters]);
-    }
-
-    public function siteAccessSelection () {
-        $availableSiteAccesses = ConfigProcessCoordinator::getSiteAccessListForController();
+        $favourites = $this->showFavouritesOutsideDedicatedView? ConfigProcessCoordinator::getFavourites() : [];
 
         return $this->render(
-            "@CJWConfigProcessor/full/site_access_selection.html.twig",
+            "@CJWConfigProcessor/full/param_view.html.twig",
             [
-                "siteAccesses" => $availableSiteAccesses
+                "parameterList" => $parameters,
+                "favourites" => $favourites
             ]
         );
     }
 
-    public function getCurrentSAParameters (Request $request) {
-        $saParameters = ConfigProcessCoordinator::getSiteAccessParameters();
-        $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
-
-        $currentSiteAccess = $request->attributes->get("siteaccess")->name;
-        $siteAccesses = Utility::determinePureSiteAccesses($processedParameters);
-        $groups = Utility::determinePureSiteAccessGroups($processedParameters);
-
-        return $this->render(
-            "@CJWConfigProcessor/full/param_view_siteaccess.html.twig",
-            [
-                "siteAccess" => $currentSiteAccess,
-                "allSiteAccesses" => $siteAccesses,
-                "allSiteAccessGroups" => $groups,
-                "siteAccessParameters" => $saParameters
-            ]
-        );
-    }
-
-    public function getSpecificSAParameters (string $siteAccess) {
+    public function getSpecificSAParameters (Request $request, string $siteAccess = null) {
         try {
             $specSAParameters = ConfigProcessCoordinator::getParametersForSiteAccess($siteAccess);
         } catch (InvalidArgumentException | Exception $error) {
             $specSAParameters = [];
         }
 
+        if (!$siteAccess) {
+            $siteAccess = $request->attributes->get("siteaccess")->name;
+        }
+
         $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
+        $favourites = $this->showFavouritesOutsideDedicatedView? ConfigProcessCoordinator::getFavourites($siteAccess) : [];
 
         $siteAccesses = Utility::determinePureSiteAccesses($processedParameters);
         $groups = Utility::determinePureSiteAccessGroups($processedParameters);
@@ -89,17 +81,33 @@ class ConfigProcessController extends AbstractController
                 "siteAccess" => $siteAccess,
                 "allSiteAccesses" => $siteAccesses,
                 "allSiteAccessGroups" => $groups,
-                "siteAccessParameters" => $specSAParameters
+                "siteAccessParameters" => $specSAParameters,
+                "favourites" => $favourites
             ]
         );
     }
 
-    public function compareSiteAccesses (string $firstSiteAccess, string $secondSiteAccess) {
+    public function compareSiteAccesses (string $firstSiteAccess, string $secondSiteAccess, string $limiter = null) {
 
         $resultParameters = $this->retrieveParamsForSiteAccesses($firstSiteAccess,$secondSiteAccess);
+        $resultFavourites = $this->retrieveFavouritesForSiteAccesses($firstSiteAccess,$secondSiteAccess);
+        $limiterString = "Unlimited View";
+
+        if ($limiter === "commons") {
+            $resultParameters = Utility::removeUncommonParameters($resultParameters[0],$resultParameters[1]);
+            $resultFavourites = Utility::removeUncommonParameters($resultFavourites[0],$resultFavourites[1]);
+            $limiterString = "Common Parameter View";
+        } else if ($limiter === "uncommons") {
+            $resultParameters = Utility::removeCommonParameters($resultParameters[0],$resultParameters[1]);
+            $resultFavourites = Utility::removeCommonParameters($resultFavourites[0],$resultFavourites[1]);
+            $limiterString = "Uncommon Parameter View";
+        }
 
         $firstSiteAccessParameters = $resultParameters[0];
         $secondSiteAccessParameters = $resultParameters[1];
+
+        $firstSiteAccessFavourites = $resultFavourites[0];
+        $secondSiteAccessFavourites = $resultFavourites[1];
 
         $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
 
@@ -115,18 +123,15 @@ class ConfigProcessController extends AbstractController
                 "allSiteAccessGroups" => $groups,
                 "firstSiteAccessParameters" => $firstSiteAccessParameters,
                 "secondSiteAccessParameters" => $secondSiteAccessParameters,
-                "limiter" => "Unlimited View",
+                "firstSiteAccessFavourites" => $firstSiteAccessFavourites,
+                "secondSiteAccessFavourites" => $secondSiteAccessFavourites,
+                "limiter" => $limiterString,
             ]
         );
     }
 
-    public function compareSiteAccessesCommonsOnly (string $firstSiteAccess, string $secondSiteAccess) {
-
-        $resultParameters = $this->retrieveParamsForSiteAccesses($firstSiteAccess,$secondSiteAccess);
-        $resultParameters = Utility::removeUncommonParameters($resultParameters[0],$resultParameters[1]);
-
-        $firstSiteAccessParameters = $resultParameters[0];
-        $secondSiteAccessParameters = $resultParameters[1];
+    public function getFavourites (string $siteAccess = null) {
+        $favourites = ConfigProcessCoordinator::getFavourites($siteAccess);
 
         $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
 
@@ -134,59 +139,45 @@ class ConfigProcessController extends AbstractController
         $groups = Utility::determinePureSiteAccessGroups($processedParameters);
 
         return $this->render(
-            "@CJWConfigProcessor/full/param_view_siteaccess_compare.html.twig",
+            "@CJWConfigProcessor/full/param_view_favourites.html.twig",
             [
-                "firstSiteAccess" => $firstSiteAccess,
-                "secondSiteAccess" => $secondSiteAccess,
+                "siteAccess" => $siteAccess,
+                "parameterList" => $favourites,
                 "allSiteAccesses" => $siteAccesses,
                 "allSiteAccessGroups" => $groups,
-                "firstSiteAccessParameters" => $firstSiteAccessParameters,
-                "secondSiteAccessParameters" => $secondSiteAccessParameters,
-                "limiter" => "Common Parameter View",
-
             ]
         );
     }
 
-    public function compareSiteAccessesUncommonsOnly (string $firstSiteAccess, string $secondSiteAccess) {
+    public function saveFavourites(Request $request): Response {
+        $requestData = $request->getContent();
 
-        $resultParameters = $this->retrieveParamsForSiteAccesses($firstSiteAccess,$secondSiteAccess);
-        $resultParameters = Utility::removeCommonParameters($resultParameters[0],$resultParameters[1]);
+        try {
+            $request = json_decode($requestData);
+            ConfigProcessCoordinator::setFavourites($request);
+        } catch (Exception $error) {
+            throw new BadRequestException("The given data was not of a json format!");
+        }
 
-        $firstSiteAccessParameters = $resultParameters[0];
-        $secondSiteAccessParameters = $resultParameters[1];
-
-        $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
-
-        $siteAccesses = Utility::determinePureSiteAccesses($processedParameters);
-        $groups = Utility::determinePureSiteAccessGroups($processedParameters);
-
-        return $this->render(
-            "@CJWConfigProcessor/full/param_view_siteaccess_compare.html.twig",
-            [
-                "firstSiteAccess" => $firstSiteAccess,
-                "secondSiteAccess" => $secondSiteAccess,
-                "allSiteAccesses" => $siteAccesses,
-                "allSiteAccessGroups" => $groups,
-                "firstSiteAccessParameters" => $firstSiteAccessParameters,
-                "secondSiteAccessParameters" => $secondSiteAccessParameters,
-                "limiter" => "Uncommon Parameter View"
-            ]
-        );
-
+        return new Response(null, 200);
     }
 
-    public function downloadParameterListAsTextFile(string $siteAccessOrAllParameters) {
-        if ($siteAccessOrAllParameters === "all_parameters") {
+    public function downloadParameterListAsTextFile(string $downloadDenominator): BinaryFileResponse {
+        if ($downloadDenominator === "all_parameters") {
             $resultingFile = ParametersToFileWriter::writeParametersToFile(
                 ConfigProcessCoordinator::getProcessedParameters()
+            );
+        } else if ($downloadDenominator === "favourites") {
+            $resultingFile = ParametersToFileWriter::writeParametersToFile(
+                ConfigProcessCoordinator::getFavourites(),
+                $downloadDenominator
             );
         } else {
             $resultingFile = ParametersToFileWriter::writeParametersToFile(
                 ConfigProcessCoordinator::getParametersForSiteAccess(
-                    $siteAccessOrAllParameters
+                    $downloadDenominator
                 ),
-                $siteAccessOrAllParameters
+                $downloadDenominator
             );
         }
 
@@ -214,5 +205,17 @@ class ConfigProcessController extends AbstractController
         }
 
         return [$firstSiteAccessParameters,$secondSiteAccessParameters];
+    }
+
+    private function retrieveFavouritesForSiteAccesses(string $firstSiteAccess, string $secondSiteAccess) {
+        $firstFavourites = [];
+        $secondFavourites = [];
+
+        if ($this->showFavouritesOutsideDedicatedView) {
+            $firstFavourites = ConfigProcessCoordinator::getFavourites($firstSiteAccess);
+            $secondFavourites = ConfigProcessCoordinator::getFavourites($secondSiteAccess);
+        }
+
+        return[$firstFavourites,$secondFavourites];
     }
 }

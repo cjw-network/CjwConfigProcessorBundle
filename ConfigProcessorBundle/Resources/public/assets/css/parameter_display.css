@@ -8,13 +8,9 @@
 }
 
 .favourite_container {
+    background-color: white;
     margin-bottom: 10px;
-    border: 1px solid lightcyan;
 }
-
-/*.focussed_items {*/
-/*    background-color: whitesmoke;*/
-/*}*/
 
 .param_list_keys {
     padding: 2px;
@@ -67,14 +63,14 @@
     border-color: #52bfec;
     outline: 0;
     /*box-shadow: 0 0 0 0.2rem rgba(241,90,16,0.25);*/
-    box-shadow: 0 0 0 0.2rem #81C5FF;
+    box-shadow: 0 0 0 0.2rem #65bdef;
     transition: all 0.3s ease;
 }
 
 .cjw_value_search:focus, .cjw_value_search:hover {
     border-color: #3dc739;
     outline: 0;
-    box-shadow: 0 0 0 0.2rem #7ccb83;
+    box-shadow: 0 0 0 0.2rem #57cb61;
     transition: all 0.3s ease;
 }
 
@@ -83,6 +79,12 @@
     outline: white;
     border: 1px transparent;
     z-index: 10;
+    opacity: 15%;
+}
+
+.parameter_buttons:hover {
+    opacity: 100%;
+    transition: 0.3s all ease;
 }
 
 .open_subtree {
@@ -93,19 +95,19 @@
 .favour_parameter {
     right: 70px;
     top: auto;
-    opacity: 15%;
+    /*opacity: 15%;*/
 }
 
 .copy_param_name {
     right: 50px;
     top: auto;
-    opacity: 15%;
+    /*opacity: 15%;*/
 }
 
-.favour_parameter:hover, .copy_param_name:hover {
-    opacity: 100%;
-    transition: 0.3s all ease;
-}
+/*.favour_parameter:hover, .copy_param_name:hover {*/
+/*    opacity: 100%;*/
+/*    transition: 0.3s all ease;*/
+/*}*/
 
 .location_info {
     background-color: white;
@@ -139,7 +141,7 @@
 }
 
 .path_info_carrier {
-    background-color: rgb(210, 242, 253);
+    background-color: rgb(246, 253, 253);
     transition: 0.3s all ease;
 }
 
@@ -174,7 +176,7 @@
 
 .syncScrollAddition {
     color: white;
-    /*text-decoration-line: line-through;*/
+    text-decoration-line: line-through;
 }
 
 .syncScrollAddition:not(.param_list_key_without_child) {

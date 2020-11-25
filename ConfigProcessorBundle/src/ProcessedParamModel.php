@@ -94,11 +94,13 @@ class ProcessedParamModel implements Serializable
         $outputArray = [];
         $endOfBranch = $this->isFreeOfProcessedParamModels($this->parameters);
 
-        foreach($this->parameters as $parameter) {
+        if (count($this->parameters) === 0) {
+            $outputArray["parameter_value"] = null;
+        }
 
+        foreach($this->parameters as $parameter) {
             // If there is no more Object as a parameter, then the end of the "branch" has been reached and the actual value can be returned
             if (!$parameter instanceof ProcessedParamModel) {
-
                 if (!$endOfBranch) {
                     if (!isset($outputArray["parameter_value"])) {
                         $outputArray["parameter_value"] = [$parameter];

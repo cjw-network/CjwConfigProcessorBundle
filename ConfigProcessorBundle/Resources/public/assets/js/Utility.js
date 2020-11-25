@@ -81,7 +81,10 @@ class Utility {
       if (
         originalNode.classList.contains("param_list_keys") &&
         comparisonNode.classList.contains("param_list_keys") &&
-        originalNode.getAttribute("key") === comparisonNode.getAttribute("key")
+        originalNode.getAttribute("key") ===
+          comparisonNode.getAttribute("key") &&
+        originalNode.classList.contains("favourite_key_entry") ===
+          comparisonNode.classList.contains("favourite_key_entry")
       ) {
         if (
           originalNode.classList.contains("top_nodes") &&
@@ -107,9 +110,9 @@ class Utility {
       let keyParent;
       if (key.classList.contains("param_list_item")) {
         keyParent = key;
+      } else {
+        keyParent = key.parentElement;
       }
-
-      keyParent = key.parentElement;
 
       if (keyParent.parentElement) {
         const firstChild = keyParent.parentElement.children[0];

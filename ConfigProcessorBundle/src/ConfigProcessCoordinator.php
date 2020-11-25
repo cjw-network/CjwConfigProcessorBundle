@@ -199,8 +199,8 @@ class ConfigProcessCoordinator
 
     public static function getFavourites (string $siteAccess = null): array {
         if (
-            self::$symContainer->hasParameter("cjw.allow_favourite_parameters") &&
-            self::$symContainer->getParameter("cjw.allow_favourite_parameters") === true &&
+            self::$symContainer->hasParameter("cjw.favourite_parameters.allow") &&
+            self::$symContainer->getParameter("cjw.favourite_parameters.allow") === true &&
             self::$symContainer->hasParameter("cjw.favourite_parameters.parameters")
         ) {
             if (!self::$processedParameters) {
@@ -241,15 +241,25 @@ class ConfigProcessCoordinator
         }
 
         if (
-            self::$symContainer->hasParameter("cjw.allow_favourite_parameters") &&
-            self::$symContainer->getParameter("cjw.allow_favourite_parameters") === true
+            self::$symContainer->hasParameter("cjw.favourite_parameters.allow") &&
+            self::$symContainer->getParameter("cjw.favourite_parameters.allow") === true
         ) {
             try {
                 self::$cache->delete("cjw_custom_favourite_parameters");
             } catch (InvalidArgumentException $e) {
             } finally {
                 self::$cache->get("cjw_custom_favourite_parameters", function() use ($favouriteParameterKeys) {
-                    $favouriteRetrievalProcessor = new CustomSiteAccessParamProcessor();
+                    $favouriteRetrievalProcessor = new CustomSiteAccessParamProcessor(self::$symContainer);
+
+                    if (
+                        self::$symContainer->hasParameter("cjw.favourite_parameters.scan_parameters") &&
+                        self::$symContainer->getParameter("cjw.favourite_parameters.scan_parameters") === true
+                    ) {
+                        $favouriteParameterKeys =
+                            $favouriteRetrievalProcessor->replacePotentialSiteAccessParts($favouriteParameterKeys);
+                    }
+
+
                     return $favouriteRetrievalProcessor->getCustomParameters(
                         $favouriteParameterKeys,
                         self::$processedParameters
@@ -309,10 +319,16 @@ class ConfigProcessCoordinator
                 );
             } else {
                 $siteAccesses = array($desiredSiteAccess);
-                array_push(
-                    $siteAccesses,
-                    ...self::$processedParameters["ezpublish"]["siteaccess"]["groups_by_siteaccess"]["parameter_value"][$desiredSiteAccess]
-                );
+                $siteAccessGroups = self::$processedParameters["ezpublish"]["siteaccess"]["groups"]["parameter_value"];
+                $siteAccessGroups = array_keys($siteAccessGroups);
+
+                if (!in_array($desiredSiteAccess,$siteAccessGroups)) {
+                    array_push(
+                        $siteAccesses,
+                        ...self::$processedParameters["ezpublish"]["siteaccess"]["groups_by_siteaccess"]["parameter_value"][$desiredSiteAccess]
+                    );
+                }
+
             }
 
             array_push(

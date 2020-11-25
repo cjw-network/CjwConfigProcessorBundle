@@ -4,7 +4,6 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/assets/css/bundle.css") }}>
-
     {% block line_template_stylesheets %}{% endblock %}
 {% endblock %}
 
@@ -13,7 +12,6 @@
 {% endblock %}
 
 {% block content %}
-
     <div class="cjw_config_processing_content">
         <div class="cjw_main_body ez-main-row row">
             {% block left_sidebar %}
@@ -50,6 +48,7 @@
         <div class="scroll_up_button">
             <button class="dont_display">^</button>
         </div>
+        <a id="downloader"></a>
     </div>
 {% endblock %}
 

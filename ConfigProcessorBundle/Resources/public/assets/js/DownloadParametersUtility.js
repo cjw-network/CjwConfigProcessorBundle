@@ -20,20 +20,20 @@ class DownloadParametersUtility {
     const parameterList = document.querySelector(".param_list");
 
     if (parameterList) {
-      let siteAccessOrAllParameters = "all_parameters";
+      let downloadDenominator = "all_parameters";
 
       if (parameterList.getAttribute("siteaccess")) {
-        siteAccessOrAllParameters = parameterList.getAttribute("siteaccess");
+        downloadDenominator = parameterList.getAttribute("siteaccess");
+      } else if (parameterList.getAttribute("list")) {
+        downloadDenominator = parameterList.getAttribute("list");
       }
-
-      const downloader = document.querySelector("a");
+      const downloader = document.querySelector("#downloader");
       downloader.href =
-        "/cjw/config-processing/parameter_list/download/" +
-        siteAccessOrAllParameters;
+        "/cjw/config-processing/parameter_list/download/" + downloadDenominator;
 
       downloader.setAttribute(
         "download",
-        "parameter_list_" + siteAccessOrAllParameters
+        "parameter_list_" + downloadDenominator
       );
       downloader.click();
       return false;

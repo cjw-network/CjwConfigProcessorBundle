@@ -58,7 +58,7 @@ html {
 
 #cjw_searchbar_label > svg {
     fill: lightgrey;
-    fill-opacity: 40%;
+    fill-opacity: 50%;
     transition: all 0.2s ease-in;
 }
 
@@ -115,4 +115,8 @@ html {
     border: 1px solid white;
     width: 100%;
     height: 100%;
+}
+
+#downloader {
+    display: none;
 }

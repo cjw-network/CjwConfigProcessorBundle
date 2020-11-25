@@ -10,10 +10,21 @@ function main() {
     setUpParameterDisplays();
     setUpDownloadAndSyncScrollerButtons();
     setUpFavourAndCopyButtons();
+
+    if (
+      document.querySelector(".favourite_container, [list=favourites]") &&
+      !document.querySelector("[favourite]")
+    ) {
+      setUpFavourites();
+    }
+
     handleLoadingDisplay();
   }
 
-  if (document.querySelector(".cjw_site_access_selectors")) {
+  if (
+    document.querySelector(".cjw_site_access_selectors") &&
+    !document.querySelector("[list=favourites]")
+  ) {
     handleSplitView();
   }
 }
@@ -58,12 +69,24 @@ function setUpFavourAndCopyButtons() {
   favourButtonUtility.setUpFavourButtons();
 }
 
+function setUpFavourites() {
+  if (document.querySelector(".favourite_container, [list=favourites]")) {
+    let favouriteParameterUtility = new FavouritesHandlingUtility();
+
+    favouriteParameterUtility.setUpFavourites();
+
+    if (document.querySelector("#favourites_site_access_selection")) {
+      favouriteParameterUtility.setUpSiteAccessSwitching();
+    }
+  }
+}
+
 function handleLoadingDisplay() {
   const loadingCircle = document.querySelector("#loading_circle");
 
   if (loadingCircle) {
     setTimeout(() => {
-      const containerWithLoader = document.querySelector(".param_list");
+      const containerWithLoader = loadingCircle.parentElement;
 
       if (document.querySelector("#loading_circle")) {
         containerWithLoader?.removeChild(loadingCircle);

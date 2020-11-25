@@ -33,13 +33,16 @@ class CustomSiteAccessParamProcessor
         array $processedParameters
     ): array {
         $customParameters = [];
+
         foreach ($customParameterKeys as $customKey) {
             $keyPartArray = explode(".", $customKey);
+
             if (count($keyPartArray) > 0) {
                 $result = $this->getParameterThroughParts($keyPartArray, $processedParameters);
 
                 if (count ($result) > 0) {
                     $key = array_keys($result)[0];
+
                     if (!isset($customParameters[$key])) {
                         $customParameters[$key] = $result[$key];
                     } else {
@@ -52,40 +55,50 @@ class CustomSiteAccessParamProcessor
         return $customParameters;
     }
 
-    private function getParameterThroughParts (
-        array $keyParts,
-        array $processedParameters,
-        bool $withinCustomArray = false
-    ): array {
-        $customParametersSoFar = [];
+    public function replacePotentialSiteAccessParts (array $keysToBeProcessed): array {
+        $changedKeys = $keysToBeProcessed;
 
-        if (count($keyParts) > 0) {
-            if (key_exists($keyParts[0], $processedParameters)) {
-                $key = $keyParts[0];
-                unset($keyParts[0]);
-                $keyParts= array_values($keyParts);
-                $customParametersSoFar[$key] = self::getParameterThroughParts($keyParts,$processedParameters[$key], true);
+        foreach ($keysToBeProcessed as $parameterKey) {
+
+            $keySegments = explode(".",$parameterKey);
+
+            foreach ($keySegments as $keySegment) {
+                if (in_array($keySegment, $this->allSiteAccesses)) {
+                    $indexOfSegment = array_search($keySegment,$keySegments);
+
+                    foreach ($this->allSiteAccesses as $siteAccess) {
+                        if ($siteAccess !== $keySegment) {
+                            $keySegments[$indexOfSegment] = $siteAccess;
+                            $changedKeys[] = join(".",$keySegments);
+                        }
+                    }
+
+                    break;
+                }
             }
-        } else if ($withinCustomArray) {
-            return $processedParameters;
         }
 
-        return $customParametersSoFar;
+        return $changedKeys;
     }
 
-    public function scanAndEditForSiteAccessDependency (array $parametersToBeProcessed) {
+
+    public function scanAndEditForSiteAccessDependency (array $parametersToBeProcessed): array {
         $possiblySiteAccessDependentParameters =
             $this->getAllPossiblySiteAccessDependentParameters($parametersToBeProcessed);
 
-        $parametersToBeProcessed = $this->addSiteAccessParametersBackIntoStructure(
-            $possiblySiteAccessDependentParameters,
-            $parametersToBeProcessed
-        );
+        if (count($possiblySiteAccessDependentParameters) > 0) {
+            $parametersToBeProcessed = $this->addSiteAccessParametersBackIntoStructure(
+                $possiblySiteAccessDependentParameters,
+                $parametersToBeProcessed
+            );
+        } else {
+            $parametersToBeProcessed = $possiblySiteAccessDependentParameters;
+        }
 
         return $parametersToBeProcessed;
     }
 
-    private function constructListOfAllSiteAccesses () {
+    private function constructListOfAllSiteAccesses (): void {
         $this->allSiteAccesses[] = "default";
 
         if ($this->symContainer->hasParameter("ezpublish.siteaccess.groups")) {
@@ -105,10 +118,54 @@ class CustomSiteAccessParamProcessor
         $this->allSiteAccesses[] = "global";
     }
 
+    private function getParameterThroughParts (
+        array $keyParts,
+        array $processedParameters,
+        bool $withinCustomArray = false
+    ): array {
+        $customParametersSoFar = [];
+
+        if (count($keyParts) > 0) {
+            if (key_exists($keyParts[0], $processedParameters)) {
+                $key = $keyParts[0];
+                array_splice($keyParts,0,1);
+                $customParametersSoFar[$key] = self::getParameterThroughParts($keyParts,$processedParameters[$key], true);
+            }
+        } else if ($withinCustomArray) {
+            return $processedParameters;
+        }
+
+        return $customParametersSoFar;
+    }
+
+//
+//    private function buildReplacementArray (
+//        array $keyArray,
+//        array $parametersToBeProcessed,
+//        string $parameterKeyToChange
+//    ) {
+//        $resultArray = [];
+//
+//        if (count($keyArray) > 0) {
+//            $key = reset($keyArray);
+//            array_splice($keyArray,0,1);
+//
+//            $resultArray[$key] = $this->buildReplacementArray($keyArray,$parametersToBeProcessed[$key], $parameterKeyToChange);
+//        } else if (key_exists($parameterKeyToChange, $parametersToBeProcessed)) {
+//            $value = $parametersToBeProcessed[$parameterKeyToChange];
+//
+//            foreach ($this->allSiteAccesses as $siteAccess) {
+//                $resultArray[$siteAccess] = $value;
+//            }
+//        }
+//
+//        return $resultArray;
+//    }
+
     private function addSiteAccessParametersBackIntoStructure (
         array $parameters,
         array $comparisonParameters
-    ) {
+    ): array {
         $indexOfCurrentHightestAccess = 0;
         foreach ($parameters as $parameterKey => $parameterValue) {
             if (
@@ -156,7 +213,7 @@ class CustomSiteAccessParamProcessor
     private function buildFullParameterKeys (
         array $parameters,
         string $predecessorKeys = null
-    ) {
+    ): array {
         $result = [];
 
         foreach ($parameters as $parameterKey => $parameterValue) {
@@ -172,7 +229,12 @@ class CustomSiteAccessParamProcessor
                 continue;
             }
 
-            $tmpResult = $this->buildFullParameterKeys($parameterValue, $predecessorKeys? $predecessorKeys.".".$parameterKey : $parameterKey);
+            $tmpResult = $this->buildFullParameterKeys(
+                $parameterValue,
+                $predecessorKeys?
+                    $predecessorKeys.".".$parameterKey : $parameterKey
+            );
+
             foreach ($tmpResult as $tmpResultKey => $tmpResultValue) {
                 $result[$tmpResultKey] = $tmpResultValue;
             }
@@ -181,7 +243,7 @@ class CustomSiteAccessParamProcessor
         return $result;
     }
 
-    private function getAllPossiblySiteAccessDependentParameters (array $parametersToBeProcessed) {
+    private function getAllPossiblySiteAccessDependentParameters (array $parametersToBeProcessed): array {
         $result = [];
 
         foreach ($parametersToBeProcessed as $parameterKey => $parameterValue) {
@@ -192,10 +254,13 @@ class CustomSiteAccessParamProcessor
                 unset($parametersToBeProcessed[$parameterKey]);
             } else {
                 $tmpResult = $this->getAllPossiblySiteAccessDependentParameters($parameterValue);
-                $result[$parameterKey] = [];
+
+                if (count($tmpResult) > 0) {
+                    $result[$parameterKey] = [];
+                }
 
                 foreach (array_keys($tmpResult) as $siteAccess) {
-                    if (key_exists($siteAccess,$result)) {
+                    if (key_exists($siteAccess,$result[$parameterKey])) {
                         $result[$parameterKey][$siteAccess] =
                             $this->addInKeysUnderSameSiteAccess($result, $tmpResult[$siteAccess]);
                     } else {
@@ -208,7 +273,7 @@ class CustomSiteAccessParamProcessor
         return $result;
     }
 
-    private function addInKeysUnderSameSiteAccess (array $listToAddInto, array $parametersToAdd) {
+    private function addInKeysUnderSameSiteAccess (array $listToAddInto, array $parametersToAdd): array {
         foreach($parametersToAdd as $parameterKey => $parameterValue) {
             if (
                 key_exists($parameterKey,$listToAddInto) &&

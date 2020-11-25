@@ -37,9 +37,6 @@ class SAListSplitScreen {
 
   setUpSiteAccessSelectionForSingleView() {
     if (this.firstSiteAccessSelector && this.secondSiteAccessSelector) {
-      // this.firstSiteAccessSelector.onChange = "";
-      // this.secondSiteAccessSelector.onChange = "";
-
       this.firstSiteAccessSelector.onchange = (event) => {
         event.preventDefault();
         event.stopPropagation();

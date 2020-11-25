@@ -517,7 +517,7 @@ class SynchronousScrollerUtility {
       }
 
       const subTreeAndLocationButtons = duplicateNode.querySelectorAll(
-        ".open_subtree, .location_info, .param_item_toggle"
+        ".parameter_buttons, .param_item_toggle"
       );
       for (const button of subTreeAndLocationButtons) {
         button.parentElement.removeChild(button);

@@ -91,7 +91,7 @@
 
     <div class="ez-table-header cjw_table_head_without_searchbar">
         <div class="ez-table-header__headline">
-            Parameterlist: {{ limiter }}
+            Parameterlist: {{ limiter }} | Between 1. {{ firstSiteAccess }} and 2. {{ secondSiteAccess }}
         </div>
         <div class="m-sub-items__actions">
             <button id="commit_favourites" class="c-action-btn c-action-btn--reveal">
@@ -109,10 +109,28 @@
 
     <div class="compare_display">
         <div siteaccess="{{ firstSiteAccess }}" class="param_list first_list">
+            {% if firstSiteAccessFavourites is defined and firstSiteAccessFavourites|length > 0 %}
+                <div class="param_list_items favourite_container">
+                    <div>
+                        Favourites
+                    </div>
+                    {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : firstSiteAccessFavourites} only %}
+                </div>
+{#                <div class="param_list_items end_favourites"><br></div>#}
+            {% endif %}
             {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : firstSiteAccessParameters} only %}
         </div>
 
         <div siteaccess="{{ secondSiteAccess }}" class="param_list second_list">
+            {% if secondSiteAccessFavourites is defined and secondSiteAccessFavourites|length > 0 %}
+                <div class="param_list_items favourite_container">
+                    <div>
+                        Favourites
+                    </div>
+                    {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : secondSiteAccessFavourites} only %}
+                </div>
+{#                <div class="param_list_items end_favourites"><br></div>#}
+            {% endif %}
             {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : secondSiteAccessParameters} only %}
         </div>
     </div>
@@ -137,4 +155,5 @@
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SynchronousScrollerUtility.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/FavourButtonUtility.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/CopyButtonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/FavouritesHandlingUtility.js") }}></script>
 {% endblock %}

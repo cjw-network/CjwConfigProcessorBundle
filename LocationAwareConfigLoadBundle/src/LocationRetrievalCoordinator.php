@@ -156,7 +156,7 @@ class LocationRetrievalCoordinator
 
 
             if ($withSiteAccess && count($results) > 0) {
-                $results["siteaccess"] = "The values mostly stem from the '".$siteAccess."' siteaccess.";
+                $results["siteaccess-origin"] = $siteAccess;
             }
             return count($results) > 0? $results : null;
         } else {

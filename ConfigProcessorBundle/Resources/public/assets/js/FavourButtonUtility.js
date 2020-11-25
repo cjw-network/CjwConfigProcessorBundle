@@ -44,7 +44,9 @@ class FavourButtonUtility {
   }
 
   async commitFavouritesToBackend() {
-    const nodeListOfFavourites = document.querySelectorAll("[favourite]");
+    const nodeListOfFavourites = document.querySelectorAll(
+      "[favourite]:not(.favourite_key_entry)"
+    );
     const parameterNameArray = [];
 
     if (nodeListOfFavourites && nodeListOfFavourites.length > 0) {

@@ -91,7 +91,19 @@ class ConfigProcessor
         foreach($this->processedParameters as $parameter) {
             $formattedOutput[$parameter->getKey()] = $parameter->reformatForOutput();
         }
-        ksort($formattedOutput,SORT_STRING);
-        return $formattedOutput;
+//        ksort($formattedOutput,SORT_STRING);
+        return $this->sortParameterKeys($formattedOutput);
+    }
+
+    private function sortParameterKeys (array $parameters) {
+        ksort($parameters, SORT_STRING);
+
+        foreach ($parameters as $key => $value) {
+            if (is_array($parameters[$key])) {
+                $parameters[$key] = $this->sortParameterKeys($parameters[$key]);
+            }
+        }
+
+        return $parameters;
     }
 }

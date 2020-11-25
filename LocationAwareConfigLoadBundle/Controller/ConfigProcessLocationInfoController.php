@@ -37,7 +37,7 @@ class ConfigProcessLocationInfoController extends AbstractController
 
         if ($locations) {
             foreach ($locations as $location => $value) {
-                if ($location !== "siteaccess") {
+                if ($location !== "siteaccess-origin") {
                     $newKey = substr($location,strlen($this->projectDir));
 
                     $locations[$newKey] = $value;
