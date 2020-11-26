@@ -16,6 +16,11 @@ class CopyButtonUtility {
       for (const button of this.copyButtons) {
         button.onclick = this.handleCopyClickEvent.bind(this);
       }
+
+      document.addEventListener(
+        "pathKeysAdded",
+        this.handleAdditionOfPathKeys.bind(this)
+      );
     }
   }
 
@@ -25,6 +30,31 @@ class CopyButtonUtility {
 
     const pressedCopyButton = event.currentTarget;
     this.copyParameterName(pressedCopyButton);
+  }
+
+  handleCopyPathInfoClickEvent(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const pathKey = event.currentTarget;
+    this.copyFileLocationPath(pathKey);
+  }
+
+  handleAdditionOfPathKeys(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (event.detail.pathInfoCarrier) {
+      const pathParent = event.detail.pathInfoCarrier;
+      const pathKeys = pathParent.querySelectorAll(".path_info_key");
+
+      for (const pathKey of pathKeys) {
+        pathKey.addEventListener(
+          "click",
+          this.handleCopyPathInfoClickEvent.bind(this)
+        );
+      }
+    }
   }
 
   copyParameterName(pressedCopyButton) {
@@ -40,31 +70,30 @@ class CopyButtonUtility {
         document.execCommand("copy");
         this.copyInputField.classList.add("dont_display");
         buttonImage.style.fill = "#52bfec";
+        pressedCopyButton.title = "key copied";
 
         setTimeout(() => {
           buttonImage.style.fill = "";
-        }, 2000);
+          pressedCopyButton.title = "copy key";
+        }, 3000);
       }
     }
   }
 
-  copyFileLocationPath(pressedCopyButton) {
-    if (pressedCopyButton) {
-      const copyParent = pressedCopyButton.parentElement;
-      const buttonImage = pressedCopyButton.querySelector("svg");
+  copyFileLocationPath(pathKey) {
+    if (pathKey) {
+      pathKey.title = "copied";
+      this.copyInputField.value = pathKey.getAttribute("path");
+      this.copyInputField.classList.remove("dont_display");
+      this.copyInputField.select();
+      document.execCommand("copy");
+      this.copyInputField.classList.add("dont_display");
+      pathKey.style.backgroundColor = "#52bfec";
 
-      if (copyParent) {
-        this.copyInputField.value = copyParent.innerText;
-        this.copyInputField.classList.remove("dont_display");
-        this.copyInputField.select();
-        document.execCommand("copy");
-        this.copyInputField.classList.add("dont_display");
-        buttonImage.style.fill = "#52bfec";
-
-        setTimeout(() => {
-          buttonImage.style.fill = "";
-        }, 2000);
-      }
+      setTimeout(() => {
+        pathKey.style.backgroundColor = "";
+        pathKey.title = "copy path";
+      }, 3000);
     }
   }
 }

@@ -116,6 +116,13 @@ class ParameterLocationRetrieval {
         targetButton.innerText = "x";
         targetButton.classList.add("close_location_info");
 
+        document.dispatchEvent(
+          new CustomEvent("pathKeysAdded", {
+            bubbles: true,
+            detail: { pathInfoCarrier: targetButton.parentElement },
+          })
+        );
+
         targetButton.onclick = (event) => {
           event.preventDefault();
           event.stopPropagation();
@@ -142,6 +149,8 @@ class ParameterLocationRetrieval {
           let value = responseBody[path];
 
           keyContainer.innerText = path + ": ";
+          keyContainer.setAttribute("path", path);
+          keyContainer.title = "copy path";
           valueContainer.innerText = value;
 
           valueContainer.classList.add("path_info_value");

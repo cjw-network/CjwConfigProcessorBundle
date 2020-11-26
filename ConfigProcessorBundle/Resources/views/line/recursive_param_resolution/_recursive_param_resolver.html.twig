@@ -34,24 +34,24 @@
                         {% endif %}
                     {% endfor %}
                 {% endif %}
-                <button class="parameter_buttons open_subtree">
+                <button class="parameter_buttons open_subtree" title="open subtree">
                     <svg class="ez-icon ez-icon--small">
                         <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
                     </svg>
                 </button>
 
                 {% if "parameter_value" in value|keys %}
-                    <button class="parameter_buttons copy_param_name">
+                    <button class="parameter_buttons copy_param_name" title="copy key">
                         <svg class="ez-icon ez-icon--small">
                             <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy"></use>
                         </svg>
                     </button>
-                    <button class="parameter_buttons favour_parameter">
+                    <button class="parameter_buttons favour_parameter" title="mark as favourite">
                         <svg class="ez-icon ez-icon--small">
                             <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#bookmark"></use>
                         </svg>
                     </button>
-                    <button class="parameter_buttons location_info">i</button>
+                    <button class="parameter_buttons location_info" title="get locations">i</button>
                 {% endif %}
             </div>
             {% if inline_value is same as("false") %}

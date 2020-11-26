@@ -24,6 +24,7 @@
                         Parameterlist: Site Access Comparison
                     </h1>
                 </div>
+                <h4 class="ez-page-title__content-type-name">Last Update: {{ lastUpdated }}</h4>
             </div>
         </div>
     </div>
@@ -81,11 +82,9 @@
                     {% endfor %}
                 </select>
             </div>
-{#            <div class="input-group-btn d-inline-flex">#}
-                {% block search_bar %}
-                    {{ parent() }}
-                {% endblock %}
-{#            </div>#}
+            {% block search_bar %}
+                {{ parent() }}
+            {% endblock %}
         </form>
     </div>
 
@@ -145,15 +144,15 @@
 {% endblock %}
 
 {% block line_template_javascripts %}
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/app.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterDisplay.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterBranchDisplay.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterLocationRetrieval.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SAListSplitScreen.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SiteAccessComparisonUtility.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SiteAccessDifferencesHighlighter.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SynchronousScrollerUtility.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/FavourButtonUtility.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/CopyButtonUtility.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/FavouritesHandlingUtility.js") }}></script>
+{#    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/app.js") }}></script>#}
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/ParameterDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/ParameterBranchDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/ParameterLocationRetrieval.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/siteAccessDisplay/SAListSplitScreen.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/siteAccessDisplay/SiteAccessComparisonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/siteAccessDisplay/SiteAccessDifferencesHighlighter.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/siteAccessDisplay/SynchronousScrollerUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/FavourButtonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/CopyButtonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/FavouritesHandlingUtility.js") }}></script>
 {% endblock %}

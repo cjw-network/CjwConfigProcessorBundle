@@ -86,14 +86,10 @@ class CustomSiteAccessParamProcessor
         $possiblySiteAccessDependentParameters =
             $this->getAllPossiblySiteAccessDependentParameters($parametersToBeProcessed);
 
-        if (count($possiblySiteAccessDependentParameters) > 0) {
-            $parametersToBeProcessed = $this->addSiteAccessParametersBackIntoStructure(
-                $possiblySiteAccessDependentParameters,
-                $parametersToBeProcessed
-            );
-        } else {
-            $parametersToBeProcessed = $possiblySiteAccessDependentParameters;
-        }
+        $parametersToBeProcessed = $this->addSiteAccessParametersBackIntoStructure(
+            $possiblySiteAccessDependentParameters,
+            $parametersToBeProcessed
+        );
 
         return $parametersToBeProcessed;
     }

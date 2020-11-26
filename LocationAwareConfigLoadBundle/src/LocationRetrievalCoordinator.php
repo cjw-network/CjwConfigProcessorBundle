@@ -4,7 +4,6 @@
 namespace App\CJW\LocationAwareConfigLoadBundle\src;
 
 
-use App\CJW\ConfigProcessorBundle\src\ConfigProcessCoordinator;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Symfony\Component\Cache\Exception\CacheException;
@@ -51,10 +50,12 @@ class LocationRetrievalCoordinator
 
         try {
             // If parameters are returned (meaning that the kernel has booted and thus new parameters could have entered), delete the parameters present
+            // also delete the processed parameters based on the previous parameters
             if (is_array(self::$parametersAndLocations) && count(self::$parametersAndLocations) > 0) {
                 self::$cache->delete("parametersAndLocations");
                 self::$cache->delete("cjw_processed_param_objects");
                 self::$cache->delete("cjw_processed_params");
+                self::$cache->delete("cjw_processing_timestamp");
             }
 
             // Then store the presumably "new" parameters
@@ -94,9 +95,15 @@ class LocationRetrievalCoordinator
      * the parameters, values or other information. It resembles a plain "stack" of locations.
      *
      * @param string $parameterName
+     * @param array|null $siteAccessGroups
+     * @param bool $withSiteAccess
      * @return array Returns an array which is filled with all encountered locations during the configuration-loading-process.
      */
-    private static function getLocationsForSpecificParameter (string $parameterName, array $siteAccessGroups = null, bool $withSiteAccess = false) {
+    private static function getLocationsForSpecificParameter (
+        string $parameterName,
+        array $siteAccessGroups = null,
+        bool $withSiteAccess = false
+    ) {
         $parameterKeySegments = explode(".", $parameterName);
 
         if (is_array($parameterKeySegments) && count($parameterKeySegments) > 1) {
@@ -104,7 +111,8 @@ class LocationRetrievalCoordinator
             $siteAccess = "";
 
                 if ($withSiteAccess && $parameterKeySegments[1] !== "default") {
-                    $resultCarrier = self::getLocationsFromRewrittenSiteAccessParameter("default",$parameterKeySegments);
+                    $resultCarrier =
+                        self::getLocationsFromRewrittenSiteAccessParameter("default",$parameterKeySegments);
 
                     if (count($resultCarrier) > 0) {
                         $siteAccess = "default";
@@ -117,8 +125,13 @@ class LocationRetrievalCoordinator
 
                 if ($withSiteAccess && $siteAccessGroups) {
                     foreach ($siteAccessGroups as $singleSiteAccessGroup) {
-                        if ($singleSiteAccessGroup !== "default" && $singleSiteAccessGroup !== $parameterKeySegments[1] && $singleSiteAccessGroup !== "global") {
-                            $resultCarrier = self::getLocationsFromRewrittenSiteAccessParameter($singleSiteAccessGroup,$parameterKeySegments);
+                        if (
+                            $singleSiteAccessGroup !== "default" &&
+                            $singleSiteAccessGroup !== $parameterKeySegments[1] &&
+                            $singleSiteAccessGroup !== "global"
+                        ) {
+                            $resultCarrier =
+                                self::getLocationsFromRewrittenSiteAccessParameter($singleSiteAccessGroup,$parameterKeySegments);
 
                             if (count($resultCarrier) > 0) {
                                 $siteAccess = $singleSiteAccessGroup;
@@ -143,7 +156,8 @@ class LocationRetrievalCoordinator
                 }
 
                 if ($withSiteAccess && $parameterKeySegments[1] !== "global") {
-                    $resultCarrier = self::getLocationsFromRewrittenSiteAccessParameter("global",$parameterKeySegments);
+                    $resultCarrier =
+                        self::getLocationsFromRewrittenSiteAccessParameter("global",$parameterKeySegments);
 
                     if (count($resultCarrier) > 0) {
                         $siteAccess= "global";
@@ -164,7 +178,10 @@ class LocationRetrievalCoordinator
         }
     }
 
-    private static function getLocationsFromRewrittenSiteAccessParameter(string $newSiteAccess, array $originalParameterKeySegments) {
+    private static function getLocationsFromRewrittenSiteAccessParameter(
+        string $newSiteAccess,
+        array $originalParameterKeySegments
+    ) {
         if ($originalParameterKeySegments[1] !== $newSiteAccess) {
             $originalParameterKeySegments[1] = $newSiteAccess;
 

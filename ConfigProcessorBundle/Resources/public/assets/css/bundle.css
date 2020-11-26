@@ -42,27 +42,38 @@ html {
     /*width: 25vw;*/
 }
 
-#cjw_searchbar_label {
+.cjw_searchbar_label {
     position: absolute;
-    right: 10px;
-    top: 20%;
-    border-left: 1px transparent;
+    border: 1px transparent;
+    border-radius: 4px;
+    padding: 2px;
 }
 
-#cjw_searchbar_label:hover {
+#cjw_searchbar_swap_mode {
+    right: 38px;
+    top: 5px;
+}
+
+#cjw_searchbar_clear {
+    right: 10px;
+    top: 5px;
+}
+
+.cjw_searchbar_label:hover {
     cursor: pointer;
     background-color: white;
-    border-left: 3px solid white;
+    border-left: 2px solid white;
+    border-right: 1px solid white;
     transition: all 0.2s ease-in-out;
 }
 
-#cjw_searchbar_label > svg {
+#cjw_searchbar_clear > svg, #cjw_searchbar_swap_mode > svg {
     fill: lightgrey;
     fill-opacity: 50%;
     transition: all 0.2s ease-in;
 }
 
-#cjw_searchbar_label > svg:hover {
+#cjw_searchbar_clear > svg:hover, #cjw_searchbar_swap_mode > svg:hover  {
     fill: black;
     fill-opacity: 100%;
     transition: all 0.2s ease-in;

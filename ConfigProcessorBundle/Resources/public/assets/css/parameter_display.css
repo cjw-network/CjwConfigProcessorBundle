@@ -138,6 +138,8 @@
 
 .path_info_key {
     border-bottom: 1px solid #11546c;
+    cursor: copy;
+    transition: 0.3s all ease;
 }
 
 .path_info_carrier {

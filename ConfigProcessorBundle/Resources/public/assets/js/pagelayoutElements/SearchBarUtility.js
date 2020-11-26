@@ -2,12 +2,14 @@ class SearchBarUtility {
   mainSection;
   searchField;
   modeSwitchButton;
+  clearInputButton;
   timeout;
 
   constructor() {
     this.mainSection = document.querySelector(".cjw_main_section");
     this.searchField = document.querySelector("#cjw_searchbar");
-    this.modeSwitchButton = document.querySelector("#cjw_searchbar_label");
+    this.modeSwitchButton = document.querySelector("#cjw_searchbar_swap_mode");
+    this.clearInputButton = document.querySelector("#cjw_searchbar_clear");
   }
 
   /**
@@ -23,11 +25,21 @@ class SearchBarUtility {
         "input",
         this.controlInputEvent.bind(this)
       );
-      //The switch button should do the same as the key combination for the searchbar
-      this.modeSwitchButton.addEventListener(
-        "click",
-        this.handleModeSwitchOnClick.bind(this)
-      );
+
+      if (this.modeSwitchButton) {
+        //The switch button should do the same as the key combination for the searchbar
+        this.modeSwitchButton.addEventListener(
+          "click",
+          this.handleModeSwitchOnClick.bind(this)
+        );
+      }
+
+      if (this.clearInputButton) {
+        this.clearInputButton.addEventListener(
+          "click",
+          this.clearInput.bind(this)
+        );
+      }
       //Event listener which handles the search mode being switched and the enter-key event
       this.searchField.addEventListener(
         "keydown",
@@ -49,10 +61,7 @@ class SearchBarUtility {
     clearTimeout(this.timeout);
 
     this.timeout = setTimeout(() => {
-      this.searchField.disabled = true;
-      this.reactToSearchInput(event.target.value, searchMode).then(() => {
-        this.searchField.disabled = false;
-      });
+      this.reactToSearchInput(event.target.value, searchMode);
     }, 750);
   }
 
@@ -92,6 +101,14 @@ class SearchBarUtility {
       this.searchField.classList.add("cjw_key_search");
       this.searchField.placeholder = "Search Key...";
     }
+  }
+
+  clearInput(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.searchField.value = "";
+    this.resetList();
   }
 
   /**

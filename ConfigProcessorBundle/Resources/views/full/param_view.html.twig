@@ -21,6 +21,7 @@
                         Parameterlist: Site Access Independent
                     </h1>
                 </div>
+                <h4 class="ez-page-title__content-type-name">Last Update: {{ lastUpdated }}</h4>
             </div>
         </div>
     </div>
@@ -36,17 +37,17 @@
                 {{ parent() }}
             {% endblock %}
             <div class="m-sub-items__actions">
-                <button id="commit_favourites" class="c-action-btn c-action-btn--reveal">
+                <button id="commit_favourites" class="c-action-btn c-action-btn--reveal" title="save favourites">
                     <svg class="ez-icon ez-icon--medium-large">
                         <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#save"></use>
                     </svg>
                 </button>
-                <button id="download_button" class="c-action-btn c-action-btn--reveal">
+                <button id="download_button" class="c-action-btn c-action-btn--reveal" title="download parameters">
                     <svg class="ez-icon ez-icon--medium-large">
                         <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#download"></use>
                     </svg>
                 </button>
-                <button id="global_open_subtree" class="c-action-btn c-action-btn--reveal">
+                <button id="global_open_subtree" class="c-action-btn c-action-btn--reveal" title="open keys">
                     <svg class="ez-icon ez-icon--medium-large">
                         <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
                     </svg>
@@ -69,12 +70,12 @@
 {% endblock %}
 
 {% block line_template_javascripts %}
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/app.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterDisplay.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterBranchDisplay.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterLocationRetrieval.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/DownloadParametersUtility.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/FavourButtonUtility.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/CopyButtonUtility.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/FavouritesHandlingUtility.js") }}></script>
+{#    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/app.js") }}></script>#}
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/ParameterDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/ParameterBranchDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/ParameterLocationRetrieval.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/DownloadParametersUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/FavourButtonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/CopyButtonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/FavouritesHandlingUtility.js") }}></script>
 {% endblock %}

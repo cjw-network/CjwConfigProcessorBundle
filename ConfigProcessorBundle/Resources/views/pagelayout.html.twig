@@ -29,12 +29,17 @@
                     {% block search_bar %}
                         <form class="searchbar d-inline-flex">
                             <div class="cjw_searchbar_container input-group-btn d-inline-flex">
-                                <label id="cjw_searchbar_label" for="cjw_searchbar">
+                                <label class="cjw_searchbar_label" id="cjw_searchbar_swap_mode" for="cjw_searchbar" title="switch search mode">
                                     <svg class="ez-icon ez-icon--small-medium">
                                         <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#filters"></use>
                                     </svg>
                                 </label>
-                                <input id="cjw_searchbar" name="cjw_searchbar" class="form-control cjw_key_search" type="text" placeholder="Search Key...">
+                                <label class="cjw_searchbar_label" id="cjw_searchbar_clear" for="cjw_searchbar" title="clear input">
+                                    <svg class="ez-icon ez-icon--small-medium">
+                                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#discard"></use>
+                                    </svg>
+                                </label>
+                                <input id="cjw_searchbar" name="cjw_searchbar" class="form-control cjw_key_search" type="text" placeholder="Search Key..." title="search">
                             </div>
                             <input id="cjw_copy_to_clipboard" type="text">
                         </form>
@@ -45,7 +50,7 @@
             {% block right_sidebar %}{% endblock %}
         </div>
 
-        <div class="scroll_up_button">
+        <div class="scroll_up_button" title="scroll to top">
             <button class="dont_display">^</button>
         </div>
         <a id="downloader"></a>
@@ -54,8 +59,8 @@
 
 {% block javascripts %}
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/app.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/SearchBarUtility.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ScrollUpButtonDisplay.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/Utility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/pagelayoutElements/SearchBarUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/pagelayoutElements/ScrollUpButtonDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/utility/Utility.js") }}></script>
     {% block line_template_javascripts %}{% endblock %}
 {% endblock %}

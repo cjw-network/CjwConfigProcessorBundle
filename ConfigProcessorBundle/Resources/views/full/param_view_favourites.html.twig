@@ -100,13 +100,12 @@
 
 
 {% block line_template_javascripts %}
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/app.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterDisplay.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterBranchDisplay.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/ParameterLocationRetrieval.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/DownloadParametersUtility.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/FavourButtonUtility.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/CopyButtonUtility.js") }}></script>
-    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/FavouritesHandlingUtility.js") }}></script>
+{#    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/app.js") }}></script>#}
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/ParameterDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/ParameterBranchDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/ParameterLocationRetrieval.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/DownloadParametersUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/FavourButtonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/CopyButtonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/FavouritesHandlingUtility.js") }}></script>
 {% endblock %}
-

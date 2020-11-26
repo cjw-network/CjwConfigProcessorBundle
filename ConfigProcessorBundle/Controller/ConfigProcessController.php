@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ConfigProcessController extends AbstractController
 {
@@ -32,48 +33,60 @@ class ConfigProcessController extends AbstractController
         $this->container = $symContainer;
         ConfigProcessCoordinator::initializeCoordinator($symContainer,$ezConfigResolver,$symRequestStack);
 
-        if ($this->container->hasParameter("cjw.favourite_parameters.display_everywhere")) {
+//        if ($this->container->hasParameter("cjw.favourite_parameters.display_everywhere")) {
             $this->showFavouritesOutsideDedicatedView = $this->container->getParameter("cjw.favourite_parameters.display_everywhere");
-        } else {
-            $this->showFavouritesOutsideDedicatedView = false;
-        }
+//        } else {
+//            $this->showFavouritesOutsideDedicatedView = false;
+//        }
     }
 
     public function getStartPage () {
-        ConfigProcessCoordinator::startProcess();
+        try {
+            ConfigProcessCoordinator::startProcess();
+        } catch (Exception $e) {
+            throw new HttpException(500);
+        }
 
         return $this->render("@CJWConfigProcessor/pagelayout.html.twig");
     }
 
     public function getParameterList () {
-        $parameters = ConfigProcessCoordinator::getProcessedParameters();
-        $favourites = $this->showFavouritesOutsideDedicatedView? ConfigProcessCoordinator::getFavourites() : [];
+        try {
+            $parameters = ConfigProcessCoordinator::getProcessedParameters();
+            $favourites = $this->showFavouritesOutsideDedicatedView? ConfigProcessCoordinator::getFavourites() : [];
+            $lastUpdated = ConfigProcessCoordinator::getTimeOfLastUpdate();
 
-        return $this->render(
-            "@CJWConfigProcessor/full/param_view.html.twig",
-            [
-                "parameterList" => $parameters,
-                "favourites" => $favourites
-            ]
-        );
+            return $this->render(
+                "@CJWConfigProcessor/full/param_view.html.twig",
+                [
+                    "parameterList" => $parameters,
+                    "favourites" => $favourites,
+                    "lastUpdated" => $lastUpdated,
+                ]
+            );
+        } catch (Exception $error) {
+            throw new HttpException(500, "Something went wrong while trying to gather the required parameters.");
+        }
     }
 
     public function getSpecificSAParameters (Request $request, string $siteAccess = null) {
         try {
             $specSAParameters = ConfigProcessCoordinator::getParametersForSiteAccess($siteAccess);
-        } catch (InvalidArgumentException | Exception $error) {
+            $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
+        } catch (InvalidArgumentException $error) {
             $specSAParameters = [];
+        } catch (Exception $error) {
+            throw new HttpException(500, "Couldn't collect the required parameters internally.");
         }
 
         if (!$siteAccess) {
             $siteAccess = $request->attributes->get("siteaccess")->name;
         }
 
-        $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
         $favourites = $this->showFavouritesOutsideDedicatedView? ConfigProcessCoordinator::getFavourites($siteAccess) : [];
-
         $siteAccesses = Utility::determinePureSiteAccesses($processedParameters);
         $groups = Utility::determinePureSiteAccessGroups($processedParameters);
+        $lastUpdated = ConfigProcessCoordinator::getTimeOfLastUpdate();
 
         return $this->render(
             "@CJWConfigProcessor/full/param_view_siteaccess.html.twig",
@@ -82,7 +95,8 @@ class ConfigProcessController extends AbstractController
                 "allSiteAccesses" => $siteAccesses,
                 "allSiteAccessGroups" => $groups,
                 "siteAccessParameters" => $specSAParameters,
-                "favourites" => $favourites
+                "favourites" => $favourites,
+                "lastUpdated" => $lastUpdated,
             ]
         );
     }
@@ -110,9 +124,9 @@ class ConfigProcessController extends AbstractController
         $secondSiteAccessFavourites = $resultFavourites[1];
 
         $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
-
         $siteAccesses = Utility::determinePureSiteAccesses($processedParameters);
         $groups = Utility::determinePureSiteAccessGroups($processedParameters);
+        $lastUpdated = ConfigProcessCoordinator::getTimeOfLastUpdate();
 
         return $this->render(
             "@CJWConfigProcessor/full/param_view_siteaccess_compare.html.twig",
@@ -126,6 +140,7 @@ class ConfigProcessController extends AbstractController
                 "firstSiteAccessFavourites" => $firstSiteAccessFavourites,
                 "secondSiteAccessFavourites" => $secondSiteAccessFavourites,
                 "limiter" => $limiterString,
+                "lastUpdated" => $lastUpdated,
             ]
         );
     }
@@ -133,7 +148,11 @@ class ConfigProcessController extends AbstractController
     public function getFavourites (string $siteAccess = null) {
         $favourites = ConfigProcessCoordinator::getFavourites($siteAccess);
 
-        $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
+        try {
+            $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
+        } catch (Exception $error) {
+            throw new HttpException(500, "Couldn't collect the required parameters.");
+        }
 
         $siteAccesses = Utility::determinePureSiteAccesses($processedParameters);
         $groups = Utility::determinePureSiteAccessGroups($processedParameters);
@@ -163,22 +182,26 @@ class ConfigProcessController extends AbstractController
     }
 
     public function downloadParameterListAsTextFile(string $downloadDenominator): BinaryFileResponse {
-        if ($downloadDenominator === "all_parameters") {
-            $resultingFile = ParametersToFileWriter::writeParametersToFile(
-                ConfigProcessCoordinator::getProcessedParameters()
-            );
-        } else if ($downloadDenominator === "favourites") {
-            $resultingFile = ParametersToFileWriter::writeParametersToFile(
-                ConfigProcessCoordinator::getFavourites(),
-                $downloadDenominator
-            );
-        } else {
-            $resultingFile = ParametersToFileWriter::writeParametersToFile(
-                ConfigProcessCoordinator::getParametersForSiteAccess(
+        try {
+            if ($downloadDenominator === "all_parameters") {
+                $resultingFile = ParametersToFileWriter::writeParametersToFile(
+                    ConfigProcessCoordinator::getProcessedParameters()
+                );
+            } else if ($downloadDenominator === "favourites") {
+                $resultingFile = ParametersToFileWriter::writeParametersToFile(
+                    ConfigProcessCoordinator::getFavourites(),
                     $downloadDenominator
-                ),
-                $downloadDenominator
-            );
+                );
+            } else {
+                $resultingFile = ParametersToFileWriter::writeParametersToFile(
+                    ConfigProcessCoordinator::getParametersForSiteAccess(
+                        $downloadDenominator
+                    ),
+                    $downloadDenominator
+                );
+            }
+        } catch (InvalidArgumentException | Exception $error) {
+            throw new HttpException(500, "Something went wrong while trying to collect the requested parameters for download.");
         }
 
         $response = new BinaryFileResponse($resultingFile);

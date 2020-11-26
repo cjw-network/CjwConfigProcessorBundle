@@ -5,6 +5,7 @@ namespace App\CJW\ConfigProcessorBundle\src;
 
 
 use App\CJW\ConfigProcessorBundle\ParameterAccessBag;
+use DateTime;
 use Exception;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Psr\Cache\InvalidArgumentException;
@@ -51,8 +52,11 @@ class ConfigProcessCoordinator
      */
     private static $siteAccessParameters;
 
-    /** @var bool  */
+    /** @var bool Simply describes whether the class and its various internal attributes have been initialized.  */
     private static $initialized = false;
+
+    /** @var string The time the processed parameters have last been updated. */
+    private static $lastUpdated;
 
     /**
      * @param ContainerInterface $symContainer
@@ -104,7 +108,10 @@ class ConfigProcessCoordinator
     public static function startProcess () {
 
         if (!self::$initialized) {
-            throw new Exception("The 'ConfigProcessCoordinator' has not been initialized! Please make sure you ran the 'initializeCoordinator()'-function at least once!");
+            throw new Exception(
+                "The 'ConfigProcessCoordinator' has not been initialized! " .
+                "Please make sure you ran the 'initializeCoordinator()'-function at least once!"
+            );
         }
 
         try {
@@ -123,6 +130,11 @@ class ConfigProcessCoordinator
                 });
 
             }
+
+            self::$lastUpdated = self::$cache->get("cjw_processing_timestamp", function() {
+                $currentDate = new DateTime();
+                return $currentDate->format("Y-m-d H:i");
+            });
         } catch (Exception $error) {
             print(`Something went wrong while trying to parse the parameters: ${$error}.`);
         } catch (InvalidArgumentException $e) {
@@ -199,9 +211,9 @@ class ConfigProcessCoordinator
 
     public static function getFavourites (string $siteAccess = null): array {
         if (
-            self::$symContainer->hasParameter("cjw.favourite_parameters.allow") &&
-            self::$symContainer->getParameter("cjw.favourite_parameters.allow") === true &&
-            self::$symContainer->hasParameter("cjw.favourite_parameters.parameters")
+//            self::$symContainer->hasParameter("cjw.favourite_parameters.allow") &&
+            self::$symContainer->getParameter("cjw.favourite_parameters.allow") === true
+//            self::$symContainer->hasParameter("cjw.favourite_parameters.parameters")
         ) {
             if (!self::$processedParameters) {
                 self::startProcess();
@@ -241,7 +253,7 @@ class ConfigProcessCoordinator
         }
 
         if (
-            self::$symContainer->hasParameter("cjw.favourite_parameters.allow") &&
+//            self::$symContainer->hasParameter("cjw.favourite_parameters.allow") &&
             self::$symContainer->getParameter("cjw.favourite_parameters.allow") === true
         ) {
             try {
@@ -252,7 +264,7 @@ class ConfigProcessCoordinator
                     $favouriteRetrievalProcessor = new CustomSiteAccessParamProcessor(self::$symContainer);
 
                     if (
-                        self::$symContainer->hasParameter("cjw.favourite_parameters.scan_parameters") &&
+//                        self::$symContainer->hasParameter("cjw.favourite_parameters.scan_parameters") &&
                         self::$symContainer->getParameter("cjw.favourite_parameters.scan_parameters") === true
                     ) {
                         $favouriteParameterKeys =
@@ -267,6 +279,14 @@ class ConfigProcessCoordinator
                 });
             }
         }
+    }
+
+    public static function getTimeOfLastUpdate (): string {
+        if (!self::$lastUpdated) {
+            self::startProcess();
+        }
+
+        return self::$lastUpdated;
     }
 
     /*****************************************************************************************
@@ -345,9 +365,9 @@ class ConfigProcessCoordinator
 
     private static function getCustomParameters (array $siteAccessList) {
         if (
-            self::$symContainer->hasParameter("cjw.custom_site_access_parameters.active") &&
-            self::$symContainer->getParameter("cjw.custom_site_access_parameters.active") === true &&
-            self::$symContainer->hasParameter("cjw.custom_site_access_parameters.parameters")
+//            self::$symContainer->hasParameter("cjw.custom_site_access_parameters.active") &&
+            self::$symContainer->getParameter("cjw.custom_site_access_parameters.active") === true
+//            self::$symContainer->hasParameter("cjw.custom_site_access_parameters.parameters")
         ) {
             $customParameterKeys = self::$symContainer->getParameter("cjw.custom_site_access_parameters.parameters");
             $processedParameters = self::$processedParameters;
@@ -364,7 +384,7 @@ class ConfigProcessCoordinator
                 );
 
             if (
-                self::$symContainer->hasParameter("cjw.custom_site_access_parameters.scan_parameters") &&
+//                self::$symContainer->hasParameter("cjw.custom_site_access_parameters.scan_parameters") &&
                 self::$symContainer->getParameter("cjw.custom_site_access_parameters.scan_parameters") === true
             ) {
                 return $customParametersProcessor->scanAndEditForSiteAccessDependency($customParameters);
@@ -389,8 +409,10 @@ class ConfigProcessCoordinator
             if (!self::$cache->hasItem("cjw_processed_param_objects")) {
                 self::$cache->delete("cjw_processed_params");
                 self::$cache->delete("cjw_site_access_parameters");
+                self::$cache->delete("cjw_processing_timestamp");
             } else if (!self::$cache->hasItem("cjw_processed_params")) {
                 self::$cache->delete("cjw_processed_param_objects");
+                self::$cache->delete("cjw_processing_timestamp");
             }
 
         } catch (InvalidArgumentException $e) {
