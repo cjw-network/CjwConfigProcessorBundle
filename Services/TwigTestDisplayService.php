@@ -1,10 +1,10 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\Services;
+namespace CJW\CJWConfigProcessor\Services;
 
 
-use App\CJWConfigProcessorBundle\src\LocationAwareConfigLoadBundle\LocationRetrievalCoordinator;
+use CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle\LocationRetrievalCoordinator;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 
@@ -12,7 +12,7 @@ use Twig\Extension\GlobalsInterface;
  * TODO: Move the entire functionality and initialisation of the custom loading process out of the Twig-Service-Realm and into a controller
  *
  * Class TwigTestDisplayService
- * @package App\CJWLocationAwareConfigLoadBundle\Services
+ * @package CJW\CJWLocationAwareConfigLoadBundle\Services
  */
 class TwigTestDisplayService extends AbstractExtension implements GlobalsInterface
 {

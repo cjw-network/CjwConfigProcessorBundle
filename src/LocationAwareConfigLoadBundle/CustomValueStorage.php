@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
+namespace CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle;
 
 
 /**
@@ -9,7 +9,7 @@ namespace App\CJWConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
  * to the parameterBag of the internal configuration container. It provides functionality to both add parameters,
  * including their path and their values, and retrieve information about these parameters.
  *
- * @package App\CJWLocationAwareConfigLoadBundle\src
+ * @package CJW\CJWLocationAwareConfigLoadBundle\src
  */
 class CustomValueStorage
 {

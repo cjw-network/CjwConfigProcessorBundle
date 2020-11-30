@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\EventSubscriber;
+namespace CJW\CJWConfigProcessor\EventSubscriber;
 
 
 use EzSystems\EzPlatformAdminUi\Menu\AbstractBuilder;

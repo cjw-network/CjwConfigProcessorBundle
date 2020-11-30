@@ -1,13 +1,13 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\Controller;
+namespace CJW\CJWConfigProcessor\Controller;
 
 
-use App\CJWConfigProcessorBundle\src\ConfigProcessorBundle\ConfigProcessCoordinator;
-use App\CJWConfigProcessorBundle\src\ConfigProcessorBundle\FavouritesParamCoordinator;
-use App\CJWConfigProcessorBundle\src\ConfigProcessorBundle\ParametersToFileWriter;
-use App\CJWConfigProcessorBundle\src\Utility\Utility;
+use App\CJWConfigProcessor\src\ConfigProcessorBundle\ConfigProcessCoordinator;
+use App\CJWConfigProcessor\src\ConfigProcessorBundle\FavouritesParamCoordinator;
+use App\CJWConfigProcessor\src\ConfigProcessorBundle\ParametersToFileWriter;
+use App\CJWConfigProcessor\src\Utility\Utility;
 use Exception;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Psr\Cache\InvalidArgumentException;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle;
+namespace CJW\CJWConfigProcessor;
 
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;

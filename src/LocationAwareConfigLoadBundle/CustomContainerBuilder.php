@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
+namespace CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle;
 
 
 use Exception;
@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Definition;
  * biggest role is to inhibit any additions to itself during load process of the found (custom) bundle config routes, so
  * that the process does not interfere with standard loading  and cause errors.
  *
- * @package App\CJWConfigProcessorBundle\LocationAwareConfigLoadBundle\src
+ * @package CJW\CJWConfigProcessor\LocationAwareConfigLoadBundle\src
  */
 class CustomContainerBuilder extends ContainerBuilder
 {

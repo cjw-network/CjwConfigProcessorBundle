@@ -1,10 +1,10 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\src\ConfigProcessorBundle;
+namespace CJW\CJWConfigProcessor\src\ConfigProcessorBundle;
 
 
-use App\CJWConfigProcessorBundle\src\Utility\Utility;
+use CJW\CJWConfigProcessor\src\Utility\Utility;
 use Exception;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Symfony\Component\DependencyInjection\ContainerInterface;

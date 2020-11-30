@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
+namespace CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle;
 
 use App\Kernel;
 use Exception;
@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
  * parameters through the configuration will be tracked and their origin stored. This kernel therefore offers a bit
  * of changed functionality compared to the standard kernel in order to allow such a process.
  *
- * @package App\CJWConfigProcessorBundle\LocationAwareConfigLoadBundle\src
+ * @package CJW\CJWConfigProcessor\LocationAwareConfigLoadBundle\src
  */
 class LoadInitializer extends Kernel
 {
@@ -123,7 +123,7 @@ class LoadInitializer extends Kernel
         $glob = glob($this->getCacheDir()."/*");
 
         foreach ($glob as $file) {
-            if (preg_match("/^App.*LoadInitializer.*\..+$/",basename($file))) {
+            if (preg_match("/^CJW.*LoadInitializer.*\..+$/",basename($file))) {
                 unlink($file);
             }
         }

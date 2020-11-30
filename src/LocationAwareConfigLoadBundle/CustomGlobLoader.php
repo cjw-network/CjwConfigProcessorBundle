@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
+namespace CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle;
 
 
 use Symfony\Component\Config\Exception\FileLoaderImportCircularReferenceException;
@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
  * GlobPattern and relays the information to other classes involved in the LoadingProcess in order to keep track
  * of the loaded resources.
  *
- * @package App\CJWConfigProcessorBundle\LocationAwareConfigLoadBundle\src
+ * @package CJW\CJWConfigProcessor\LocationAwareConfigLoadBundle\src
  */
 class CustomGlobLoader extends GlobFileLoader
 {

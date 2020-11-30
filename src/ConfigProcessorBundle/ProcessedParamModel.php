@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\src\ConfigProcessorBundle;
+namespace CJW\CJWConfigProcessor\src\ConfigProcessorBundle;
 
 
 use Serializable;
@@ -10,7 +10,7 @@ use Serializable;
  * Class ProcessedParamModel serves as a data type for the various parameters. It stores a part of the key of the parameters
  * and also stores all children under that key, so that a tree-like structure is subsequently formed.
  *
- * @package App\CJWConfigProcessorBundle\ConfigProcessorBundle\src
+ * @package CJW\CJWConfigProcessor\ConfigProcessorBundle\src
  */
 class ProcessedParamModel implements Serializable
 {

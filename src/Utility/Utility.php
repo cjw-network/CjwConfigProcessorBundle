@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\src\Utility;
+namespace CJW\CJWConfigProcessor\src\Utility;
 
 
 use Exception;

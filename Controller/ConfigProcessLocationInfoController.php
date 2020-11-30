@@ -1,10 +1,10 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\Controller;
+namespace CJW\CJWConfigProcessor\Controller;
 
 
-use App\CJWConfigProcessorBundle\src\LocationAwareConfigLoadBundle\LocationRetrievalCoordinator;
+use CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle\LocationRetrievalCoordinator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

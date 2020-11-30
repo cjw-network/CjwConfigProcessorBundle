@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\src\ConfigProcessorBundle;
+namespace CJW\CJWConfigProcessor\src\ConfigProcessorBundle;
 
 
 use DateTime;

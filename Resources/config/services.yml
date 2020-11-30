@@ -1,35 +1,35 @@
 services:
   cjw_config_processor.twig.display:
-    class: App\CJWConfigProcessorBundle\Services\TwigConfigDisplayService
+    class: CJW\CJWConfigProcessor\Services\TwigConfigDisplayService
     arguments:
       ["@service_container", "@ezpublish.config.resolver", "@request_stack"]
     tags:
       - { name: twig.extension }
 
   cjw_location_aware_config_load_bundle.twig.display:
-    class: App\CJWConfigProcessorBundle\Services\TwigTestDisplayService
+    class: CJW\CJWConfigProcessor\Services\TwigTestDisplayService
     tags:
       - { name: twig.extension }
 
   cjw_config_processor.controller:
-    class: App\CJWConfigProcessorBundle\Controller\ConfigProcessController
+    class: CJW\CJWConfigProcessor\Controller\ConfigProcessController
     arguments:
       ["@service_container", "@ezpublish.config.resolver", "@request_stack"]
     public: true
 
   cjw_location_retrieval.controller:
-    class: App\CJWConfigProcessorBundle\Controller\ConfigProcessLocationInfoController
+    class: CJW\CJWConfigProcessor\Controller\ConfigProcessLocationInfoController
     arguments: [ "@service_container", "%kernel.project_dir%" ]
     public: true
 
   # menu builders for the frontend
   cjw_config_processing.menu.subscriber:
-    class: App\CJWConfigProcessorBundle\EventSubscriber\ConfigProcessingMenuSubscriber
+    class: CJW\CJWConfigProcessor\EventSubscriber\ConfigProcessingMenuSubscriber
     tags:
       - { name: kernel.event_subscriber }
 
   cjw_config_processing.left.sidebar.builder:
-    class: App\CJWConfigProcessorBundle\EventSubscriber\LeftSideBarMenuBuilder
+    class: CJW\CJWConfigProcessor\EventSubscriber\LeftSideBarMenuBuilder
     autowire: true
     autoconfigure: true
     public: true
@@ -37,11 +37,11 @@ services:
       - { name: knp_menu.menu_builder, method: build, alias: cjw_config_processing.menu.sidebar_left }
 
   cjw_config_processing.right.site_access_comparison.sidebar.builder:
-    class: App\CJWConfigProcessorBundle\EventSubscriber\RightSideBarSiteAccessComparisonMenuBuilder
+    class: CJW\CJWConfigProcessor\EventSubscriber\RightSideBarSiteAccessComparisonMenuBuilder
     autowire: true
     autoconfigure: true
     public: true
     tags:
       - { name: knp_menu.menu_builder, method: build, alias: cjw_config_processing.menu.site_access_comparison.sidebar_right }
 
-#TODO Change the namespaces in here to something working in the vendor directory (something without App in front)
+#TODO Change the namespaces in here to something working in the vendor directory (something without CJW in front)

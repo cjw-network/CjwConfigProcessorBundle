@@ -1,14 +1,14 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\src\ConfigProcessorBundle;
+namespace CJW\CJWConfigProcessor\src\ConfigProcessorBundle;
 
 
 /**
  * Class ConfigProcessor serves to actually transform the internal parameter list of Symfony into a more readable and
  * searchable array of parameters.
  *
- * @package App\CJWConfigProcessorBundle\ConfigProcessorBundle\src
+ * @package CJW\CJWConfigProcessor\ConfigProcessorBundle\src
  */
 class ConfigProcessor
 {

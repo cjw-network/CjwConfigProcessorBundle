@@ -1,10 +1,10 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\Services;
+namespace CJW\CJWConfigProcessor\Services;
 
 
-use App\CJWConfigProcessorBundle\src\ConfigProcessorBundle\ConfigProcessCoordinator;
+use CJW\CJWConfigProcessor\src\ConfigProcessorBundle\ConfigProcessCoordinator;
 use Exception;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
@@ -20,7 +20,7 @@ use Twig\TwigFunction;
  * to twig templates in the form of both functions and global variables. It therefore also possesses capabilities of processing
  * the internal options.
  *
- * @package App\CJWConfigProcessorBundle\ConfigProcessorBundle\Services
+ * @package CJW\CJWConfigProcessor\ConfigProcessorBundle\Services
  */
 class TwigConfigDisplayService extends AbstractExtension implements GlobalsInterface
 {

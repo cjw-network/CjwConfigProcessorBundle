@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
+namespace CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle;
 
 
 use Exception;
@@ -15,7 +15,7 @@ use Symfony\Component\Yaml\Parser;
  * And it is used to determine paths that lead to bundle configuration in order to find out where the parameters that are being used by
  * the bundles stem from.
  *
- * @package App\CJWLocationAwareConfigLoadBundle\src
+ * @package CJW\CJWLocationAwareConfigLoadBundle\src
  */
 class ConfigPathUtility
 {

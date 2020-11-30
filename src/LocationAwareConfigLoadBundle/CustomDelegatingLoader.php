@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
+namespace CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle;
 
 
 use Symfony\Component\Config\Loader\DelegatingLoader;
@@ -11,7 +11,7 @@ use Symfony\Component\Config\Loader\LoaderResolverInterface;
  * Class CustomDelegatingLoader is a modified DelegatingLoader which delegates not only the loading process but also
  * the path that is currently being loaded to other classes in order to allow a location aware loading process.
  *
- * @package App\CJWLocationAwareConfigLoadBundle\src
+ * @package CJW\CJWLocationAwareConfigLoadBundle\src
  */
 class CustomDelegatingLoader extends DelegatingLoader
 {

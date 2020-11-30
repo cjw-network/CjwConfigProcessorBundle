@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\src\ConfigProcessorBundle;
+namespace CJW\CJWConfigProcessor\src\ConfigProcessorBundle;
 
 
 use Exception;
@@ -12,7 +12,7 @@ use eZ\Publish\Core\MVC\ConfigResolverInterface;
  * active within that siteaccess, but also what value that parameter holds under these circumstances and reformat them
  * for output.
  *
- * @package App\CJWConfigProcessorBundle\ConfigProcessorBundle\src
+ * @package CJW\CJWConfigProcessor\ConfigProcessorBundle\src
  */
 class SiteAccessParamProcessor
 {

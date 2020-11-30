@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJWConfigProcessorBundle\DependencyInjection;
+namespace CJW\CJWConfigProcessor\DependencyInjection;
 
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;

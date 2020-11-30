@@ -1,6 +1,6 @@
 <?php
 
-namespace App\CJWConfigProcessorBundle\EventSubscriber;
+namespace CJW\CJWConfigProcessor\EventSubscriber;
 
 use EzSystems\EzPlatformAdminUi\Menu\Event\ConfigureMenuEvent;
 use EzSystems\EzPlatformAdminUi\Menu\MainMenuBuilder;
@@ -8,7 +8,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * If the autoconfigure option is set to false in the service.yaml, then this Menu-Subscriber would have to be registered separately
- * in the yaml as: (under services) (Path to my class): App\EventListener\<My Class Name I Gave>: then tags: then - { name: kernel.event.subscriber }
+ * in the yaml as: (under services) (Path to my class): CJW\EventListener\<My Class Name I Gave>: then tags: then - { name: kernel.event.subscriber }
  */
 class ConfigProcessingMenuSubscriber implements EventSubscriberInterface {
 
@@ -36,7 +36,7 @@ class ConfigProcessingMenuSubscriber implements EventSubscriberInterface {
 //        $menu->addChild(
 //            "menu_item1",
 //            [
-//                "label" => "CJWConfigProcessorBundle-Bundle-Functions", "extras" => ["icon" => "file"]
+//                "label" => "CJWConfigProcessor-Bundle-Functions", "extras" => ["icon" => "file"]
 //            ]
 //        );
 
