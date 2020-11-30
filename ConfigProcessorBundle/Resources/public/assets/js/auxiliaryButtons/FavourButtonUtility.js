@@ -1,33 +1,26 @@
 class FavourButtonUtility {
   favourButtons;
-  globalFavourCommitButton;
+  dedicatedFavouriteView;
   utility;
 
   constructor() {
     this.favourButtons = document.querySelectorAll(".favour_parameter");
-    this.globalFavourCommitButton = document.querySelector(
-      "#commit_favourites"
-    );
+    this.dedicatedFavouriteView = document.querySelector("[list=favourites]");
     this.utility = new Utility();
   }
 
   setUpFavourButtons() {
-    if (this.favourButtons && this.globalFavourCommitButton) {
-      this.globalFavourCommitButton.onclick = this.handleGlobalFavourCommitClick.bind(
-        this
-      );
-
+    if (this.favourButtons) {
       for (const favourButton of this.favourButtons) {
         favourButton.onclick = this.handleFavourClick.bind(this);
+
+        if (this.dedicatedFavouriteView) {
+          const favourButtonParent = favourButton.parentElement;
+          this.setOrRemoveFavourite(favourButton, favourButtonParent);
+          this.switchFavourButtonModel(favourButton, favourButtonParent);
+        }
       }
     }
-  }
-
-  handleGlobalFavourCommitClick(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
-    this.commitFavouritesToBackend();
   }
 
   handleFavourClick(event) {
@@ -38,54 +31,20 @@ class FavourButtonUtility {
     const favourButtonParent = favourButton.parentElement;
 
     if (favourButtonParent) {
+      const toRemove = favourButtonParent.getAttribute("favourite") === "true";
+
       this.setOrRemoveFavourite(favourButton, favourButtonParent);
-      this.favourModelSwitch(favourButton, favourButtonParent);
-    }
-  }
+      this.switchFavourButtonModel(favourButton, favourButtonParent);
 
-  async commitFavouritesToBackend() {
-    const nodeListOfFavourites = document.querySelectorAll(
-      "[favourite]:not(.favourite_key_entry)"
-    );
-    const parameterNameArray = [];
+      const favourSVG = favourButton.querySelector("svg");
+      favourSVG.style.fill = "orange";
 
-    if (nodeListOfFavourites && nodeListOfFavourites.length > 0) {
-      parameterNameArray.push(
-        ...this.buildFavouriteKeysForBackend(nodeListOfFavourites)
+      this.saveOrRemoveFavouriteToBackend(
+        favourButton,
+        favourButtonParent,
+        toRemove
       );
     }
-
-    if (parameterNameArray.length > 0) {
-      await this.utility.performFetchRequestWithBody(
-        "/cjw/config-processing/parameter_list/save/favourites",
-        "POST",
-        parameterNameArray
-      );
-    }
-  }
-
-  buildFavouriteKeysForBackend(nodeListOfFavourites) {
-    const parameterNameList = [];
-
-    if (nodeListOfFavourites) {
-      for (const favourite of nodeListOfFavourites) {
-        const locationRetrievalButton = favourite.querySelector(
-          ".location_info"
-        );
-
-        if (locationRetrievalButton) {
-          const parameterName = locationRetrievalButton.getAttribute(
-            "fullparametername"
-          );
-
-          if (!parameterNameList.includes(parameterName)) {
-            parameterNameList.push(parameterName);
-          }
-        }
-      }
-    }
-
-    return parameterNameList;
   }
 
   setOrRemoveFavourite(favourButton, favourButtonParent) {
@@ -98,7 +57,7 @@ class FavourButtonUtility {
     }
   }
 
-  favourModelSwitch(targetButton, targetButtonParent) {
+  switchFavourButtonModel(targetButton, targetButtonParent) {
     if (targetButton && targetButtonParent) {
       let favorButtonIcon;
 
@@ -108,8 +67,11 @@ class FavourButtonUtility {
           "bookmark-active",
           true
         );
+
+        targetButton.title = "remove favourite";
       } else {
         favorButtonIcon = this.utility.createSVGElement(null, "bookmark", true);
+        targetButton.title = "mark as favourite";
       }
 
       const previousIcon = targetButton.querySelector("svg");
@@ -119,6 +81,99 @@ class FavourButtonUtility {
       }
 
       targetButton.appendChild(favorButtonIcon);
+    }
+  }
+
+  async saveOrRemoveFavouriteToBackend(
+    favourButton,
+    targetFavouriteKey,
+    removeParameter = false
+  ) {
+    if (
+      targetFavouriteKey &&
+      targetFavouriteKey.classList.contains("param_list_keys")
+    ) {
+      const locationInfoButton = targetFavouriteKey.querySelector(
+        ".location_info"
+      );
+
+      let fullParameterName = null;
+      if (locationInfoButton) {
+        fullParameterName = locationInfoButton.getAttribute(
+          "fullparametername"
+        );
+      }
+
+      if (fullParameterName) {
+        const saveOrRemove = removeParameter ? "remove" : "save";
+
+        const res = await this.utility.performFetchRequestWithBody(
+          "/cjw/config-processing/parameter_list/" +
+            saveOrRemove +
+            "/favourites",
+          "POST",
+          [fullParameterName]
+        );
+
+        if (res) {
+          this.provideSmallVisualFeedback(favourButton, res.status);
+
+          if (res.status !== 200) {
+            this.setOrRemoveFavourite(favourButton, targetFavouriteKey);
+            this.switchFavourButtonModel(favourButton, targetFavouriteKey);
+          }
+        }
+      }
+    }
+  }
+
+  // async removeFavouriteFromBackend(favourButton, targetFavouriteKey) {
+  //   if (favourButton && targetFavouriteKey) {
+  //     const locationInfoButton = targetFavouriteKey.querySelector(
+  //       ".location_info"
+  //     );
+  //
+  //     let fullParameterName = null;
+  //     if (locationInfoButton) {
+  //       fullParameterName = locationInfoButton.getAttribute(
+  //         "fullparametername"
+  //       );
+  //     }
+  //
+  //     if (fullParameterName) {
+  //       const res = await this.utility.performFetchRequestWithBody(
+  //         "/cjw/config-processing/parameter_list/remove/favourites",
+  //         "POST",
+  //         [fullParameterName]
+  //       );
+  //
+  //       if (res) {
+  //         this.provideSmallVisualFeedback(favourButton, res.status);
+  //
+  //         if (res.status !== 200) {
+  //           this.setOrRemoveFavourite(favourButton, targetFavouriteKey);
+  //           this.favourModelSwitch(favourButton, targetFavouriteKey);
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+
+  provideSmallVisualFeedback(favourButton, statusCode = 200) {
+    if (statusCode && statusCode > -1 && favourButton) {
+      const favourSVG = favourButton.querySelector("svg");
+
+      if (favourSVG) {
+        if (statusCode === 200) {
+          favourSVG.style.fill = "green";
+        } else {
+          favourSVG.style.fill = "red";
+        }
+
+        setTimeout(() => {
+          favourSVG.style.fill = "";
+        }, 3000);
+      }
     }
   }
 }

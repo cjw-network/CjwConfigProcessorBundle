@@ -28,6 +28,11 @@ cjw_config_processing.save_favourites:
   controller: cjw_config_processor.controller::saveFavourites
   methods: [POST]
 
+cjw_config_processing.remove_favourites:
+  path: /cjw/config-processing/parameter_list/remove/favourites
+  controller: cjw_config_processor.controller::removeFavourites
+  methods: [POST]
+
 cjw_config_processing.download_parameters:
   path: /cjw/config-processing/parameter_list/download/{downloadDenominator}
   controller: cjw_config_processor.controller::downloadParameterListAsTextFile

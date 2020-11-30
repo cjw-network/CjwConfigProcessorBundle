@@ -6,7 +6,7 @@ namespace App\CJW\ConfigProcessorBundle\src;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class CustomSiteAccessParamProcessor
+class CustomParamProcessor
 {
     /** @var ContainerInterface */
     private $symContainer;
@@ -133,30 +133,6 @@ class CustomSiteAccessParamProcessor
 
         return $customParametersSoFar;
     }
-
-//
-//    private function buildReplacementArray (
-//        array $keyArray,
-//        array $parametersToBeProcessed,
-//        string $parameterKeyToChange
-//    ) {
-//        $resultArray = [];
-//
-//        if (count($keyArray) > 0) {
-//            $key = reset($keyArray);
-//            array_splice($keyArray,0,1);
-//
-//            $resultArray[$key] = $this->buildReplacementArray($keyArray,$parametersToBeProcessed[$key], $parameterKeyToChange);
-//        } else if (key_exists($parameterKeyToChange, $parametersToBeProcessed)) {
-//            $value = $parametersToBeProcessed[$parameterKeyToChange];
-//
-//            foreach ($this->allSiteAccesses as $siteAccess) {
-//                $resultArray[$siteAccess] = $value;
-//            }
-//        }
-//
-//        return $resultArray;
-//    }
 
     private function addSiteAccessParametersBackIntoStructure (
         array $parameters,

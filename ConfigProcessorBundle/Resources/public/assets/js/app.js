@@ -12,8 +12,8 @@ function main() {
     setUpFavourAndCopyButtons();
 
     if (
-      document.querySelector(".favourite_container, [list=favourites]") &&
-      !document.querySelector("[favourite]")
+      document.querySelector(".favourite_container, [list=favourites]")
+      // !document.querySelector("[favourite]")
     ) {
       setUpFavourites();
     }
@@ -73,7 +73,7 @@ function setUpFavourites() {
   if (document.querySelector(".favourite_container, [list=favourites]")) {
     let favouriteParameterUtility = new FavouritesHandlingUtility();
 
-    favouriteParameterUtility.setUpFavourites();
+    // favouriteParameterUtility.setUpFavourites();
 
     if (document.querySelector("#favourites_site_access_selection")) {
       favouriteParameterUtility.setUpSiteAccessSwitching();

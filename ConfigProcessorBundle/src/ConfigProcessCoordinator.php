@@ -209,78 +209,6 @@ class ConfigProcessCoordinator
         return self::getSiteAccesses($specificSiteAccess);
     }
 
-    public static function getFavourites (string $siteAccess = null): array {
-        if (
-//            self::$symContainer->hasParameter("cjw.favourite_parameters.allow") &&
-            self::$symContainer->getParameter("cjw.favourite_parameters.allow") === true
-//            self::$symContainer->hasParameter("cjw.favourite_parameters.parameters")
-        ) {
-            if (!self::$processedParameters) {
-                self::startProcess();
-            }
-
-            $favouriteRetrievalProcessor = new CustomSiteAccessParamProcessor(
-                self::$symContainer,
-                self::getSiteAccesses($siteAccess)
-            );
-
-            $favouriteParameters = self::$cache->get(
-                "cjw_custom_favourite_parameters",
-                function () use ($favouriteRetrievalProcessor) {
-                    $favouriteKeys = self::$symContainer->getParameter("cjw.favourite_parameters.parameters");
-
-                    return $favouriteRetrievalProcessor->getCustomParameters(
-                        $favouriteKeys,
-                        self::$processedParameters
-                    );
-                }
-            );
-
-            if ($siteAccess) {
-                $favouriteParameters =
-                    $favouriteRetrievalProcessor->scanAndEditForSiteAccessDependency($favouriteParameters);
-            }
-
-            return $favouriteParameters;
-        }
-
-        return [];
-    }
-
-    public static function setFavourites (array $favouriteParameterKeys) {
-        if (!self::$processedParameters) {
-            self::startProcess();
-        }
-
-        if (
-//            self::$symContainer->hasParameter("cjw.favourite_parameters.allow") &&
-            self::$symContainer->getParameter("cjw.favourite_parameters.allow") === true
-        ) {
-            try {
-                self::$cache->delete("cjw_custom_favourite_parameters");
-            } catch (InvalidArgumentException $e) {
-            } finally {
-                self::$cache->get("cjw_custom_favourite_parameters", function() use ($favouriteParameterKeys) {
-                    $favouriteRetrievalProcessor = new CustomSiteAccessParamProcessor(self::$symContainer);
-
-                    if (
-//                        self::$symContainer->hasParameter("cjw.favourite_parameters.scan_parameters") &&
-                        self::$symContainer->getParameter("cjw.favourite_parameters.scan_parameters") === true
-                    ) {
-                        $favouriteParameterKeys =
-                            $favouriteRetrievalProcessor->replacePotentialSiteAccessParts($favouriteParameterKeys);
-                    }
-
-
-                    return $favouriteRetrievalProcessor->getCustomParameters(
-                        $favouriteParameterKeys,
-                        self::$processedParameters
-                    );
-                });
-            }
-        }
-    }
-
     public static function getTimeOfLastUpdate (): string {
         if (!self::$lastUpdated) {
             self::startProcess();
@@ -365,14 +293,13 @@ class ConfigProcessCoordinator
 
     private static function getCustomParameters (array $siteAccessList) {
         if (
-//            self::$symContainer->hasParameter("cjw.custom_site_access_parameters.active") &&
             self::$symContainer->getParameter("cjw.custom_site_access_parameters.active") === true
-//            self::$symContainer->hasParameter("cjw.custom_site_access_parameters.parameters")
         ) {
-            $customParameterKeys = self::$symContainer->getParameter("cjw.custom_site_access_parameters.parameters");
+            $customParameterKeys =
+                self::$symContainer->getParameter("cjw.custom_site_access_parameters.parameters");
             $processedParameters = self::$processedParameters;
 
-            $customParametersProcessor = new CustomSiteAccessParamProcessor(
+            $customParametersProcessor = new CustomParamProcessor(
                 self::$symContainer,
                 $siteAccessList
             );
@@ -384,7 +311,6 @@ class ConfigProcessCoordinator
                 );
 
             if (
-//                self::$symContainer->hasParameter("cjw.custom_site_access_parameters.scan_parameters") &&
                 self::$symContainer->getParameter("cjw.custom_site_access_parameters.scan_parameters") === true
             ) {
                 return $customParametersProcessor->scanAndEditForSiteAccessDependency($customParameters);
@@ -420,6 +346,5 @@ class ConfigProcessCoordinator
         }
 
     }
-
 }
 

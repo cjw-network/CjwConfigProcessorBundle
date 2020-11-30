@@ -83,17 +83,12 @@
                 Parameterlist
             </div>
             <div class="m-sub-items__actions">
-                <button id="commit_favourites" class="c-action-btn c-action-btn--reveal">
-                    <svg class="ez-icon ez-icon--medium-large">
-                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#save"></use>
-                    </svg>
-                </button>
-                <button id="download_button" class="c-action-btn c-action-btn--reveal">
+                <button id="download_button" class="c-action-btn c-action-btn--reveal" title="download parameters">
                     <svg class="ez-icon ez-icon--medium-large">
                         <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#download"></use>
                     </svg>
                 </button>
-                <button id="global_open_subtree" class="c-action-btn c-action-btn--reveal">
+                <button id="global_open_subtree" class="c-action-btn c-action-btn--reveal" title="open key-tree">
                     <svg class="ez-icon ez-icon--medium-large">
                         <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
                     </svg>
@@ -125,7 +120,6 @@
 {% endblock %}
 
 {% block line_template_javascripts %}
-{#    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/app.js") }}></script>#}
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/ParameterDisplay.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/ParameterBranchDisplay.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/ParameterLocationRetrieval.js") }}></script>

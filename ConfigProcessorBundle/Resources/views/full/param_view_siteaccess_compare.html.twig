@@ -93,12 +93,7 @@
             Parameterlist: {{ limiter }} | Between 1. {{ firstSiteAccess }} and 2. {{ secondSiteAccess }}
         </div>
         <div class="m-sub-items__actions">
-            <button id="commit_favourites" class="c-action-btn c-action-btn--reveal">
-                <svg class="ez-icon ez-icon--medium-large">
-                    <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#save"></use>
-                </svg>
-            </button>
-            <button id="global_open_subtree" class="c-action-btn c-action-btn--reveal">
+            <button id="global_open_subtree" class="c-action-btn c-action-btn--reveal" title="open key-tree">
                 <svg class="ez-icon ez-icon--medium-large">
                     <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
                 </svg>
@@ -115,7 +110,6 @@
                     </div>
                     {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : firstSiteAccessFavourites} only %}
                 </div>
-{#                <div class="param_list_items end_favourites"><br></div>#}
             {% endif %}
             {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : firstSiteAccessParameters} only %}
         </div>
@@ -128,7 +122,6 @@
                     </div>
                     {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : secondSiteAccessFavourites} only %}
                 </div>
-{#                <div class="param_list_items end_favourites"><br></div>#}
             {% endif %}
             {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : secondSiteAccessParameters} only %}
         </div>
@@ -144,7 +137,6 @@
 {% endblock %}
 
 {% block line_template_javascripts %}
-{#    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/app.js") }}></script>#}
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/ParameterDisplay.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/ParameterBranchDisplay.js") }}></script>
     <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/ParameterLocationRetrieval.js") }}></script>

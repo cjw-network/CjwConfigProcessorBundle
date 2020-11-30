@@ -270,6 +270,7 @@ class SiteAccessDifferencesHighlighter {
       this.differenceHighlightButton.onclick = (event) => {
         event.stopPropagation();
 
+        this.utility.createSVGElement(null, "spinner", false);
         this.removeHighlighting();
         this.differenceHighlightButton.style.backgroundColor = "";
         this.flipListener(false);

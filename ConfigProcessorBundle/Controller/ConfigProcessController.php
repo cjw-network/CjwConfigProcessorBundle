@@ -5,6 +5,7 @@ namespace App\CJW\ConfigProcessorBundle\Controller;
 
 
 use App\CJW\ConfigProcessorBundle\src\ConfigProcessCoordinator;
+use App\CJW\ConfigProcessorBundle\src\FavouritesParamCoordinator;
 use App\CJW\ConfigProcessorBundle\src\ParametersToFileWriter;
 use App\CJW\ConfigProcessorBundle\src\Utility\Utility;
 use Exception;
@@ -33,11 +34,15 @@ class ConfigProcessController extends AbstractController
         $this->container = $symContainer;
         ConfigProcessCoordinator::initializeCoordinator($symContainer,$ezConfigResolver,$symRequestStack);
 
-//        if ($this->container->hasParameter("cjw.favourite_parameters.display_everywhere")) {
-            $this->showFavouritesOutsideDedicatedView = $this->container->getParameter("cjw.favourite_parameters.display_everywhere");
-//        } else {
-//            $this->showFavouritesOutsideDedicatedView = false;
-//        }
+        if (
+            $this->container->getParameter("cjw.favourite_parameters.allow") === true ||
+            $this->container->getParameter("cjw.custom_site_access_parameters.active") === true
+        ) {
+            FavouritesParamCoordinator::initialize($this->container);
+        }
+
+        $this->showFavouritesOutsideDedicatedView =
+            $this->container->getParameter("cjw.favourite_parameters.display_everywhere");
     }
 
     public function getStartPage () {
@@ -53,7 +58,8 @@ class ConfigProcessController extends AbstractController
     public function getParameterList () {
         try {
             $parameters = ConfigProcessCoordinator::getProcessedParameters();
-            $favourites = $this->showFavouritesOutsideDedicatedView? ConfigProcessCoordinator::getFavourites() : [];
+            $favourites = $this->showFavouritesOutsideDedicatedView ?
+                FavouritesParamCoordinator::getFavourites($parameters) : [];
             $lastUpdated = ConfigProcessCoordinator::getTimeOfLastUpdate();
 
             return $this->render(
@@ -83,9 +89,12 @@ class ConfigProcessController extends AbstractController
             $siteAccess = $request->attributes->get("siteaccess")->name;
         }
 
-        $favourites = $this->showFavouritesOutsideDedicatedView? ConfigProcessCoordinator::getFavourites($siteAccess) : [];
         $siteAccesses = Utility::determinePureSiteAccesses($processedParameters);
         $groups = Utility::determinePureSiteAccessGroups($processedParameters);
+        $siteAccessesToScanFor = ConfigProcessCoordinator::getSiteAccessListForController($siteAccess);
+
+        $favourites = $this->showFavouritesOutsideDedicatedView ?
+            FavouritesParamCoordinator::getFavourites($processedParameters, $siteAccessesToScanFor) : [];
         $lastUpdated = ConfigProcessCoordinator::getTimeOfLastUpdate();
 
         return $this->render(
@@ -101,10 +110,15 @@ class ConfigProcessController extends AbstractController
         );
     }
 
-    public function compareSiteAccesses (string $firstSiteAccess, string $secondSiteAccess, string $limiter = null) {
-
+    public function compareSiteAccesses (
+        string $firstSiteAccess,
+        string $secondSiteAccess,
+        string $limiter = null
+    ) {
+        $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
         $resultParameters = $this->retrieveParamsForSiteAccesses($firstSiteAccess,$secondSiteAccess);
-        $resultFavourites = $this->retrieveFavouritesForSiteAccesses($firstSiteAccess,$secondSiteAccess);
+        $resultFavourites =
+            $this->retrieveFavouritesForSiteAccesses($processedParameters,$firstSiteAccess,$secondSiteAccess);
         $limiterString = "Unlimited View";
 
         if ($limiter === "commons") {
@@ -123,7 +137,6 @@ class ConfigProcessController extends AbstractController
         $firstSiteAccessFavourites = $resultFavourites[0];
         $secondSiteAccessFavourites = $resultFavourites[1];
 
-        $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
         $siteAccesses = Utility::determinePureSiteAccesses($processedParameters);
         $groups = Utility::determinePureSiteAccessGroups($processedParameters);
         $lastUpdated = ConfigProcessCoordinator::getTimeOfLastUpdate();
@@ -146,8 +159,6 @@ class ConfigProcessController extends AbstractController
     }
 
     public function getFavourites (string $siteAccess = null) {
-        $favourites = ConfigProcessCoordinator::getFavourites($siteAccess);
-
         try {
             $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
         } catch (Exception $error) {
@@ -156,6 +167,10 @@ class ConfigProcessController extends AbstractController
 
         $siteAccesses = Utility::determinePureSiteAccesses($processedParameters);
         $groups = Utility::determinePureSiteAccessGroups($processedParameters);
+        $siteAccessesToScanFor = $siteAccess?
+            ConfigProcessCoordinator::getSiteAccessListForController($siteAccess) : [];
+
+        $favourites = FavouritesParamCoordinator::getFavourites($processedParameters,$siteAccessesToScanFor);
 
         return $this->render(
             "@CJWConfigProcessor/full/param_view_favourites.html.twig",
@@ -172,10 +187,25 @@ class ConfigProcessController extends AbstractController
         $requestData = $request->getContent();
 
         try {
+            $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
             $request = json_decode($requestData);
-            ConfigProcessCoordinator::setFavourites($request);
+            FavouritesParamCoordinator::setFavourite($request, $processedParameters);
         } catch (Exception $error) {
             throw new BadRequestException("The given data was not of a json format!");
+        }
+
+        return new Response(null, 200);
+    }
+
+    public function removeFavourites (Request $request): Response {
+        $requestData = $request->getContent();
+
+        try {
+            $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
+            $request = json_decode($requestData);
+            FavouritesParamCoordinator::removeFavourite($request,$processedParameters);
+        } catch (Exception $error) {
+            throw new BadRequestException("The given data is of the wrong (non-json) format!");
         }
 
         return new Response(null, 200);
@@ -189,7 +219,9 @@ class ConfigProcessController extends AbstractController
                 );
             } else if ($downloadDenominator === "favourites") {
                 $resultingFile = ParametersToFileWriter::writeParametersToFile(
-                    ConfigProcessCoordinator::getFavourites(),
+                    FavouritesParamCoordinator::getFavourites(
+                        ConfigProcessCoordinator::getProcessedParameters()
+                    ),
                     $downloadDenominator
                 );
             } else {
@@ -201,7 +233,10 @@ class ConfigProcessController extends AbstractController
                 );
             }
         } catch (InvalidArgumentException | Exception $error) {
-            throw new HttpException(500, "Something went wrong while trying to collect the requested parameters for download.");
+            throw new HttpException(
+                500,
+                "Something went wrong while trying to collect the requested parameters for download."
+            );
         }
 
         $response = new BinaryFileResponse($resultingFile);
@@ -215,28 +250,46 @@ class ConfigProcessController extends AbstractController
         return $response;
     }
 
-    private function retrieveParamsForSiteAccesses (string $firstSiteAccess, string $secondSiteAccess) {
+    private function retrieveParamsForSiteAccesses (
+        string $firstSiteAccess,
+        string $secondSiteAccess
+    ) {
         $firstSiteAccessParameters = [];
         $secondSiteAccessParameters = [];
 
         try {
-            $firstSiteAccessParameters = ConfigProcessCoordinator::getParametersForSiteAccess($firstSiteAccess);
-            $secondSiteAccessParameters = ConfigProcessCoordinator::getParametersForSiteAccess($secondSiteAccess);
+            $firstSiteAccessParameters =
+                ConfigProcessCoordinator::getParametersForSiteAccess($firstSiteAccess);
+            $secondSiteAccessParameters =
+                ConfigProcessCoordinator::getParametersForSiteAccess($secondSiteAccess);
         } catch (InvalidArgumentException | Exception $error) {
-            $firstSiteAccessParameters = (count($firstSiteAccessParameters) > 0)? $firstSiteAccessParameters : [];
-            $secondSiteAccessParameters = (count($secondSiteAccessParameters) > 0)? $secondSiteAccessParameters : [];
+            $firstSiteAccessParameters = (count($firstSiteAccessParameters) > 0) ?
+                $firstSiteAccessParameters : [];
+            $secondSiteAccessParameters = (count($secondSiteAccessParameters) > 0) ?
+                $secondSiteAccessParameters : [];
         }
 
         return [$firstSiteAccessParameters,$secondSiteAccessParameters];
     }
 
-    private function retrieveFavouritesForSiteAccesses(string $firstSiteAccess, string $secondSiteAccess) {
+    private function retrieveFavouritesForSiteAccesses(
+        array $processedParameters,
+        string $firstSiteAccess,
+        string $secondSiteAccess
+    ) {
         $firstFavourites = [];
         $secondFavourites = [];
 
+        $firstSiteAccesses =
+            ConfigProcessCoordinator::getSiteAccessListForController($firstSiteAccess);
+        $secondSiteAccesses =
+            ConfigProcessCoordinator::getSiteAccessListForController($secondSiteAccess);
+
         if ($this->showFavouritesOutsideDedicatedView) {
-            $firstFavourites = ConfigProcessCoordinator::getFavourites($firstSiteAccess);
-            $secondFavourites = ConfigProcessCoordinator::getFavourites($secondSiteAccess);
+            $firstFavourites =
+                FavouritesParamCoordinator::getFavourites($processedParameters, $firstSiteAccesses);
+            $secondFavourites =
+                FavouritesParamCoordinator::getFavourites($processedParameters,$secondSiteAccesses);
         }
 
         return[$firstFavourites,$secondFavourites];
