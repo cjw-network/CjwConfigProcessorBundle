@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJW\ConfigProcessorBundle\src;
+namespace App\CJW\ConfigProcessorBundle\src\ConfigProcessorBundle;
 
 
 use App\CJW\ConfigProcessorBundle\ParameterAccessBag;
@@ -235,9 +235,12 @@ class ConfigProcessCoordinator
         $parameters = $parameters->getParameters();
 
         if ($parameters && is_array($parameters)) {
-            self::$processedParameters = self::$configProcessor->processParameters($parameters);
+            self::$processedParameters =
+                self::$configProcessor->processParameters($parameters);
         } else {
-            throw new Exception("Something went wrong while trying to parse the parameters of the container.");
+            throw new Exception(
+                "Something went wrong while trying to parse the parameters of the container."
+            );
         }
 
         return self::$processedParameters;
@@ -258,7 +261,9 @@ class ConfigProcessCoordinator
 
         try {
             if (!$desiredSiteAccess) {
-                $siteAccesses = self::$processedParameters["ezpublish"]["siteaccess"]["list"]["parameter_value"];
+                $siteAccesses =
+                    self::$processedParameters["ezpublish"]["siteaccess"]["list"]["parameter_value"];
+
                 array_push(
                     $siteAccesses,
                     ...array_keys(
@@ -267,7 +272,8 @@ class ConfigProcessCoordinator
                 );
             } else {
                 $siteAccesses = array($desiredSiteAccess);
-                $siteAccessGroups = self::$processedParameters["ezpublish"]["siteaccess"]["groups"]["parameter_value"];
+                $siteAccessGroups =
+                    self::$processedParameters["ezpublish"]["siteaccess"]["groups"]["parameter_value"];
                 $siteAccessGroups = array_keys($siteAccessGroups);
 
                 if (!in_array($desiredSiteAccess,$siteAccessGroups)) {

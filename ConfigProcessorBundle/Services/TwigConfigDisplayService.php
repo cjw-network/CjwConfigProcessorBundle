@@ -4,7 +4,7 @@
 namespace App\CJW\ConfigProcessorBundle\Services;
 
 
-use App\CJW\ConfigProcessorBundle\src\ConfigProcessCoordinator;
+use App\CJW\ConfigProcessorBundle\src\ConfigProcessorBundle\ConfigProcessCoordinator;
 use Exception;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;

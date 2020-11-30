@@ -1,13 +1,12 @@
 <?php
 
 
-namespace App\CJW\LocationAwareConfigLoadBundle\Controller;
+namespace App\CJW\ConfigProcessorBundle\Controller;
 
 
-use App\CJW\LocationAwareConfigLoadBundle\src\LocationRetrievalCoordinator;
+use App\CJW\ConfigProcessorBundle\src\LocationAwareConfigLoadBundle\LocationRetrievalCoordinator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 class ConfigProcessLocationInfoController extends AbstractController
 {

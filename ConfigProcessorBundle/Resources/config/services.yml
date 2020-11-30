@@ -6,10 +6,20 @@ services:
     tags:
       - { name: twig.extension }
 
+  cjw_location_aware_config_load_bundle.twig.display:
+    class: App\CJW\ConfigProcessorBundle\Services\TwigTestDisplayService
+    tags:
+      - { name: twig.extension }
+
   cjw_config_processor.controller:
     class: App\CJW\ConfigProcessorBundle\Controller\ConfigProcessController
     arguments:
       ["@service_container", "@ezpublish.config.resolver", "@request_stack"]
+    public: true
+
+  cjw_location_retrieval.controller:
+    class: App\CJW\ConfigProcessorBundle\Controller\ConfigProcessLocationInfoController
+    arguments: [ "@service_container", "%kernel.project_dir%" ]
     public: true
 
   # menu builders for the frontend

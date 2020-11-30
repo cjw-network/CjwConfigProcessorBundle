@@ -1,11 +1,10 @@
 <?php
 
 
-namespace App\CJW\LocationAwareConfigLoadBundle\src;
+namespace App\CJW\ConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
 
 
 use Exception;
-use Psr\Cache\CacheItemInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Symfony\Component\Cache\Exception\CacheException;

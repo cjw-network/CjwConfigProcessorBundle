@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJW\LocationAwareConfigLoadBundle\src;
+namespace App\CJW\ConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
 
 
 use Symfony\Component\Config\Loader\DelegatingLoader;
@@ -32,6 +32,9 @@ class CustomDelegatingLoader extends DelegatingLoader
      * @override
      * This override ensures that everytime a resource is loaded (which is not a global pattern) the path to said resource is set
      * in and known by the container.
+     * @param $resource
+     * @param string|null $type
+     * @throws \Exception
      */
     public function load($resource, string $type = null)
     {

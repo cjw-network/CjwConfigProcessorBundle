@@ -4,9 +4,9 @@
 namespace App\CJW\ConfigProcessorBundle\Controller;
 
 
-use App\CJW\ConfigProcessorBundle\src\ConfigProcessCoordinator;
-use App\CJW\ConfigProcessorBundle\src\FavouritesParamCoordinator;
-use App\CJW\ConfigProcessorBundle\src\ParametersToFileWriter;
+use App\CJW\ConfigProcessorBundle\src\ConfigProcessorBundle\ConfigProcessCoordinator;
+use App\CJW\ConfigProcessorBundle\src\ConfigProcessorBundle\FavouritesParamCoordinator;
+use App\CJW\ConfigProcessorBundle\src\ConfigProcessorBundle\ParametersToFileWriter;
 use App\CJW\ConfigProcessorBundle\src\Utility\Utility;
 use Exception;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;

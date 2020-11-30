@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJW\LocationAwareConfigLoadBundle\src;
+namespace App\CJW\ConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
 
 
 use Psr\Cache\InvalidArgumentException;
@@ -51,7 +51,10 @@ class LocationRetrievalCoordinator
         try {
             // If parameters are returned (meaning that the kernel has booted and thus new parameters could have entered), delete the parameters present
             // also delete the processed parameters based on the previous parameters
-            if (is_array(self::$parametersAndLocations) && count(self::$parametersAndLocations) > 0) {
+            if (
+                is_array(self::$parametersAndLocations) &&
+                count(self::$parametersAndLocations) > 0
+            ) {
                 self::$cache->delete("parametersAndLocations");
                 self::$cache->delete("cjw_processed_param_objects");
                 self::$cache->delete("cjw_processed_params");
@@ -59,11 +62,12 @@ class LocationRetrievalCoordinator
             }
 
             // Then store the presumably "new" parameters
-            self::$parametersAndLocations = self::$cache->get("parametersAndLocations", function (ItemInterface $item) {
-                $item->set(self::$parametersAndLocations);
+            self::$parametersAndLocations =
+                self::$cache->get("parametersAndLocations", function (ItemInterface $item) {
+                    $item->set(self::$parametersAndLocations);
 
-                return self::$parametersAndLocations;
-            });
+                    return self::$parametersAndLocations;
+                });
         }catch (InvalidArgumentException $e) {
         }
 
@@ -82,7 +86,11 @@ class LocationRetrievalCoordinator
         return self::$parametersAndLocations;
     }
 
-    public static function getParameterLocations (string $parameterName, array $siteAccessGroups = null, bool $withSiteAccess = false) {
+    public static function getParameterLocations (
+        string $parameterName,
+        array $siteAccessGroups = null,
+        bool $withSiteAccess = false
+    ) {
         if (!self::$initialized) {
             self::initializeCoordinator();
         }
@@ -174,7 +182,8 @@ class LocationRetrievalCoordinator
             }
             return count($results) > 0? $results : null;
         } else {
-            return isset(self::$parametersAndLocations[$parameterName]) ? self::$parametersAndLocations[$parameterName]: null;
+            return isset(self::$parametersAndLocations[$parameterName]) ?
+                self::$parametersAndLocations[$parameterName]: null;
         }
     }
 
@@ -186,7 +195,9 @@ class LocationRetrievalCoordinator
             $originalParameterKeySegments[1] = $newSiteAccess;
 
             $newParameterTry = join(".", $originalParameterKeySegments);
-            return isset(self::$parametersAndLocations[$newParameterTry]) ? self::$parametersAndLocations[$newParameterTry] : [];
+
+            return isset(self::$parametersAndLocations[$newParameterTry]) ?
+                self::$parametersAndLocations[$newParameterTry] : [];
         }
 
         return [];

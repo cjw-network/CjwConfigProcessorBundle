@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJW\LocationAwareConfigLoadBundle\src;
+namespace App\CJW\ConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
 
 
 /**
@@ -50,7 +50,10 @@ class CustomValueStorage
 
             if (!isset(self::$parameterAndTheirLocations[$parameterName])) {
                 self::$parameterAndTheirLocations[$parameterName] = [$path => $value];
-            } else if (self::$bundleConfig && end(self::$parameterAndTheirLocations[$parameterName]) === $value) {
+            } else if (
+                self::$bundleConfig &&
+                end(self::$parameterAndTheirLocations[$parameterName]) === $value
+            ) {
                 return;
             } else {
                 self::$parameterAndTheirLocations[$parameterName][$path] = $value;
@@ -132,6 +135,7 @@ class CustomValueStorage
      */
     public static function getLocationsForSpecificParameter(string $parameterName) {
         // Only if that parameter exists as a key in the array, will that parameters paths and values be returned, otherwise null
-        return isset(self::$parameterAndTheirLocations[$parameterName])? self::$parameterAndTheirLocations[$parameterName] : null;
+        return isset(self::$parameterAndTheirLocations[$parameterName]) ?
+            self::$parameterAndTheirLocations[$parameterName] : null;
     }
 }

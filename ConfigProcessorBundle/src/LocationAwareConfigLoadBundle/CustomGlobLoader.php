@@ -1,11 +1,12 @@
 <?php
 
 
-namespace App\CJW\LocationAwareConfigLoadBundle\src;
+namespace App\CJW\ConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
 
 
+use Symfony\Component\Config\Exception\FileLoaderImportCircularReferenceException;
+use Symfony\Component\Config\Exception\LoaderLoadException;
 use Symfony\Component\Config\FileLocatorInterface;
-//use Symfony\Component\DependencyInjection\Loader\FileLoader;
 use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
 
 
@@ -37,6 +38,10 @@ class CustomGlobLoader extends GlobFileLoader
      * This override is basically a copy of the {@see GlobLoader} load function just with one key difference:
      * It tracks the paths gathered by GlobResources and always relays that path before the loading process
      * of the parameters and services begins.
+     * @param $resource
+     * @param string|null $type
+     * @throws FileLoaderImportCircularReferenceException
+     * @throws LoaderLoadException
      */
     public function load($resource, string $type = null)
     {

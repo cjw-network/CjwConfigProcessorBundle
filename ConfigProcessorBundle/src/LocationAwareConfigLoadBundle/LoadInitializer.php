@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJW\LocationAwareConfigLoadBundle\src;
+namespace App\CJW\ConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
 
 use App\Kernel;
 use Exception;
@@ -58,6 +58,8 @@ class LoadInitializer extends Kernel
      * @override
      * Overrides the standard function of the kernel in order to ensure, that the right CustomContainerBuilder and CustomLoaders
      * are being used for the config loading process.
+     * @param ContainerInterface $container
+     * @return CustomDelegatingLoader
      */
     protected function getContainerLoader(ContainerInterface $container)
     {
@@ -88,8 +90,10 @@ class LoadInitializer extends Kernel
         return $customContainerBuilder;
     }
 
-    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
-    {
+    protected function configureContainer(
+        ContainerBuilder $container,
+        LoaderInterface $loader
+    ): void {
         parent::configureContainer($container, $loader);
 
         // After the original Symfony-Loading of specific routes, the custom routes, added in the configuration, are being parsed through

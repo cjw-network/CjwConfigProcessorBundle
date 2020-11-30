@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\CJW\LocationAwareConfigLoadBundle\src;
+namespace App\CJW\ConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
 
 
 use Symfony\Component\DependencyInjection\ParameterBag\EnvPlaceholderParameterBag;

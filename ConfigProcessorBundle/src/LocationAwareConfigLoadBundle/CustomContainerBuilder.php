@@ -1,14 +1,13 @@
 <?php
 
 
-namespace App\CJW\LocationAwareConfigLoadBundle\src;
+namespace App\CJW\ConfigProcessorBundle\src\LocationAwareConfigLoadBundle;
 
 
 use Exception;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
  * Class CustomContainerBuilder is a ContainerBuilder which is mainly responsible for keeping track of the various paths
@@ -22,7 +21,7 @@ class CustomContainerBuilder extends ContainerBuilder
 {
     private $isBundleConfigMode;
 
-    public function __construct(ParameterBagInterface $parameterBag = null)
+    public function __construct()
     {
         // Provide the container with a custom ParameterBag in order to allow location awareness.
         parent::__construct(new LocationAwareParameterBag());

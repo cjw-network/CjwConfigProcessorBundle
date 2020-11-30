@@ -1,16 +1,10 @@
 <?php
 
 
-namespace App\CJW\LocationAwareConfigLoadBundle\Services;
+namespace App\CJW\ConfigProcessorBundle\Services;
 
 
-use App\CJW\LocationAwareConfigLoadBundle\src\CustomValueStorage;
-use App\CJW\LocationAwareConfigLoadBundle\src\LoadInitializer;
-use App\CJW\LocationAwareConfigLoadBundle\src\LocationRetrievalCoordinator;
-use Psr\Cache\InvalidArgumentException;
-use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
-use Symfony\Component\Cache\Exception\CacheException;
-use Symfony\Contracts\Cache\ItemInterface;
+use App\CJW\ConfigProcessorBundle\src\LocationAwareConfigLoadBundle\LocationRetrievalCoordinator;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 
