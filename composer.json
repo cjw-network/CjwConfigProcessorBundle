@@ -2,7 +2,7 @@
   "name": "cjw-network/cjw-config-processor",
   "type": "symfony-bundle",
   "description": "Parses the configuration of your symfony server and allows visual access to the configuration in a human readable way for a better development experience.",
-  "license": "GPL-3.0-only",
+  "license": "GPL-2.0-only",
   "require": {
     "php": "^7.3",
     "symfony/console": "*",
