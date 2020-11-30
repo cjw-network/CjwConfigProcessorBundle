@@ -1,18 +1,37 @@
 {
   "name": "cjw-network/cjw-config-processor",
-  "type": "symfony-bundle",
+  "type": "ezplatform-bundle",
   "description": "Parses the configuration of your symfony server and allows visual access to the configuration in a human readable way for a better development experience.",
+  "keywords": [
+    "ezplatform",
+    "cjw-network",
+    "cjw-config-processor",
+    "siteaccess",
+    "config-parser",
+    "yaml-parser"
+  ],
   "license": "GPL-2.0-only",
+  "homepage": "https://github.com/cjw-network/CjwConfigProcessorBundle",
+  "authors": [
+    {
+      "name": "CJW-Network",
+      "homepage": "https://www.cjw-network.com/"
+    }
+  ],
   "require": {
     "php": "^7.3",
-    "symfony/console": "*",
-    "symfony/dependency-injection": "*",
-    "symfony/config": "*",
-    "symfony/http-kernel": "*"
+    "ezsystems/ezplatform-kernel": "^3.0"
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "autoload": {
     "psr-4": {
       "cjw-network\\CJWConfigProcessor\\": "src/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.x-dev"
     }
   }
 }
