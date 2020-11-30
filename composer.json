@@ -29,7 +29,7 @@
   "prefer-stable": true,
   "autoload": {
     "psr-4": {
-      "cjw-network\\CJWConfigProcessor\\": "src/"
+      "CJW\\CJWConfigProcessor\\": "src/"
     }
   },
   "extra": {
