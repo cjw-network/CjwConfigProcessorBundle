@@ -1,4 +1,4 @@
-#CJW's Config-Processor Bundle
+# CJW's Config-Processor Bundle
 
 # Goal
 
@@ -11,6 +11,7 @@ allow a smoother and more comfortable developer experience.
 # Authors
 
 - **CJW Network**
+- **Frederic Bauer**
   <br/>
   <br/>
 
@@ -25,7 +26,7 @@ of the Composer documentation.
 Open a command console, enter your project directory and execute:
 
 ```console
-$ composer require <package-name>
+$ composer require CJWConfigProcessorBundle
 ```
 
 ## Applications that don't use Symfony Flex
@@ -36,7 +37,7 @@ Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
 ```console
-$ composer require <package-name>
+$ composer require CJWConfigProcessorBundle
 ```
 
 ### Step 2: Enable the Bundle
@@ -49,6 +50,47 @@ in the `config/bundles.php` file of your project:
 
 return [
     // ...
-    <vendor>\<bundle-name>\<bundle-long-name>::class => ['all' => true],
+    // <vendor>\<bundle-name>\<bundle-long-name>::class => ['all' => true],
+    cjw-network\CJWConfigProcessorBundle\CJWConfigProcessorBundle::class => ['all' => true],
 ];
 ```
+
+## Routing
+
+Afterwards, you need to add a yaml file to your `config/routes` directory.
+This file can be named (for example) `cjw_config_processing.yaml` and must contain
+the following content:
+
+```yaml
+cjw_config_processor_bundle:
+  resource: "@CJWConfigProcessorBundle/Resources/config/routing.yaml"
+```
+
+## Additional Bundle Config
+
+You can also customize a few bundle settings and adapt the bundle to your requirements.
+To do that, you need to create a yaml file in the `config/packages` directory of your
+installation. Name the file however you like, for example `cjw_config_processor.yaml`
+and then set the following (partially) optional options:
+
+```yaml
+# example settings
+cjw_config_processor:
+  custom_site_access_parameters:
+    allow: false
+    scan_parameters: false
+    parameters:
+      - "parameter1"
+      - "parameter2.with.more.parts"
+      - "parameter3.parts"
+
+  favourite_parameters:
+    allow: true
+    scan_parameters: true
+    parameters:
+      - "parameter1.very.specific"
+      - "parameter2.broader"
+      - "parameter3"
+      - "parameter2.others"
+```
+
