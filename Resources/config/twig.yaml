@@ -1,0 +1,3 @@
+twig:
+  paths:
+    "/mnt/data/htdocs/bicycleLearning/ezplatform/src/CJWConfigProcessorBundle/Resources/views": "CJWConfigProcessor"
