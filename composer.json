@@ -16,11 +16,14 @@
     {
       "name": "CJW-Network",
       "homepage": "https://www.cjw-network.com/"
+    },
+    {
+      "name": "Frederic Bauer"
     }
   ],
   "require": {
     "php": "^7.3",
-    "ezsystems/ezplatform-kernel": "^3.0"
+    "ezsystems/ezplatform-kernel": "^1.2"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

@@ -68,6 +68,20 @@ class FavouritesParamCoordinator
         return [];
     }
 
+    public static function getFavouriteKeyList (
+        array $processedParameters,
+        array $siteAccesses = []
+    ): array {
+
+        $favouritesToProcess =
+            self::getFavourites($processedParameters, $siteAccesses);
+
+        return Utility::removeSpecificKeySegment(
+            "parameter_value",
+            $favouritesToProcess
+        );
+    }
+
     public static function setFavourite (
         array $favouriteParameterKeys,
         array $processedParameters

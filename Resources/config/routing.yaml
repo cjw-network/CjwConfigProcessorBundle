@@ -23,6 +23,11 @@ cjw_config_processing.param_list_favourites:
   controller: cjw_config_processor.controller::getFavourites
   methods: [GET]
 
+cjw_config_processing.get_favourite_keys:
+  path: /cjw/config-processing/parameter_list/favourites/keylist/{siteAccess?}
+  controller: cjw_config_processor.controller::getFavouriteKeyList
+  methods: [GET]
+
 cjw_config_processing.save_favourites:
   path: /cjw/config-processing/parameter_list/save/favourites
   controller: cjw_config_processor.controller::saveFavourites

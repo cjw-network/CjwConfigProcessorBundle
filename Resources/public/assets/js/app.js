@@ -75,7 +75,7 @@ function setUpFavourites() {
 
     // favouriteParameterUtility.setUpFavourites();
 
-    if (document.querySelector("#favourites_site_access_selection")) {
+    if (document.getElementById("favourites_site_access_selection")) {
       favouriteParameterUtility.setUpSiteAccessSwitching();
     }
   }

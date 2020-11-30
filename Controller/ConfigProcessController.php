@@ -170,7 +170,8 @@ class ConfigProcessController extends AbstractController
         $siteAccessesToScanFor = $siteAccess?
             ConfigProcessCoordinator::getSiteAccessListForController($siteAccess) : [];
 
-        $favourites = FavouritesParamCoordinator::getFavourites($processedParameters,$siteAccessesToScanFor);
+        $favourites =
+            FavouritesParamCoordinator::getFavourites($processedParameters,$siteAccessesToScanFor);
 
         return $this->render(
             "@CJWConfigProcessor/full/param_view_favourites.html.twig",
@@ -181,6 +182,22 @@ class ConfigProcessController extends AbstractController
                 "allSiteAccessGroups" => $groups,
             ]
         );
+    }
+
+    public function getFavouriteKeyList (string $siteAccess = null): Response {
+        try {
+            $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
+        } catch (Exception $error) {
+            throw new HttpException(500, "Couldn't collect the required parameters.");
+        }
+
+        $siteAccessesToScanFor = $siteAccess?
+            ConfigProcessCoordinator::getSiteAccessListForController($siteAccess) : [];
+
+        $favourites =
+            FavouritesParamCoordinator::getFavouriteKeyList($processedParameters,$siteAccessesToScanFor);
+
+        return $this->json($favourites);
     }
 
     public function saveFavourites(Request $request): Response {

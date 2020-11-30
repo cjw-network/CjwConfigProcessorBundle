@@ -140,4 +140,22 @@ class Utility
 
         return $parameters;
     }
+
+    public static function removeSpecificKeySegment (
+        string $keySegment,
+        array $parametersToRemoveFrom
+    ) {
+        $result = $parametersToRemoveFrom;
+
+        foreach ($parametersToRemoveFrom as $key => $value) {
+            if ($key === $keySegment) {
+                unset($result[$key]);
+            } else if (is_array($value)) {
+                $result[$key] =
+                    self::removeSpecificKeySegment($keySegment,$result);
+            }
+        }
+
+        return $result;
+    }
 }
