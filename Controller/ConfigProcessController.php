@@ -4,10 +4,10 @@
 namespace CJW\CJWConfigProcessor\Controller;
 
 
-use App\CJWConfigProcessor\src\ConfigProcessorBundle\ConfigProcessCoordinator;
-use App\CJWConfigProcessor\src\ConfigProcessorBundle\FavouritesParamCoordinator;
-use App\CJWConfigProcessor\src\ConfigProcessorBundle\ParametersToFileWriter;
-use App\CJWConfigProcessor\src\Utility\Utility;
+use CJW\CJWConfigProcessor\src\ConfigProcessorBundle\ConfigProcessCoordinator;
+use CJW\CJWConfigProcessor\src\ConfigProcessorBundle\FavouritesParamCoordinator;
+use CJW\CJWConfigProcessor\src\ConfigProcessorBundle\ParametersToFileWriter;
+use CJW\CJWConfigProcessor\src\Utility\Utility;
 use Exception;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
 use Psr\Cache\InvalidArgumentException;
