@@ -208,11 +208,13 @@ class Utility {
   addInUrlParameters(url, urlParameters, symfonyParameterMode = false) {
     if (urlParameters) {
       for (let urlParameter of urlParameters) {
-        if (symfonyParameterMode && !url.endsWith("/")) {
-          url += "/";
-        }
+        if (urlParameter) {
+          if (symfonyParameterMode && !url.endsWith("/")) {
+            url += "/";
+          }
 
-        url += urlParameter;
+          url += urlParameter;
+        }
       }
     }
 

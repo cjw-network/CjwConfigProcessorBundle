@@ -152,7 +152,7 @@ class Utility
                 unset($result[$key]);
             } else if (is_array($value)) {
                 $result[$key] =
-                    self::removeSpecificKeySegment($keySegment,$result);
+                    self::removeSpecificKeySegment($keySegment,$result[$key]);
             }
         }
 

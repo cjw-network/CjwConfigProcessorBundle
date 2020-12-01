@@ -12,7 +12,7 @@
                 <li class="breadcrumb-item">CJW Config Processing</li>
                 <li class="breadcrumb-item">Parameterlist</li>
                 <li class="breadcrumb-item">Favourites</li>
-                {% if not siteAccess is defined or siteAccess is empty %}
+                {% if not siteAccess is defined or siteAccess is empty or siteAccess is null%}
                     {% set siteAccess = "- no.siteaccess -" %}
                     <li class="breadcrumb-item active">No Site Access</li>
                 {% else %}

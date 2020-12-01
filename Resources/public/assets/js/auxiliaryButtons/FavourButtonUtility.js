@@ -14,7 +14,10 @@ class FavourButtonUtility {
       for (const favourButton of this.favourButtons) {
         favourButton.onclick = this.handleFavourClick.bind(this);
 
-        if (this.dedicatedFavouriteView) {
+        if (
+          this.dedicatedFavouriteView ||
+          favourButton.getAttribute("favourite") === "true"
+        ) {
           const favourButtonParent = favourButton.parentElement;
           this.setOrRemoveFavourite(favourButton, favourButtonParent);
           this.switchFavourButtonModel(favourButton, favourButtonParent);
@@ -126,38 +129,6 @@ class FavourButtonUtility {
       }
     }
   }
-
-  // async removeFavouriteFromBackend(favourButton, targetFavouriteKey) {
-  //   if (favourButton && targetFavouriteKey) {
-  //     const locationInfoButton = targetFavouriteKey.querySelector(
-  //       ".location_info"
-  //     );
-  //
-  //     let fullParameterName = null;
-  //     if (locationInfoButton) {
-  //       fullParameterName = locationInfoButton.getAttribute(
-  //         "fullparametername"
-  //       );
-  //     }
-  //
-  //     if (fullParameterName) {
-  //       const res = await this.utility.performFetchRequestWithBody(
-  //         "/cjw/config-processing/parameter_list/remove/favourites",
-  //         "POST",
-  //         [fullParameterName]
-  //       );
-  //
-  //       if (res) {
-  //         this.provideSmallVisualFeedback(favourButton, res.status);
-  //
-  //         if (res.status !== 200) {
-  //           this.setOrRemoveFavourite(favourButton, targetFavouriteKey);
-  //           this.favourModelSwitch(favourButton, targetFavouriteKey);
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
 
   provideSmallVisualFeedback(favourButton, statusCode = 200) {
     if (statusCode && statusCode > -1 && favourButton) {

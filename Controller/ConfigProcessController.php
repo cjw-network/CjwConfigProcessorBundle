@@ -184,18 +184,15 @@ class ConfigProcessController extends AbstractController
         );
     }
 
-    public function getFavouriteKeyList (string $siteAccess = null): Response {
+    public function getFavouriteKeyList (): Response {
         try {
             $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
         } catch (Exception $error) {
             throw new HttpException(500, "Couldn't collect the required parameters.");
         }
 
-        $siteAccessesToScanFor = $siteAccess?
-            ConfigProcessCoordinator::getSiteAccessListForController($siteAccess) : [];
-
         $favourites =
-            FavouritesParamCoordinator::getFavouriteKeyList($processedParameters,$siteAccessesToScanFor);
+            FavouritesParamCoordinator::getFavouriteKeyList($processedParameters);
 
         return $this->json($favourites);
     }

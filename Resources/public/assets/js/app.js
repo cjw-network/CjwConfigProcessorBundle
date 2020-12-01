@@ -7,17 +7,13 @@ function main() {
     document.querySelector(".param_list") ||
     document.querySelector(".compare_display")
   ) {
-    setUpParameterDisplays();
-    setUpDownloadAndSyncScrollerButtons();
-    setUpFavourAndCopyButtons();
-
-    if (
-      document.querySelector(".favourite_container, [list=favourites]")
-      // !document.querySelector("[favourite]")
-    ) {
+    if (!document.querySelector("[favourite]")) {
       setUpFavourites();
     }
 
+    setUpParameterDisplays();
+    setUpDownloadAndSyncScrollerButtons();
+    setUpFavourAndCopyButtons();
     handleLoadingDisplay();
   }
 
@@ -70,10 +66,10 @@ function setUpFavourAndCopyButtons() {
 }
 
 function setUpFavourites() {
-  if (document.querySelector(".favourite_container, [list=favourites]")) {
+  if (!document.querySelector("[favourite]")) {
     let favouriteParameterUtility = new FavouritesHandlingUtility();
 
-    // favouriteParameterUtility.setUpFavourites();
+    favouriteParameterUtility.setUpFavourites();
 
     if (document.getElementById("favourites_site_access_selection")) {
       favouriteParameterUtility.setUpSiteAccessSwitching();

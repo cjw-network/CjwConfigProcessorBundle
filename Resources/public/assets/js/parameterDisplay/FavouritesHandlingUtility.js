@@ -1,70 +1,77 @@
 class FavouritesHandlingUtility {
-  inlineFavouriteContainer;
   dedicatedFavouriteViewContainer;
+  favourButtonHandler;
+  utility;
 
   constructor() {
     this.dedicatedFavouriteViewContainer = document.querySelector(
       "[list=favourites]"
     );
 
-    if (!this.dedicatedFavouriteViewContainer) {
-      this.inlineFavouriteContainer = document.querySelectorAll(
-        ".favourite_container"
-      );
+    this.utility = new Utility();
+    this.favourButtonHandler = new FavourButtonUtility();
+  }
+
+  async setUpFavourites() {
+    const res = await this.utility.performFetchRequestWithoutBody(
+      "/cjw/config-processing/parameter_list/keylist/favourites",
+      "GET"
+    );
+
+    if (res) {
+      const responseKeyList = await res.json();
+
+      const results = this.parseKeyList(responseKeyList);
+      this.markKeysAsFavourites(results);
     }
   }
 
-  setUpFavourites() {
-    if (this.dedicatedFavouriteViewContainer) {
-      const allFavourButtons = this.dedicatedFavouriteViewContainer.querySelectorAll(
-        ".favour_parameter"
-      );
+  parseKeyList(responseKeyList) {
+    const resultKeys = [];
 
-      for (const favourButton of allFavourButtons) {
-        favourButton.click();
-      }
-    } else if (this.inlineFavouriteContainer) {
-      for (const container of this.inlineFavouriteContainer) {
-        const topNodesOfFavourites = container.querySelectorAll(".top_nodes");
+    if (responseKeyList && responseKeyList instanceof Object) {
+      const keyList = Object.keys(responseKeyList);
 
-        for (const topNode of topNodesOfFavourites) {
-          topNode.parentElement.style.marginLeft = "0";
-          topNode.parentElement.classList.remove("dont_display");
+      for (const key of keyList) {
+        if (responseKeyList[key].length === 0) {
+          resultKeys.push(key);
+        } else if (responseKeyList[key] instanceof Object) {
+          const childKeys = this.parseKeyList(responseKeyList[key]);
+
+          for (const childKey of childKeys) {
+            resultKeys.push(key + "." + childKey);
+          }
         }
-
-        this.markNodesAsFavourites(container);
       }
     }
+
+    return resultKeys;
   }
 
-  markNodesAsFavourites(container) {
-    const favouriteKeys = container.querySelectorAll(".param_list_keys");
-
-    for (const key of favouriteKeys) {
-      key.classList.add("favourite_key_entry");
-
-      const locationInfoButton = key.querySelector(".location_info");
-
-      if (locationInfoButton) {
-        const counterPartLocationInfo = document.querySelectorAll(
-          "[fullparametername='" +
-            locationInfoButton.getAttribute("fullparametername") +
-            "']"
+  markKeysAsFavourites(keyList) {
+    if (keyList) {
+      for (const key of keyList) {
+        const correspondingNode = document.querySelector(
+          '[fullparametername="' + key + '"]'
         );
 
-        this.markCorrespondingKeysAsFavourites(counterPartLocationInfo);
-      }
-    }
-  }
+        if (correspondingNode && correspondingNode.parentElement) {
+          const nodeParent = correspondingNode.parentElement;
+          nodeParent.setAttribute("favourite", "true");
 
-  markCorrespondingKeysAsFavourites(locationInfoButtonList) {
-    if (locationInfoButtonList) {
-      for (const locationInfoButton of locationInfoButtonList) {
-        const keyParent = locationInfoButton.parentElement;
-        const favorButtonOfKey = keyParent.querySelector(".favour_parameter");
+          let favourButton = null;
 
-        if (favorButtonOfKey) {
-          favorButtonOfKey.click();
+          for (const child of nodeParent.children) {
+            if (child.classList.contains("favour_parameter")) {
+              favourButton = child;
+              break;
+            }
+          }
+
+          this.favourButtonHandler.switchFavourButtonModel(
+            favourButton,
+            nodeParent
+          );
         }
       }
     }

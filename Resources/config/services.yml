@@ -43,5 +43,3 @@ services:
     public: true
     tags:
       - { name: knp_menu.menu_builder, method: build, alias: cjw_config_processing.menu.site_access_comparison.sidebar_right }
-
-#TODO Change the namespaces in here to something working in the vendor directory (something without CJW in front)

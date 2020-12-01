@@ -27,11 +27,13 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
  */
 class LoadInitializer extends Kernel
 {
+    private $kernel;
 
     public function __construct(string $environment, bool $debug)
     {
         parent::__construct($environment, $debug);
-        // TODO: Review: Should this entire batch of commands be outsourced to an initializer of the whole thing of some sort? It should not stay in this form in here.
+        $this->kernel = new Kernel($environment, $debug);
+
         try {
             // First the extensions of the file formats that are being supported by Symfony with regards to configuration.
             ConfigPathUtility::setConfigExtensions('.{php,xml,yaml,yml}');
@@ -52,6 +54,61 @@ class LoadInitializer extends Kernel
             }
         } catch (Exception $error) {
         }
+    }
+
+    /**
+     * A proper additional symfony kernel is required for these functions because the actual path to the project
+     * (and therefore the original, actual kernel) is needed in order to successfully complete this process. Since
+     * this kernel is part of a bundle and therefore in the vendor directory (and it is not certain that the functionality
+     * won't change in the actual symfony kernel), this step is necessary.
+     *
+     * @return string Returns the determined cache directory.
+     */
+    public function getCacheDir()
+    {
+        if ($this->kernel) {
+            return $this->kernel->getCacheDir();
+        }
+
+        // fallback method, which will probably throw an error down the line
+        $cacheDir = parent::getCacheDir();
+        $vendorIndex = strpos($cacheDir,"/vendor");
+        $varIndex = strpos($cacheDir,"/var");
+
+        $cacheDirStartString = substr($cacheDir,0,$vendorIndex);
+        $cacheDirEndString = substr($cacheDir,$varIndex);
+
+        if ($cacheDirStartString && $cacheDirEndString) {
+            $cacheDir = $cacheDirStartString.$cacheDirEndString;
+        }
+
+        return $cacheDir;
+    }
+
+    /**
+     * A proper additional symfony kernel is required for these functions because the actual path to the project
+     * (and therefore the original, actual kernel) is needed in order to successfully complete this process. Since
+     * this kernel is part of a bundle and therefore in the vendor directory (and it is not certain that the functionality
+     * won't change in the actual symfony kernel), this step is necessary.
+     *
+     * @return string Returns the determined project directory.
+     */
+    public function getProjectDir()
+    {
+        if ($this->kernel) {
+            return $this->kernel->getProjectDir();
+        }
+
+        // fallback method, which will probably throw an error down the line
+        $projectDir = parent::getProjectDir();
+        $vendorIndex = strpos($projectDir,"/vendor");
+        $actualProjectString = substr($projectDir,0,$vendorIndex);
+
+        if ($actualProjectString) {
+            $projectDir = $actualProjectString;
+        }
+
+        return $projectDir;
     }
 
     /**

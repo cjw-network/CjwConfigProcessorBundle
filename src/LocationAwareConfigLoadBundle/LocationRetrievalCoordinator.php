@@ -55,7 +55,7 @@ class LocationRetrievalCoordinator
                 is_array(self::$parametersAndLocations) &&
                 count(self::$parametersAndLocations) > 0
             ) {
-                self::$cache->delete("parametersAndLocations");
+                self::$cache->delete("cjw_parameters_and_locations");
                 self::$cache->delete("cjw_processed_param_objects");
                 self::$cache->delete("cjw_processed_params");
                 self::$cache->delete("cjw_processing_timestamp");
@@ -63,7 +63,7 @@ class LocationRetrievalCoordinator
 
             // Then store the presumably "new" parameters
             self::$parametersAndLocations =
-                self::$cache->get("parametersAndLocations", function (ItemInterface $item) {
+                self::$cache->get("cjw_parameters_and_locations", function (ItemInterface $item) {
                     $item->set(self::$parametersAndLocations);
 
                     return self::$parametersAndLocations;

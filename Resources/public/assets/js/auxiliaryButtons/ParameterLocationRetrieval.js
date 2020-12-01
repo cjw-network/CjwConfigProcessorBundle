@@ -27,7 +27,8 @@ class ParameterLocationRetrieval {
         event.stopPropagation();
 
         let withSiteAccess = false;
-        if (document.querySelector("[siteaccess]")) {
+        let siteAccess = document.querySelector("[siteaccess]");
+        if (siteAccess && siteAccess.getAttribute("siteaccess").length > 0) {
           withSiteAccess = true;
         }
 
@@ -88,6 +89,7 @@ class ParameterLocationRetrieval {
 
   async locationRetrievalRequest(targetButton, withSiteAccess = false) {
     let parameterName = targetButton.getAttribute("fullparametername");
+    withSiteAccess = "" + withSiteAccess;
 
     if (targetButton) {
       const res = await this.utility.performFetchRequestWithoutBody(
