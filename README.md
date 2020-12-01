@@ -55,6 +55,12 @@ return [
 ];
 ```
 
+### Important Note:
+
+The Symfony Kernel of your installation must not be final, since a substantial part of the
+location retrieval process builds upon that kernel and extends it. That means, that the `src/Kernel.php`
+class must be publicly available.
+
 ## Routing
 
 Afterwards, you need to add a yaml file to your `config/routes` directory.
