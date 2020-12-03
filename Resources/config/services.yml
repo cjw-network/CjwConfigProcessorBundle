@@ -6,8 +6,13 @@ services:
     tags:
       - { name: twig.extension }
 
-  cjw_location_aware_config_load_bundle.twig.display:
+  cjw_config_processor.twig.location_display:
     class: CJW\CJWConfigProcessor\Services\TwigTestDisplayService
+    tags:
+      - { name: twig.extension }
+
+  cjw_config_processor.twig.help_display:
+    class: CJW\CJWConfigProcessor\Services\TwigHelpParserService
     tags:
       - { name: twig.extension }
 
@@ -17,7 +22,7 @@ services:
       ["@service_container", "@ezpublish.config.resolver", "@request_stack"]
     public: true
 
-  cjw_location_retrieval.controller:
+  cjw_config_processor.location_controller:
     class: CJW\CJWConfigProcessor\Controller\ConfigProcessLocationInfoController
     arguments: [ "@service_container", "%kernel.project_dir%" ]
     public: true

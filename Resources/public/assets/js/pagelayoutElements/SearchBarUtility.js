@@ -7,9 +7,9 @@ class SearchBarUtility {
 
   constructor() {
     this.mainSection = document.querySelector(".cjw_main_section");
-    this.searchField = document.querySelector("#cjw_searchbar");
-    this.modeSwitchButton = document.querySelector("#cjw_searchbar_swap_mode");
-    this.clearInputButton = document.querySelector("#cjw_searchbar_clear");
+    this.searchField = document.getElementById("cjw_searchbar");
+    this.modeSwitchButton = document.getElementById("cjw_searchbar_swap_mode");
+    this.clearInputButton = document.getElementById("cjw_searchbar_clear");
   }
 
   /**
@@ -35,6 +35,8 @@ class SearchBarUtility {
       }
 
       if (this.clearInputButton) {
+        this.clearInputButton.style.opacity = 0;
+
         this.clearInputButton.addEventListener(
           "click",
           this.clearInput.bind(this)
@@ -57,6 +59,10 @@ class SearchBarUtility {
     const searchMode = this.searchField.classList.contains("cjw_key_search")
       ? "key"
       : "value";
+
+    if (this.clearInputButton.style.opacity === "0") {
+      this.clearInputButton.style.opacity = "";
+    }
 
     clearTimeout(this.timeout);
 
@@ -301,6 +307,7 @@ class SearchBarUtility {
   }
 
   async resetList() {
+    this.clearInputButton.style.opacity = 0;
     await this.removeRemainingIrrelevantResults("");
     const rootNodes = document.querySelectorAll(
       ".param_list > .param_list_items"

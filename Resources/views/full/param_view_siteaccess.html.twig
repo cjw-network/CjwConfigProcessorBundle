@@ -4,32 +4,30 @@
     <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/assets/css/parameter_display.css") }}>
 {% endblock %}
 
-{% block list_header %}
-    {% if not siteAccess is defined or siteAccess is empty %}#}
-        {% set siteAccess = "unknown" %}
-    {% endif %}
+{% block child_help_text %}
+    {% set locale = app.request.getLocale() %}
+    {% set context = "param_list_siteaccess" %}
+    {{ getHelpText(context, locale)|raw }}
+{% endblock %}
 
-    <div class="ez-header">
-        <div class="container">
-            <ol class="breadcrumb px-4">
-                <li class="breadcrumb-item">Admin</li>
-                <li class="breadcrumb-item">CJW Config Processing</li>
-                <li class="breadcrumb-item">Parameterlist</li>
-                <li class="breadcrumb-item active">Site Access "{{ siteAccess }}"</li>
-            </ol>
-            <div class="ez-page-title py-3 px-4">
-                <div class="ez-page-title__content-item">
-                    <svg class="ez-icon ez-icon-content-type">
-                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#content-type"></use>
-                    </svg>
-                    <h1 class="ez-page-title__content-name">
-                        Parameterlist: Site Access "{{ siteAccess }}"
-                    </h1>
-                </div>
-                <h4 class="ez-page-title__content-type-name">Last Update: {{ lastUpdated }}</h4>
-            </div>
-        </div>
-    </div>
+{% block param_breadcrumbs %}
+    <li class="breadcrumb-item">Admin</li>
+    <li class="breadcrumb-item">CJW Config Processing</li>
+    <li class="breadcrumb-item">Parameterlist</li>
+    <li class="breadcrumb-item active">Site Access "{{ siteAccess }}"</li>
+{% endblock %}
+
+{% block param_title_and_icon %}
+    <svg class="ez-icon ez-icon-content-type">
+        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#content-type"></use>
+    </svg>
+    <h1 class="ez-page-title__content-name">
+        Parameterlist: Site Access "{{ siteAccess }}"
+    </h1>
+{% endblock %}
+
+{% block param_update_time %}
+    <h4 class="ez-page-title__content-type-name">Last Update: {{ lastUpdated }}</h4>
 {% endblock %}
 
 {% block param_content %}
@@ -39,7 +37,7 @@
             <form class="form-inline ez-form-inline justify-content-between">
                 <div class="d-inline-flex">
                     <label class="ez-label" for="first_site_access_selection">Site Access 1</label>
-                    <select id="first_site_access_selection" name="first_site_access_selection" class="form-control">
+                    <select id="first_site_access_selection" name="first_site_access_selection" class="form-control" title="select site access context">
                         <option value="0" disabled="disabled">- siteaccess.list -</option>
                         {% for oneSiteAccess in allSiteAccesses %}
                             {% if oneSiteAccess is same as(siteAccess) %}
@@ -60,7 +58,7 @@
                 </div>
                 <div class="d-inline-flex">
                     <label class="ez-label" for="second_site_access_selection">Site Access 2</label>
-                    <select id="second_site_access_selection" name="second_site_access_selection" class="form-control">
+                    <select id="second_site_access_selection" name="second_site_access_selection" class="form-control" title="select site access to compare">
                         <option value="0" disabled="disabled">- siteaccess.list -</option>
                         <option value="1" disabled="disabled" selected="selected" hidden="hidden"></option>
                         {% for oneSiteAccess in allSiteAccesses %}

@@ -46,5 +46,5 @@ cjw_config_processing.download_parameters:
 # Location Retrieval from different controller:
 cjw_config_processing.location_retrieval:
   path: /cjw/config-processing/parameter_locations/{parameter}/{withSiteAccess?}
-  controller: cjw_location_retrieval.controller::retrieveLocationsForParameter
+  controller: cjw_config_processor.location_controller::retrieveLocationsForParameter
   methods: [GET]

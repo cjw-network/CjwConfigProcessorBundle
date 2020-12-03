@@ -124,6 +124,9 @@ class FavourButtonUtility {
           if (res.status !== 200) {
             this.setOrRemoveFavourite(favourButton, targetFavouriteKey);
             this.switchFavourButtonModel(favourButton, targetFavouriteKey);
+          } else if (this.dedicatedFavouriteView) {
+            targetFavouriteKey.style.border = "1px solid red";
+            this.removeFavouriteEntry(targetFavouriteKey);
           }
         }
       }
@@ -144,6 +147,24 @@ class FavourButtonUtility {
         setTimeout(() => {
           favourSVG.style.fill = "";
         }, 3000);
+      }
+    }
+  }
+
+  removeFavouriteEntry(parameterToRemove) {
+    if (parameterToRemove) {
+      const parent = parameterToRemove.classList.contains("param_list_items")
+        ? parameterToRemove
+        : parameterToRemove.parentElement;
+      const parentCarrier = parent.parentElement;
+      parentCarrier.removeChild(parent);
+
+      if (
+        !parentCarrier.classList.contains("param_list") &&
+        parentCarrier.children.length === 1 &&
+        parentCarrier.children[0].classList.contains("param_list_keys")
+      ) {
+        this.removeFavouriteEntry(parentCarrier);
       }
     }
   }

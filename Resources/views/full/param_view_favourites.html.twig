@@ -4,33 +4,32 @@
     <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/assets/css/parameter_display.css") }}>
 {% endblock %}
 
-{% block list_header %}
-  <div class="ez-header favourite_parameters_header">
-        <div class="container">
-            <ol class="breadcrumb px-4">
-                <li class="breadcrumb-item">Admin</li>
-                <li class="breadcrumb-item">CJW Config Processing</li>
-                <li class="breadcrumb-item">Parameterlist</li>
-                <li class="breadcrumb-item">Favourites</li>
-                {% if not siteAccess is defined or siteAccess is empty or siteAccess is null%}
-                    {% set siteAccess = "- no.siteaccess -" %}
-                    <li class="breadcrumb-item active">No Site Access</li>
-                {% else %}
-                    <li class="breadcrumb-item active">Site Access "{{ siteAccess }}"</li>
-                {% endif %}
-            </ol>
-            <div class="ez-page-title py-3 px-4">
-                <div class="ez-page-title__content-item">
-                    <svg class="ez-icon ez-icon-content-type">
-                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#bookmark-active"></use>
-                    </svg>
-                    <h1 class="ez-page-title__content-name">
-                        Parameterlist: Favourite Parameters
-                    </h1>
-                </div>
-            </div>
-        </div>
-    </div>
+{% block child_help_text %}
+    {% set locale = app.request.getLocale() %}
+    {% set context = "param_list_favourites" %}
+    {{ getHelpText(context, locale)|raw }}
+{% endblock %}
+
+{% block param_breadcrumbs %}
+    <li class="breadcrumb-item">Admin</li>
+    <li class="breadcrumb-item">CJW Config Processing</li>
+    <li class="breadcrumb-item">Parameterlist</li>
+    <li class="breadcrumb-item">Favourites</li>
+    {% if not siteAccess is defined or siteAccess is empty or siteAccess is null%}
+        {% set siteAccess = "- no.siteaccess -" %}
+        <li class="breadcrumb-item active">No Site Access</li>
+    {% else %}
+        <li class="breadcrumb-item active">Site Access "{{ siteAccess }}"</li>
+    {% endif %}
+{% endblock %}
+
+{% block param_title_and_icon %}
+    <svg class="ez-icon ez-icon-content-type">
+        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#bookmark-active"></use>
+    </svg>
+    <h1 class="ez-page-title__content-name">
+        Parameterlist: Favourite Parameters
+    </h1>
 {% endblock %}
 
 {% block param_content %}
@@ -43,7 +42,7 @@
             <form class="form-inline ez-form-inline justify-content-around">
                 <div class="d-inline-flex">
                     <label class="ez-label" for="favourites_site_access_selection">Site Access</label>
-                    <select id="favourites_site_access_selection" name="favourite_site_access_selection" class="form-control">
+                    <select id="favourites_site_access_selection" name="favourite_site_access_selection" class="form-control" title="select site access context">
                         <option value="- no.siteaccess -">- no.siteaccess -</option>
                         <option value="0" disabled="disabled">- siteaccess.list -</option>
                         {% for oneSiteAccess in allSiteAccesses %}

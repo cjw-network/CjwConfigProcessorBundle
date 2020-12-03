@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", main);
 
 function main() {
-  setUpSearchBarAndScrollUp();
+  setUpFundamentalElements();
 
   if (
     document.querySelector(".param_list") ||
@@ -25,12 +25,13 @@ function main() {
   }
 }
 
-function setUpSearchBarAndScrollUp() {
+function setUpFundamentalElements() {
   let searchBarUtility = new SearchBarUtility();
-  let scrollUpButtonDisplay = new ScrollUpButtonDisplay();
+  let fundamentalButtonsUtility = new HelpAndScrollUpButtonDisplay();
 
   searchBarUtility.setUpSearchBar();
-  scrollUpButtonDisplay.setUpScrollUpButton();
+  fundamentalButtonsUtility.setUpScrollUpButton();
+  fundamentalButtonsUtility.setUpHelp();
 }
 
 function setUpParameterDisplays() {
@@ -73,6 +74,7 @@ function setUpFavourites() {
 
     if (document.getElementById("favourites_site_access_selection")) {
       favouriteParameterUtility.setUpSiteAccessSwitching();
+      // favouriteParameterUtility.removeEmptySiteAccessScanArtifacts();
     }
   }
 }

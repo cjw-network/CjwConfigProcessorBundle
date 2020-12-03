@@ -35,18 +35,21 @@ class ParametersToFileWriter
 
         $temporaryFile = self::$filesystem->tempnam(sys_get_temp_dir(),"parameter_list_", ".yaml");
 
-        if ($temporaryFile) {
-            $siteAccess = $downloadDescriptor === "favourites"? null : $downloadDescriptor;
-            self::appendDataPerKey($temporaryFile,$parametersToWrite, $siteAccess);
-        }
-
         $tmpDir = pathinfo($temporaryFile,PATHINFO_DIRNAME);
         $currentDate = new DateTime();
         $currentDate = $currentDate->format("Y-m-d_H.i");
-        $downloadDescriptor = $downloadDescriptor? $downloadDescriptor."_" : "all_parameters"."_";
-        $targetName = $tmpDir."/parameter_list_".$downloadDescriptor.$currentDate.".yaml";
+        $downloadDescriptor = $downloadDescriptor?? "all_parameters";
+        $targetName = $tmpDir."/parameter_list_".$downloadDescriptor."_".$currentDate.".yaml";
 
-        self::$filesystem->rename($temporaryFile,$targetName);
+        if (!file_exists($targetName)) {
+            if ($temporaryFile) {
+                $siteAccess = $downloadDescriptor === "favourites"? null : $downloadDescriptor;
+                self::appendDataPerKey($temporaryFile,$parametersToWrite, $siteAccess);
+            }
+
+            self::$filesystem->rename($temporaryFile,$targetName);
+        }
+
         return $targetName;
     }
 
@@ -77,101 +80,156 @@ class ParametersToFileWriter
         int $numberOfIndents = 0
     ) {
         foreach ($subTreeToWrite as $parameterKey => $parameterFollowUp) {
-            $parameterFollowUp =
-                is_string($parameterFollowUp) ? '"'.$parameterFollowUp.'"' : $parameterFollowUp;
-            $parameterFollowUpIsArray = $parameterFollowUp && is_array($parameterFollowUp);
+            $parameterFollowUpIsArray = is_array($parameterFollowUp);
+
+            if (!$parameterFollowUpIsArray) {
+                if (is_bool($parameterFollowUp)) {
+                    $parameterFollowUp = $parameterFollowUp? "true" : "false";
+                } else {
+                    $parameterFollowUp = '"'.$parameterFollowUp.'"';
+                }
+            }
 
             if (!$valueReached) {
-                if ($parameterKey !== "parameter_value") {
-                    $parameterKey = $previousKey . "." . $parameterKey;
-
-                    if ($parameterFollowUpIsArray) {
-                        self::writeSubTree(
-                            $pathToFileToWriteTo,
-                            $parameterFollowUp,
-                            $parameterKey
-                        );
-                    } else if (!$parameterFollowUp) {
-                        self::$filesystem->appendToFile(
-                            $pathToFileToWriteTo,
-                            self::buildOutputString(
-                                $parameterKey . ":\n",
-                                4
-                            )
-                        );
-                    }
-                }
-
-                if ($parameterKey === "parameter_value") {
-                    $valueReached = true;
-
-                    if ($parameterFollowUpIsArray) {
-                        self::$filesystem->appendToFile(
-                            $pathToFileToWriteTo,
-                            self::buildOutputString(
-                                $previousKey . ":\n",
-                                4
-                            )
-                        );
-                        self::writeSubTree(
-                            $pathToFileToWriteTo,
-                            $parameterFollowUp,
-                            $previousKey,
-                            $valueReached,
-                            8
-                        );
-                    } else if ($parameterFollowUp) {
-                        self::$filesystem->appendToFile(
-                            $pathToFileToWriteTo,
-                            self::buildOutputString(
-                                $previousKey . ": " . $parameterFollowUp . "\n",
-                                4
-                            )
-                        );
-                    }
+                if ($parameterFollowUpIsArray) {
+                    self::writeMultiLineKeys (
+                        $parameterKey,
+                        $previousKey,
+                        $parameterFollowUp,
+                        $pathToFileToWriteTo,
+                    );
+                } else if ($parameterFollowUp) {
+                    self::writeSingleLineKeys(
+                        $parameterKey,
+                        $previousKey,
+                        $parameterFollowUp,
+                        $pathToFileToWriteTo,
+                    );
                 }
             } else {
                 if (is_numeric($parameterKey)) {
-                    if ($parameterFollowUpIsArray) {
-                        self::writeSubTree(
-                            $pathToFileToWriteTo,
-                            $parameterFollowUp,
-                            "",
-                            $valueReached,
-                            $numberOfIndents + 4
-                        );
-                    } else {
-                        $parameterFollowUp = "- " . $parameterFollowUp . "\n";
-                        self::$filesystem->appendToFile(
-                            $pathToFileToWriteTo,
-                            self::buildOutputString($parameterFollowUp, $numberOfIndents)
-                        );
-                    }
+                    $parameterKey = "";
+                }
 
-                } else {
-                    if ($parameterFollowUpIsArray) {
-                        self::$filesystem->appendToFile(
-                            $pathToFileToWriteTo,
-                            self::buildOutputString($parameterKey . ":\n", $numberOfIndents)
-                        );
-                        self::writeSubTree(
-                            $pathToFileToWriteTo,
-                            $parameterFollowUp,
-                            "",
-                            $valueReached,
-                            $numberOfIndents + 4
-                        );
-                    } else if (!is_array($parameterFollowUp)) {
-                        self::$filesystem->appendToFile(
-                            $pathToFileToWriteTo,
-                            self::buildOutputString(
-                                "{ ".$parameterKey . ": " . $parameterFollowUp . " }\n",
-                                $numberOfIndents)
-                        );
-                    }
+                if ($parameterFollowUpIsArray) {
+                    self::writeMultiLineValues(
+                        $parameterFollowUp,
+                        $pathToFileToWriteTo,
+                        $numberOfIndents,
+                        $parameterKey,
+                    );
+                } else if ($parameterFollowUp) {
+                    self::writeInlineValues(
+                        $parameterFollowUp,
+                        $pathToFileToWriteTo,
+                        $numberOfIndents,
+                        $parameterKey,
+                    );
                 }
             }
         }
+    }
+
+    private static function writeSingleLineKeys (
+        string $parameterKey,
+        string $previousKey,
+        string $output,
+        string $pathToWriteTo
+    ): void
+    {
+        $fileInput = $previousKey . ": " . $output . "\n";
+
+        if (!$parameterKey === "parameter_value") {
+            $parameterKey = $previousKey . "." . $parameterKey;
+            $fileInput = $parameterKey. ":\n";
+        }
+
+        if ($output) {
+            self::$filesystem->appendToFile(
+                $pathToWriteTo,
+                self::buildOutputString(
+                    $fileInput,
+                    4
+                )
+            );
+        }
+    }
+
+    private static function writeMultiLineKeys (
+        string $parameterKey,
+        string $previousKey,
+        array $output,
+        string $pathToWriteTo
+    ): void
+    {
+        $valueReached = false;
+        $numberOfIndents = 0;
+
+        if ($parameterKey === "parameter_value") {
+            $valueReached = true;
+            $numberOfIndents = 8;
+            $parameterKey = $previousKey;
+
+            self::$filesystem->appendToFile(
+                $pathToWriteTo,
+                self::buildOutputString(
+                    $previousKey . ":\n",
+                    4
+                )
+            );
+        } else {
+            $parameterKey = $previousKey . "." . $parameterKey;
+        }
+
+        self::writeSubTree(
+            $pathToWriteTo,
+            $output,
+            $parameterKey,
+            $valueReached,
+            $numberOfIndents
+        );
+    }
+
+    private static function writeInlineValues (
+        string $parameterFollowUp,
+        string $pathToFile,
+        int $numberOfIndents,
+        string $parameterKey = ""
+    ): void
+    {
+        $outputString = "{ " . $parameterKey . ": " . $parameterFollowUp . " }\n";
+
+        if (strlen($parameterKey) === 0) {
+            $outputString = "- " . $parameterFollowUp . "\n";
+        }
+
+        self::$filesystem->appendToFile(
+            $pathToFile,
+            self::buildOutputString($outputString, $numberOfIndents)
+        );
+    }
+
+    private static function writeMultiLineValues(
+        array $parameterFollowUp,
+        string $pathToFile,
+        int $numberOfIndents,
+        string $parameterKey = ""
+    ): void
+    {
+        if (strlen($parameterKey) > 0) {
+            self::$filesystem->appendToFile(
+                $pathToFile,
+                self::buildOutputString($parameterKey . ":\n", $numberOfIndents)
+            );
+        }
+
+        self::writeSubTree(
+            $pathToFile,
+            $parameterFollowUp,
+            "",
+            true,
+            $numberOfIndents + 4
+        );
     }
 
     private static function buildOutputString (

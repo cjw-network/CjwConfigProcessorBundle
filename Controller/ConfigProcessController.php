@@ -229,7 +229,8 @@ class ConfigProcessController extends AbstractController
         try {
             if ($downloadDenominator === "all_parameters") {
                 $resultingFile = ParametersToFileWriter::writeParametersToFile(
-                    ConfigProcessCoordinator::getProcessedParameters()
+                    ConfigProcessCoordinator::getProcessedParameters(),
+                    $downloadDenominator
                 );
             } else if ($downloadDenominator === "favourites") {
                 $resultingFile = ParametersToFileWriter::writeParametersToFile(

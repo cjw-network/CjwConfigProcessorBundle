@@ -77,9 +77,34 @@ class FavouritesHandlingUtility {
     }
   }
 
+  removeEmptySiteAccessScanArtifacts() {
+    if (this.dedicatedFavouriteViewContainer) {
+      const potentialArtifactContainers = document.querySelectorAll(
+        ".param_list > .param_list_items"
+      );
+
+      for (const potentialArtifact of potentialArtifactContainers) {
+        for (const potentialArtifactChild of potentialArtifact.children) {
+          if (
+            !potentialArtifactChild.classList.contains("param_list_keys") &&
+            potentialArtifactChild.children.length === 1 &&
+            !potentialArtifactChild.children[0].classList.contains(
+              "param_list_keys"
+            ) &&
+            !potentialArtifactChild.children[0].querySelector(
+              ".param_list_values"
+            )
+          ) {
+            potentialArtifact.removeChild(potentialArtifactChild);
+          }
+        }
+      }
+    }
+  }
+
   setUpSiteAccessSwitching() {
-    const switcher = document.querySelector(
-      "#favourites_site_access_selection"
+    const switcher = document.getElementById(
+      "favourites_site_access_selection"
     );
 
     if (switcher) {

@@ -34,7 +34,11 @@ class Utility
                 $level < 2
             ) {
                 $commonSubKeys =
-                    self::removeUncommonParameters($firstParameterList[$commonKey],$secondParameterList[$commonKey], 1+$level);
+                    self::removeUncommonParameters(
+                        $firstParameterList[$commonKey],
+                        $secondParameterList[$commonKey],
+                        1+$level
+                    );
 
                 $firstParameterList[$commonKey] = $commonSubKeys[0];
                 $secondParameterList[$commonKey] = $commonSubKeys[1];
@@ -54,12 +58,17 @@ class Utility
 
         foreach (array_intersect($firstListKeys,$secondListKeys) as $key) {
             if ($level < 2) {
-                $results =
-                    self::removeCommonParameters(
-                        $firstParameterList[$key]
-                        ,$secondParameterList[$key],
-                        1+$level
-                    );
+                $results[0] = $firstParameterList[$key];
+                $results[1] = $secondParameterList[$key];
+
+                if (is_array($results[0]) && is_array($results[1])) {
+                    $results =
+                        self::removeCommonParameters(
+                            $firstParameterList[$key],
+                            $secondParameterList[$key],
+                            1 + $level
+                        );
+                }
 
                 if ($results[0] === $results[1]) {
                     unset($firstParameterList[$key]);

@@ -22,10 +22,10 @@ class DownloadParametersUtility {
     if (parameterList) {
       let downloadDenominator = "all_parameters";
 
-      if (parameterList.getAttribute("siteaccess")) {
-        downloadDenominator = parameterList.getAttribute("siteaccess");
-      } else if (parameterList.getAttribute("list")) {
+      if (parameterList.getAttribute("list")) {
         downloadDenominator = parameterList.getAttribute("list");
+      } else if (parameterList.getAttribute("siteaccess")) {
+        downloadDenominator = parameterList.getAttribute("siteaccess");
       }
       const downloader = document.querySelector("#downloader");
       downloader.href =
