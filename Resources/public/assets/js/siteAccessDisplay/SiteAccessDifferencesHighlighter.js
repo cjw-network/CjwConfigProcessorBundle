@@ -68,15 +68,13 @@ class SiteAccessDifferencesHighlighter {
     ) {
       const results = [];
 
-      const onlyFirstListKeys = this.filterKeysAccrossLists(
-        firstListKeys,
-        this.secondList
-      );
+      const onlyFirstListKeys = this.filterKeysAccrossLists(firstListKeys, [
+        ...secondListKeys,
+      ]);
 
-      const onlySecondListKeys = this.filterKeysAccrossLists(
-        secondListKeys,
-        this.firstList
-      );
+      const onlySecondListKeys = this.filterKeysAccrossLists(secondListKeys, [
+        ...firstListKeys,
+      ]);
 
       results.push(...onlyFirstListKeys, ...onlySecondListKeys);
 
@@ -88,16 +86,27 @@ class SiteAccessDifferencesHighlighter {
     const results = [];
     if (keyList && keyList.length > 0 && listOfPotentialTwinKeys) {
       for (const key of keyList) {
-        const potentialTwinKeys = listOfPotentialTwinKeys.querySelectorAll(
-          `[key="${key.getAttribute("key")}"]:not(.syncScrollAddition)`
+        const potentialTwinKeys = listOfPotentialTwinKeys.filter(
+          (potentialTwinKey) =>
+            potentialTwinKey.getAttribute("key") === key.getAttribute("key")
+        );
+
+        const confirmedTwin = this.utility.findCounterpartNode(
+          key,
+          potentialTwinKeys
         );
 
         if (
           !potentialTwinKeys ||
           potentialTwinKeys.length === 0 ||
-          !this.utility.findCounterpartNode(key, potentialTwinKeys)
+          !confirmedTwin
         ) {
           results.push(key);
+        } else if (confirmedTwin) {
+          listOfPotentialTwinKeys.splice(
+            listOfPotentialTwinKeys.indexOf(confirmedTwin),
+            1
+          );
         }
       }
     }
@@ -115,12 +124,12 @@ class SiteAccessDifferencesHighlighter {
 
       const onlyFirstListValues = this.filterValuesAcrossLists(
         firstListValues,
-        this.secondList
+        [...secondListValues]
       );
 
       const onlySecondListValues = this.filterValuesAcrossLists(
         secondListValues,
-        this.firstList
+        [...firstListValues]
       );
 
       results.push(...onlyFirstListValues, ...onlySecondListValues);
@@ -141,12 +150,15 @@ class SiteAccessDifferencesHighlighter {
           valueKeyParent = value.parentElement.children[0];
         }
 
-        const potentialTwinValues = listOfPotentialTwinValues.querySelectorAll(
-          `[value="${value.getAttribute("value")}"]:not(.syncScrollAddition)`
+        const potentialTwinValues = listOfPotentialTwinValues.filter(
+          (potentialTwinValue) =>
+            potentialTwinValue.getAttribute("value") ===
+            value.getAttribute("value")
         );
 
         if (!potentialTwinValues || potentialTwinValues.length === 0) {
           results.push(value);
+          continue;
         }
 
         let counterpartExists = false;
@@ -159,6 +171,10 @@ class SiteAccessDifferencesHighlighter {
             )
           ) {
             counterpartExists = true;
+            listOfPotentialTwinValues.splice(
+              listOfPotentialTwinValues.indexOf(potentialValue),
+              1
+            );
             break;
           }
         }
@@ -269,6 +285,7 @@ class SiteAccessDifferencesHighlighter {
     if (hasHighlighted) {
       this.differenceHighlightButton.onclick = (event) => {
         event.stopPropagation();
+        this.utility.removeStateFromUrl("highlight");
 
         this.utility.createSVGElement(null, "spinner", false);
         this.removeHighlighting();
@@ -278,6 +295,7 @@ class SiteAccessDifferencesHighlighter {
     } else {
       this.differenceHighlightButton.onclick = (event) => {
         event.stopPropagation();
+        this.utility.storeStateInUrl("highlight");
 
         this.highlightDifferencesAndSimilarities();
         this.differenceHighlightButton.style.backgroundColor = "#0c5472";

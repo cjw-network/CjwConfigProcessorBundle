@@ -8,7 +8,7 @@ This file is supposed to provide an overview over the
 This view is responsible for displaying the entirety of the processed parameters
 of your Symfony server.
 
-The view provides every parameter which is know to the Symfony application and 
+The view provides every parameter which is known to the Symfony application and 
 displays them without any limitations. That means that there is no site access filter 
 applied to this assortment of parameters and every bit of configuration can be
 found here (as long as it arrived in your Symfony application).   
@@ -36,7 +36,7 @@ view throughout the frontend the bundle provides:
     changes have arrived in the view with your last refreshing of the page or not
     
         > Should the update time not reflect the last time you have updated your configuration,
-        > try refreshing the page.
+        try refreshing the page.
     
     * `Help Button` - The help button appears in the form of a questionmark in the top right corner
      of the header. Once it is clicked, a help overlay will appear, displaying information
@@ -60,7 +60,6 @@ view throughout the frontend the bundle provides:
     all parameters which have been marked as favourites will be displayed)
     
 3. The main view:
-
     The main view of this parameterlist begins directly under the header. It features
     a sort of own header, sitting on top of the actual parameterlist and a few additional
     controls too:

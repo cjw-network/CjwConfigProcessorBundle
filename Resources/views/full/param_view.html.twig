@@ -17,9 +17,9 @@
 {% endblock %}
 
 {% block param_title_and_icon %}
-    <svg class="ez-icon ez-icon-content-type">
-        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#content-type"></use>
-    </svg>
+{#    <svg class="ez-icon ez-icon-content-type">#}
+{#        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#content-type"></use>#}
+{#    </svg>#}
     <h1 class="ez-page-title__content-name">
         Parameterlist: Site Access Independent
     </h1>
@@ -27,6 +27,14 @@
 
 {% block param_update_time %}
     <h4 class="ez-page-title__content-type-name">Last Update: {{ lastUpdated }}</h4>
+{% endblock %}
+
+{% block help_teaser %}
+    <div>
+        This view is responsible for displaying the entirety of the processed parameters
+        of your Symfony server.
+        {{ parent() }}
+    </div>
 {% endblock %}
 
 {% block param_content %}
@@ -54,14 +62,6 @@
         <svg class="ez-icon ez-icon--large" id="loading_circle">
             <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#spinner"></use>
         </svg>
-{#        {% if favourites is defined and favourites|length > 0 %}#}
-{#            <div class="param_list_items favourite_container">#}
-{#                <div>#}
-{#                    Favourites#}
-{#                </div>#}
-{#                {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : favourites} only %}#}
-{#            </div>#}
-{#        {% endif %}#}
        {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : parameterList} only %}
     </div>
 {% endblock %}

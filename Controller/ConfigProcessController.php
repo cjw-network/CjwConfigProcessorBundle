@@ -119,16 +119,16 @@ class ConfigProcessController extends AbstractController
         $resultParameters = $this->retrieveParamsForSiteAccesses($firstSiteAccess,$secondSiteAccess);
         $resultFavourites =
             $this->retrieveFavouritesForSiteAccesses($processedParameters,$firstSiteAccess,$secondSiteAccess);
-        $limiterString = "Unlimited View";
+        $limiterString = "Default Comparison";
 
         if ($limiter === "commons") {
             $resultParameters = Utility::removeUncommonParameters($resultParameters[0],$resultParameters[1]);
             $resultFavourites = Utility::removeUncommonParameters($resultFavourites[0],$resultFavourites[1]);
-            $limiterString = "Common Parameter View";
+            $limiterString = "Commons Comparison";
         } else if ($limiter === "uncommons") {
             $resultParameters = Utility::removeCommonParameters($resultParameters[0],$resultParameters[1]);
             $resultFavourites = Utility::removeCommonParameters($resultFavourites[0],$resultFavourites[1]);
-            $limiterString = "Uncommon Parameter View";
+            $limiterString = "Differences Comparison";
         }
 
         $firstSiteAccessParameters = $resultParameters[0];
@@ -158,7 +158,8 @@ class ConfigProcessController extends AbstractController
         );
     }
 
-    public function getFavourites (string $siteAccess = null) {
+    public function getFavourites (string $siteAccess = null): Response
+    {
         try {
             $processedParameters = ConfigProcessCoordinator::getProcessedParameters();
         } catch (Exception $error) {

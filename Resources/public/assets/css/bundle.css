@@ -58,8 +58,15 @@ pre {
     background-color: transparent;
 }
 
+.cjw_help_teaser {
+    position: relative;
+    /*background-color: #fff;*/
+    /*margin-bottom: 20px;*/
+    padding: 10px;
+}
+
 #display_help {
-    border: 10px solid transparent;
+    border: 8px solid transparent;
     position: absolute;
     top: 0;
     right: 0;

@@ -125,7 +125,13 @@ class CustomParamProcessor
             if (key_exists($keyParts[0], $processedParameters)) {
                 $key = $keyParts[0];
                 array_splice($keyParts,0,1);
-                $customParametersSoFar[$key] = self::getParameterThroughParts($keyParts,$processedParameters[$key], true);
+                $customParametersSoFar[$key] =
+                    self::getParameterThroughParts($keyParts,$processedParameters[$key], true);
+
+                // in_array($key,$this->allSiteAccesses) && <-- maybe required to ensure only empty site access parameters are taken and nothing else
+                if (count($customParametersSoFar[$key]) === 0) {
+                    unset($customParametersSoFar[$key]);
+                }
             }
         } else if ($withinCustomArray) {
             return $processedParameters;
@@ -215,7 +221,9 @@ class CustomParamProcessor
         return $result;
     }
 
-    private function getAllPossiblySiteAccessDependentParameters (array $parametersToBeProcessed): array {
+    private function getAllPossiblySiteAccessDependentParameters (
+        array $parametersToBeProcessed
+    ): array {
         $result = [];
 
         foreach ($parametersToBeProcessed as $parameterKey => $parameterValue) {
@@ -245,7 +253,10 @@ class CustomParamProcessor
         return $result;
     }
 
-    private function addInKeysUnderSameSiteAccess (array $listToAddInto, array $parametersToAdd): array {
+    private function addInKeysUnderSameSiteAccess (
+        array $listToAddInto,
+        array $parametersToAdd
+    ): array {
         foreach($parametersToAdd as $parameterKey => $parameterValue) {
             if (
                 key_exists($parameterKey,$listToAddInto) &&

@@ -14,9 +14,9 @@ class RightSideBarSiteAccessComparisonMenuBuilder extends AbstractBuilder
 {
 
     const ITEM__SINGLE_SITEACCESS_VIEW = 'Single Site Access View';
-    const ITEM__NORMAL_COMPARISON_VIEW = 'Normal Comparison View';
-    const ITEM__COMMON_PARAMETERS_VIEW = 'Common Parameters Only';
-    const ITEM__UNCOMMON_PARAMETERS_VIEW = 'Uncommon Parameters Only';
+    const ITEM__NORMAL_COMPARISON_VIEW = 'Default Comparison';
+    const ITEM__COMMON_PARAMETERS_VIEW = 'Commons Comparison';
+    const ITEM__UNCOMMON_PARAMETERS_VIEW = 'Differences Comparison';
     const ITEM__HIGHLIGHT_DIFFERENCES = 'Highlight Differences';
     const ITEM__SYNCHRONOUS_SCROLLING = 'Synchronous Scrolling';
 

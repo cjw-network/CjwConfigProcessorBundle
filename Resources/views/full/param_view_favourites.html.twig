@@ -24,12 +24,20 @@
 {% endblock %}
 
 {% block param_title_and_icon %}
-    <svg class="ez-icon ez-icon-content-type">
-        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#bookmark-active"></use>
-    </svg>
+{#    <svg class="ez-icon ez-icon-content-type">#}
+{#        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#bookmark-active"></use>#}
+{#    </svg>#}
     <h1 class="ez-page-title__content-name">
         Parameterlist: Favourite Parameters
     </h1>
+{% endblock %}
+
+{% block help_teaser %}
+    <div>
+        This view is responsible for displaying only parameters marked as favourites of your Symfony / Ibexa
+        Platform application.
+        {{ parent() }}
+    </div>
 {% endblock %}
 
 {% block param_content %}

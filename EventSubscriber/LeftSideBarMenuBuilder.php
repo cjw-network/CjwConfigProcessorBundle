@@ -16,9 +16,9 @@ class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationConta
 {
 
     /* Menu items */
-    const ITEM__PARAMETERLIST = 'Parameter List';
-    const ITEM__PARAMETER_LIST_SITE_ACCESS = 'Parameter List: Site Access';
-    const ITEM__PARAMETER_LIST_FAVOURITES = 'Parameter List: Favourites';
+    const ITEM__PARAMETERLIST = 'All Parameters';
+    const ITEM__PARAMETER_LIST_SITE_ACCESS = 'Site Access Parameters';
+    const ITEM__PARAMETER_LIST_FAVOURITES = 'Favourite Parameters';
 
     public function __construct(
         MenuItemFactory $factory,

@@ -220,4 +220,45 @@ class Utility {
 
     return url;
   }
+
+  storeStateInUrl(state) {
+    if (state && !window.location.search.includes(state)) {
+      state.replaceAll(/[?&]/g, "");
+
+      state = window.location.search ? "&" + state : "?" + state;
+      state = state.includes("=") ? state : state + "=true";
+
+      state = window.location.search + state;
+
+      history.replaceState(
+        "",
+        document.title,
+        window.location.pathname + state
+      );
+    }
+  }
+
+  removeStateFromUrl(state) {
+    const queryString = window.location.search;
+
+    if (state && queryString.includes(state)) {
+      let stateStartIndex = queryString.indexOf(state);
+
+      let stateEndIndex = queryString.indexOf("&", stateStartIndex);
+
+      if (stateEndIndex === -1 || stateEndIndex < stateStartIndex) {
+        stateEndIndex = queryString.length;
+        --stateStartIndex;
+      }
+
+      const newUrl =
+        window.location.pathname +
+        queryString.replace(
+          queryString.substr(stateStartIndex, stateEndIndex),
+          ""
+        );
+
+      history.replaceState("", document.title, newUrl);
+    }
+  }
 }

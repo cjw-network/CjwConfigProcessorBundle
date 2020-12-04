@@ -49,30 +49,35 @@
                             </div>
                             {% block param_update_time %} {% endblock %}
                         </div>
-                        <button id="display_help" title="show help">
-                            <svg class="ez-icon ez-icon--medium">
-                                <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#about-info"></use>
-                            </svg>
-                        </button>
+                        <div class="cjw_help_teaser">
+                            {% block help_teaser %}
+                                <!-- Extra Help Button Section -->
+                                <button id="display_help" title="show help">
+                                    <svg class="ez-icon ez-icon--medium">
+                                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#about-info"></use>
+                                    </svg>
+                                </button>
+                            {% endblock %}
+                        </div>
                     </div>
                 </div>
             <!-- Section Content -->
                 {% block param_content %}
                     <!-- Extra Search Bar Section -->
                     {% block search_bar %}
-                        <form class="searchbar d-inline-flex">
+                        <form class="searchbar form-inline">
                             <div class="cjw_searchbar_container input-group-btn d-inline-flex">
                                 <label class="cjw_searchbar_label" id="cjw_searchbar_clear" for="cjw_searchbar" title="clear input">
                                     <svg class="ez-icon ez-icon--small-medium">
                                         <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#discard"></use>
                                     </svg>
                                 </label>
-                                <label class="cjw_searchbar_label" id="cjw_searchbar_swap_mode" for="cjw_searchbar" title="switch search mode, green=value-search, blue=key-search">
+                                <label class="cjw_searchbar_label" id="cjw_searchbar_swap_mode" for="cjw_searchbar" title="switch search mode, green: value search, blue: key search">
                                     <svg class="ez-icon ez-icon--small-medium">
                                         <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#filters"></use>
                                     </svg>
                                 </label>
-                                <input id="cjw_searchbar" name="cjw_searchbar" class="form-control cjw_key_search" type="text" placeholder="Search Key..." title="search">
+                                <input id="cjw_searchbar" name="cjw_searchbar" class="form-control cjw_key_search" type="text" placeholder="Search Key..." title="search parameters / values depending on selected mode | short delay!">
                             </div>
                             <input id="cjw_copy_to_clipboard" type="text">
                         </form>

@@ -36,10 +36,12 @@ class SynchronousScrollerUtility {
         // If the behaviour is already active, the behaviour is toggled off and the effects of the function are reverte
         if (this.syncScrollButton.getAttribute("syncScroll") === "active") {
           this.syncScrollButton.setAttribute("syncScroll", "disabled");
+          this.utility.removeStateFromUrl("syncScroll");
           this.syncScrollButton.style.backgroundColor = "";
           this.removeShadowNodes();
         } else {
           this.syncScrollButton.setAttribute("syncScroll", "active");
+          this.utility.storeStateInUrl("syncScroll");
           // Just make sure, that the there is some visual feedback on the button to signal the behaviour is active
           this.syncScrollButton.style.backgroundColor = "#0c5472";
           this.prepareListsForSyncScrolling();

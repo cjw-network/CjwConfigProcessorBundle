@@ -74,7 +74,6 @@ function setUpFavourites() {
 
     if (document.getElementById("favourites_site_access_selection")) {
       favouriteParameterUtility.setUpSiteAccessSwitching();
-      // favouriteParameterUtility.removeEmptySiteAccessScanArtifacts();
     }
   }
 }

@@ -4,16 +4,18 @@ class SearchBarUtility {
   modeSwitchButton;
   clearInputButton;
   timeout;
+  siteAccessPresent;
 
   constructor() {
     this.mainSection = document.querySelector(".cjw_main_section");
     this.searchField = document.getElementById("cjw_searchbar");
     this.modeSwitchButton = document.getElementById("cjw_searchbar_swap_mode");
     this.clearInputButton = document.getElementById("cjw_searchbar_clear");
+    this.siteAccessPresent = !!document.querySelector("[siteaccess]");
   }
 
   /**
-   * Sets up the searchbar. That means it provides the searchbar with the necessary listeneres and functions
+   * Sets up the searchbar. That means it provides the searchbar with the necessary listeners and functions
    * for it to handle its task.
    */
   setUpSearchBar() {
@@ -75,12 +77,14 @@ class SearchBarUtility {
     event.preventDefault();
     event.stopPropagation();
 
-    if (!this.searchField.classList.contains("switchModeHandled")) {
-      this.switchSearchMode();
-      this.searchField.classList.add("switchModeHandled");
-    } else {
-      this.searchField.classList.remove("switchModeHandled");
-    }
+    // if (!this.searchField.classList.contains("switchModeHandled")) {
+    //   this.switchSearchMode();
+    //   this.searchField.classList.add("switchModeHandled");
+    // } else {
+    //   this.searchField.classList.remove("switchModeHandled");
+    // }
+
+    this.switchSearchMode();
   }
 
   handleKeyEvent(event) {
@@ -137,6 +141,7 @@ class SearchBarUtility {
     // This is responsible for handling the subtree-search, where multiple segments of the key are entered into the search field
     if (
       searchMode === "key" &&
+      !this.siteAccessPresent &&
       (new RegExp(/^[.:]/).test(queryText) ||
         new RegExp(/[.:]$/).test(queryText))
     ) {
@@ -152,7 +157,7 @@ class SearchBarUtility {
       let searchPool = this.mainSection;
 
       // In the case the user is searching for a key
-      if (searchMode === "key") {
+      if (searchMode === "key" && !this.siteAccessPresent) {
         const keys = queryText.split(/[.:]/);
 
         if (keys && keys.length > 1) {
@@ -190,18 +195,24 @@ class SearchBarUtility {
   }
 
   lookForKeyHierachie(keys) {
-    let results = [];
+    let previousResults = [];
 
     for (const key of keys) {
       let temporaryResults = [];
 
-      for (const result of results) {
+      for (const result of previousResults) {
         const temporaryCarrier = result.querySelectorAll(
           `[key="${key.trim()}" i]`
         );
 
         if (temporaryCarrier && temporaryCarrier.length > 0) {
-          temporaryResults.push(...temporaryCarrier);
+          // temporaryResults.push(...temporaryCarrier);
+
+          for (const potentialNode of temporaryCarrier) {
+            if (potentialNode.parentElement === result) {
+              temporaryResults.push(potentialNode);
+            }
+          }
         }
       }
 
@@ -215,7 +226,7 @@ class SearchBarUtility {
         }
       }
 
-      results = [];
+      previousResults = [];
 
       for (const foundKey of temporaryResults) {
         const nextSearchNode =
@@ -226,12 +237,12 @@ class SearchBarUtility {
             : null;
 
         if (nextSearchNode) {
-          results.push(...nextSearchNode);
+          previousResults.push(...nextSearchNode);
         }
       }
     }
 
-    return results;
+    return previousResults;
   }
 
   async removeRemainingIrrelevantResults(searchText, searchMode = "key") {
