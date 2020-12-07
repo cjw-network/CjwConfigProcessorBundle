@@ -6,7 +6,7 @@
 
 {% block child_help_text %}
     {% set locale = app.request.getLocale() %}
-    {% set context = "param_list" %}
+    {% set context = "param_view_overview" %}
     {{ getHelpText(context, locale)|raw }}
 {% endblock %}
 
@@ -21,7 +21,7 @@
 {#        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#content-type"></use>#}
 {#    </svg>#}
     <h1 class="ez-page-title__content-name">
-        Parameterlist: Site Access Independent
+        Parameterlist: All Parameters
     </h1>
 {% endblock %}
 

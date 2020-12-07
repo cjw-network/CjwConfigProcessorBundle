@@ -5,6 +5,7 @@ class SearchBarUtility {
   clearInputButton;
   timeout;
   siteAccessPresent;
+  utility;
 
   constructor() {
     this.mainSection = document.querySelector(".cjw_main_section");
@@ -12,6 +13,7 @@ class SearchBarUtility {
     this.modeSwitchButton = document.getElementById("cjw_searchbar_swap_mode");
     this.clearInputButton = document.getElementById("cjw_searchbar_clear");
     this.siteAccessPresent = !!document.querySelector("[siteaccess]");
+    this.utility = new Utility();
   }
 
   /**
@@ -77,13 +79,6 @@ class SearchBarUtility {
     event.preventDefault();
     event.stopPropagation();
 
-    // if (!this.searchField.classList.contains("switchModeHandled")) {
-    //   this.switchSearchMode();
-    //   this.searchField.classList.add("switchModeHandled");
-    // } else {
-    //   this.searchField.classList.remove("switchModeHandled");
-    // }
-
     this.switchSearchMode();
   }
 
@@ -111,6 +106,10 @@ class SearchBarUtility {
       this.searchField.classList.add("cjw_key_search");
       this.searchField.placeholder = "Search Key...";
     }
+
+    // if (this.searchField.value.length > 0) {
+    //   this.searchField.dispatchEvent(new Event("input"));
+    // }
   }
 
   clearInput(event) {
@@ -183,6 +182,8 @@ class SearchBarUtility {
 
       // build the rest of the search results
       await this.createNodeListToRootAsynchronously(0, possibleResults);
+      // this.utility.alterStateInUrl("query", queryText);
+      // this.utility.alterStateInUrl("qType", searchMode);
     }
   }
 
@@ -339,5 +340,8 @@ class SearchBarUtility {
     for (const lastResult of lastResults) {
       lastResult.classList.remove("search_result");
     }
+
+    // this.utility.removeStateFromUrl("query");
+    // this.utility.removeStateFromUrl("qType");
   }
 }

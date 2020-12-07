@@ -22,11 +22,10 @@
     }
   ],
   "require": {
-    "php": "^7.3",
-    "ezsystems/ezplatform-kernel": "^1.1.1"
+    "php": "^7.3"
   },
   "minimum-stability": "dev",
-  "prefer-stable": true,
+  "prefer-stable": false,
   "autoload": {
     "psr-4": {
       "CJW\\CJWConfigProcessor\\": ""

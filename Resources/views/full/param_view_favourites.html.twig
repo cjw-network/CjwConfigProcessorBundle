@@ -6,7 +6,7 @@
 
 {% block child_help_text %}
     {% set locale = app.request.getLocale() %}
-    {% set context = "param_list_favourites" %}
+    {% set context = "param_view_favourites_overview" %}
     {{ getHelpText(context, locale)|raw }}
 {% endblock %}
 

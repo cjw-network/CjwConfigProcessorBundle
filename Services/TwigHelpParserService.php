@@ -6,7 +6,6 @@ namespace CJW\CJWConfigProcessor\Services;
 
 use CJW\CJWConfigProcessor\src\Utility\Parsedown;
 use ReflectionClass;
-use ReflectionException;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
@@ -20,18 +19,14 @@ class TwigHelpParserService extends AbstractExtension implements GlobalsInterfac
     private $helpTextDirectory;
     private $cache;
 
-    public function __construct( )
+    public function __construct()
     {
         $this->parsedown = new Parsedown();
         $this->fallBackLanguage = "en";
-        try {
-            $helper = new ReflectionClass($this);
-            $this->helpTextDirectory = $helper->getFileName();
-            $serviceIndex = strpos($this->helpTextDirectory,"/Service");
-            $this->helpTextDirectory = substr($this->helpTextDirectory,0,$serviceIndex)."/Resources/doc/help";
-        } catch (ReflectionException $e) {
-            $this->helpTextDirectory = "../Resources/doc/help";
-        }
+        $helper = new ReflectionClass($this);
+        $this->helpTextDirectory = $helper->getFileName();
+        $serviceIndex = strpos($this->helpTextDirectory,"/Service");
+        $this->helpTextDirectory = substr($this->helpTextDirectory,0,$serviceIndex)."/Resources/doc/help";
         $this->cache = new PhpFilesAdapter();
     }
 
@@ -40,7 +35,7 @@ class TwigHelpParserService extends AbstractExtension implements GlobalsInterfac
         return [];
     }
 
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction(
@@ -50,7 +45,8 @@ class TwigHelpParserService extends AbstractExtension implements GlobalsInterfac
         ];
     }
 
-    public function getHelpText(string $currentContext, string $_locale) {
+    public function getHelpText(string $currentContext, string $_locale): string
+    {
         $helpTextFiles = glob($this->helpTextDirectory."/*");
 
         $helpFileName = $currentContext;
@@ -83,7 +79,8 @@ class TwigHelpParserService extends AbstractExtension implements GlobalsInterfac
         return "<h1>No help file could be found for the current context.</h1>";
     }
 
-    private function parseFileContents (string $fileName) {
+    private function parseFileContents (string $fileName): string
+    {
         return $this->cache->get($fileName, function() use ($fileName) {
 
             return $this->parsedown->text(

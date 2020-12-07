@@ -72,11 +72,12 @@ class SiteAccessDifferencesHighlighter {
         ...secondListKeys,
       ]);
 
-      const onlySecondListKeys = this.filterKeysAccrossLists(secondListKeys, [
-        ...firstListKeys,
-      ]);
+      // const onlySecondListKeys = this.filterKeysAccrossLists(secondListKeys, [
+      //   ...firstListKeys,
+      // ]);
 
-      results.push(...onlyFirstListKeys, ...onlySecondListKeys);
+      // results.push(...onlyFirstListKeys, ...onlySecondListKeys);
+      results.push(...onlyFirstListKeys);
 
       return results;
     }
@@ -111,6 +112,8 @@ class SiteAccessDifferencesHighlighter {
       }
     }
 
+    results.push(...listOfPotentialTwinKeys);
+
     return results;
   }
 
@@ -127,12 +130,13 @@ class SiteAccessDifferencesHighlighter {
         [...secondListValues]
       );
 
-      const onlySecondListValues = this.filterValuesAcrossLists(
-        secondListValues,
-        [...firstListValues]
-      );
+      // const onlySecondListValues = this.filterValuesAcrossLists(
+      //   secondListValues,
+      //   [...firstListValues]
+      // );
 
-      results.push(...onlyFirstListValues, ...onlySecondListValues);
+      // results.push(...onlyFirstListValues, ...onlySecondListValues);
+      results.push(...onlyFirstListValues);
 
       return results;
     }
@@ -184,6 +188,8 @@ class SiteAccessDifferencesHighlighter {
         }
       }
     }
+
+    results.push(...listOfPotentialTwinValues);
 
     return results;
   }

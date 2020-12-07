@@ -1,7 +1,7 @@
-# Help Pages: Complete Parameterlist (Site Access Independent)
+# Help Pages: Complete Parameterlist (All Parameters)
 
-This file is supposed to provide an overview over the 
-`Parameterlist: Site Access Independent` - view.
+This file is supposed to provide a detailed look at the 
+`Parameterlist: All Parameters` - view.
 
 ## Purpose of the view
 

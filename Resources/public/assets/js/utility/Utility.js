@@ -221,12 +221,15 @@ class Utility {
     return url;
   }
 
-  storeStateInUrl(state) {
+  storeStateInUrl(state, stateValue = "true") {
     if (state && !window.location.search.includes(state)) {
       state.replaceAll(/[?&]/g, "");
 
+      state = encodeURI(state);
+      stateValue = encodeURI(stateValue);
+
       state = window.location.search ? "&" + state : "?" + state;
-      state = state.includes("=") ? state : state + "=true";
+      state = state.includes("=") ? state : state + "=" + stateValue;
 
       state = window.location.search + state;
 
@@ -238,8 +241,21 @@ class Utility {
     }
   }
 
+  alterStateInUrl(state, newValue) {
+    const queryString = window.location.search;
+
+    if (state && newValue) {
+      if (queryString.includes(state)) {
+        this.removeStateFromUrl(state);
+      }
+
+      this.storeStateInUrl(state, newValue);
+    }
+  }
+
   removeStateFromUrl(state) {
     const queryString = window.location.search;
+    state = encodeURI(state);
 
     if (state && queryString.includes(state)) {
       let stateStartIndex = queryString.indexOf(state);
