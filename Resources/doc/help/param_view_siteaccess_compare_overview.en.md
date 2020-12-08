@@ -105,12 +105,15 @@ purpose and functionality of the displayed elements will likely be the same in y
 
 13. **Highlight Differences**:
     This button will not toggle a new view but instead alter the existing one: When this button is clicked, 
-    the existing parameters of the view are searched for differences across the lists. Values and keys which are
-    not present in both lists, will be highlighted with a `green background` and keys which have had differences
-    beneath them compared to the other list (meaning there is a unique value or key present beneath), are highlighted
-    with a `blue background`. All common parameters are not highlighted. **Beware: Turning the highlighting on, can 
-    take some time.** You can see its effects on the screenshot at the top of the page.
+    the existing parameters of the view are searched for differences across the lists:
+    
+    - Common Keys and Values in both lists => `Not highlighted`
+    - Keys or Values only present in one list => `Green background`
+    - If there are unique values / keys in a subtree => `Blue background for key parents`
 
+    **Activating the highlighting can take some time.** In the screenshot on top, the
+    view is active.
+    
 14. **Synchronous Scrolling**:
     This button also only alters the existing view and in this case it checks for missing keys or values
     across both parameter lists and adds in placeholders in the other list (where the parameters are missing),

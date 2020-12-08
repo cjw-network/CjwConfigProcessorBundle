@@ -15,9 +15,17 @@ class SiteAccessDifferencesHighlighter {
 
   setUpHighlighterButton() {
     this.flipListener(false);
+    const highlight = this.utility.getStateFromUrl("highlight");
+
+    if (highlight) {
+      this.differenceHighlightButton.click();
+    }
   }
 
   highlightDifferencesAndSimilarities() {
+    this.differenceHighlightButton.style.animation =
+      "opening_subtree 2s ease infinite";
+
     if (this.firstList && this.secondList) {
       const uniqueNodes = this.findOutDifferencesBetweenLists();
 
@@ -72,11 +80,6 @@ class SiteAccessDifferencesHighlighter {
         ...secondListKeys,
       ]);
 
-      // const onlySecondListKeys = this.filterKeysAccrossLists(secondListKeys, [
-      //   ...firstListKeys,
-      // ]);
-
-      // results.push(...onlyFirstListKeys, ...onlySecondListKeys);
       results.push(...onlyFirstListKeys);
 
       return results;
@@ -130,12 +133,6 @@ class SiteAccessDifferencesHighlighter {
         [...secondListValues]
       );
 
-      // const onlySecondListValues = this.filterValuesAcrossLists(
-      //   secondListValues,
-      //   [...firstListValues]
-      // );
-
-      // results.push(...onlyFirstListValues, ...onlySecondListValues);
       results.push(...onlyFirstListValues);
 
       return results;
@@ -272,6 +269,9 @@ class SiteAccessDifferencesHighlighter {
   }
 
   removeHighlighting() {
+    this.differenceHighlightButton.style.animation =
+      "opening_subtree 2s ease infinite";
+
     const highlightedSimilarNodes = document.querySelectorAll(".similarity");
     const highlightedUniqueNodes = document.querySelectorAll(
       ".difference, .addition"
@@ -288,12 +288,14 @@ class SiteAccessDifferencesHighlighter {
   }
 
   flipListener(hasHighlighted = true) {
+    this.differenceHighlightButton.style.animation = "";
+
     if (hasHighlighted) {
       this.differenceHighlightButton.onclick = (event) => {
         event.stopPropagation();
         this.utility.removeStateFromUrl("highlight");
 
-        this.utility.createSVGElement(null, "spinner", false);
+        // this.utility.createSVGElement(null, "spinner", false);
         this.removeHighlighting();
         this.differenceHighlightButton.style.backgroundColor = "";
         this.flipListener(false);

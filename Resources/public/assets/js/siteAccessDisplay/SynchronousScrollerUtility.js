@@ -33,6 +33,9 @@ class SynchronousScrollerUtility {
         event.preventDefault();
         event.stopPropagation();
 
+        this.syncScrollButton.style.animation =
+          "opening_subtree 2s ease infinite";
+
         // If the behaviour is already active, the behaviour is toggled off and the effects of the function are reverte
         if (this.syncScrollButton.getAttribute("syncScroll") === "active") {
           this.syncScrollButton.setAttribute("syncScroll", "disabled");
@@ -46,7 +49,13 @@ class SynchronousScrollerUtility {
           this.syncScrollButton.style.backgroundColor = "#0c5472";
           this.prepareListsForSyncScrolling();
         }
+
+        this.syncScrollButton.style.animation = "";
       };
+    }
+
+    if (this.utility.getStateFromUrl("syncScroll")) {
+      this.syncScrollButton.click();
     }
   }
 

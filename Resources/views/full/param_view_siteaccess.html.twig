@@ -26,15 +26,15 @@
     </h1>
 {% endblock %}
 
-{% block param_update_time %}
-    <h4 class="ez-page-title__content-type-name">Last Update: {{ lastUpdated }}</h4>
-{% endblock %}
-
 {% block help_teaser %}
-    <div>
+    <span>
         This view is responsible for displaying only site access parameters of your Symfony / Ibexa Platform application.
         {{ parent() }}
-    </div>
+    </span>
+{% endblock %}
+
+{% block param_update_time %}
+    <span>- Last Update: {{ lastUpdated }}</span>
 {% endblock %}
 
 {% block param_content %}

@@ -222,11 +222,11 @@ class Utility {
   }
 
   storeStateInUrl(state, stateValue = "true") {
-    if (state && !window.location.search.includes(state)) {
-      state.replaceAll(/[?&]/g, "");
+    state = encodeURI(state);
+    stateValue = encodeURI(stateValue);
 
-      state = encodeURI(state);
-      stateValue = encodeURI(stateValue);
+    if (state && stateValue && !window.location.search.includes(state)) {
+      state.replaceAll(/[?&]/g, "");
 
       state = window.location.search ? "&" + state : "?" + state;
       state = state.includes("=") ? state : state + "=" + stateValue;
@@ -262,7 +262,7 @@ class Utility {
 
       let stateEndIndex = queryString.indexOf("&", stateStartIndex);
 
-      if (stateEndIndex === -1 || stateEndIndex < stateStartIndex) {
+      if (stateEndIndex <= 0 || stateEndIndex < stateStartIndex) {
         stateEndIndex = queryString.length;
         --stateStartIndex;
       }
@@ -270,11 +270,33 @@ class Utility {
       const newUrl =
         window.location.pathname +
         queryString.replace(
-          queryString.substr(stateStartIndex, stateEndIndex),
+          queryString.substring(stateStartIndex, stateEndIndex + 1),
           ""
         );
 
       history.replaceState("", document.title, newUrl);
     }
+  }
+
+  getStateFromUrl(state) {
+    state = encodeURI(state);
+    const queryString = window.location.search;
+
+    if (state && queryString.includes(state)) {
+      let stateValueStartIndex =
+        queryString.indexOf("=", queryString.indexOf(state)) + 1;
+      let stateValueEndIndex = queryString.indexOf("&", stateValueStartIndex);
+
+      if (
+        stateValueEndIndex === 0 ||
+        stateValueEndIndex < stateValueStartIndex
+      ) {
+        stateValueEndIndex = queryString.length;
+      }
+
+      return queryString.substring(stateValueStartIndex, stateValueEndIndex);
+    }
+
+    return null;
   }
 }

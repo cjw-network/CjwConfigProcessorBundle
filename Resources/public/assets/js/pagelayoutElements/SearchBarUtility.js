@@ -55,6 +55,11 @@ class SearchBarUtility {
       this.searchField.addEventListener("keyup", () => {
         this.searchField.classList.remove("switchModeHandled");
       });
+
+      window.addEventListener(
+        "load",
+        this.handleUrlStateAfterDocLoaded.bind(this)
+      );
     }
   }
 
@@ -96,20 +101,44 @@ class SearchBarUtility {
     }
   }
 
+  handleUrlStateAfterDocLoaded() {
+    setTimeout(() => {
+      const query = this.utility.getStateFromUrl("query");
+
+      if (query) {
+        const searchMode = this.utility.getStateFromUrl("qType") ?? "key";
+
+        if (
+          (searchMode === "key" &&
+            !this.searchField.classList.contains("cjw_key_search")) ||
+          (searchMode === "value" &&
+            !this.searchField.classList.contains("cjw_value_search"))
+        ) {
+          this.switchSearchMode();
+        }
+        this.searchField.value = query;
+        this.reactToSearchInput(query, searchMode);
+      }
+    }, 250);
+  }
+
   switchSearchMode() {
+    let newMode;
     if (this.searchField.classList.contains("cjw_key_search")) {
       this.searchField.classList.remove("cjw_key_search");
       this.searchField.classList.add("cjw_value_search");
       this.searchField.placeholder = "Search Value...";
+      newMode = "value";
     } else {
       this.searchField.classList.remove("cjw_value_search");
       this.searchField.classList.add("cjw_key_search");
       this.searchField.placeholder = "Search Key...";
+      newMode = "key";
     }
 
-    // if (this.searchField.value.length > 0) {
-    //   this.searchField.dispatchEvent(new Event("input"));
-    // }
+    if (this.searchField.value.length > 0) {
+      this.reactToSearchInput(this.searchField.value, newMode);
+    }
   }
 
   clearInput(event) {
@@ -182,8 +211,8 @@ class SearchBarUtility {
 
       // build the rest of the search results
       await this.createNodeListToRootAsynchronously(0, possibleResults);
-      // this.utility.alterStateInUrl("query", queryText);
-      // this.utility.alterStateInUrl("qType", searchMode);
+      this.utility.alterStateInUrl("query", queryText);
+      this.utility.alterStateInUrl("qType", searchMode);
     }
   }
 
@@ -341,7 +370,7 @@ class SearchBarUtility {
       lastResult.classList.remove("search_result");
     }
 
-    // this.utility.removeStateFromUrl("query");
-    // this.utility.removeStateFromUrl("qType");
+    this.utility.removeStateFromUrl("query");
+    this.utility.removeStateFromUrl("qType");
   }
 }
