@@ -49,6 +49,7 @@
                             </div>
                             <div class="cjw_help_teaser px-4 ez-page-title__content-type-name">
                                 {% block help_teaser %}
+                                    {% block param_update_time %} {% endblock %}
                                     <!-- Extra Help Button Section -->
                                     <button id="display_help" title="show help">
                                         <svg class="ez-icon ez-icon--medium">
@@ -56,7 +57,6 @@
                                         </svg>
                                     </button>
                                 {% endblock %}
-                                {% block param_update_time %} {% endblock %}
                             </div>
                         </div>
                     </div>

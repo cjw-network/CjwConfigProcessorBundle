@@ -68,7 +68,7 @@ pre {
 #display_help {
     border: 8px solid transparent;
     position: absolute;
-    top: 0;
+    top: 55%;
     right: 0;
     opacity: 25%;
     transition: 0.3s opacity ease;

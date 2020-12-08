@@ -1,7 +1,7 @@
 {
   "name": "cjw-network/cjw-config-processor",
   "type": "ezplatform-bundle",
-  "description": "Inspired by the old eZPublish Ini viewer: Parses the configuration of your symfony server and allows visual access to the configuration in a human readable way for a better development experience.",
+  "description": "Inspired by the old eZPublish Ini viewer: Parses the configuration of your Symfony server / eZ - / Ibexa platform and allows visual access to the configuration in a human readable way for a better development experience.",
   "keywords": [
     "ezplatform",
     "cjw-network",

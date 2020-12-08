@@ -4,13 +4,34 @@
 
 This Bundle has been created to serve the function of parsing / processing the existing
 parameter-/options array that exists within a standard symfony and especially
-eZPlatform app. Its purpose is to take the unsorted array and split it up into pieces based
-on the target of the options and specifically the site-access it is targeting in order to
-allow a smoother and more comfortable developer experience.
+eZ - / Ibexa - Platform app. **Similar to the eZPublish Ini settings viewer** of old, it
+is supposed to take hte existing configuration and provide a visual representation that
+is easy to read, understand and work with for developers. Therefore, it provides various 
+functions, options and views to display site access context specific parameters, values
+and much more.
+
+# Provided Functionality
+
+Installing the bundle (refer to `Installation` further down the page), will add a `Config Processing View` tab under the 
+`Admin` tab of the  standard eZ / Ibexa Backoffice. Clicking that tab will bring you to the frontend this bundle provides 
+with the following functionality (excerpt):
+
+- **Display** of the entire configuration of your Symfony project
+- **Filter** for and display parameters in a specific site access context
+- **View** and compare parameters in up to two specific site access contexts at the same time
+- **Highlighting** of differences within the two site access contexts
+- **Synchronous** scrolling in the comparison view
+- **Limit** the comparison to common or uncommon parameters of the lists
+- **Search** for specific keys or values in the parameter list
+- **Mark** parameters as favourites and view them in a dedicated view
+- **Get** location info about the parameters (which files do they appear in and with what value)
+- **Download** a file representation of the parameter lists
+- **Many** more
+
 
 # Authors
 
-- **CJW-Network**
+- [**CJW-Network**](https://www.cjw-network.com/)
 - **Frederic Bauer**
   <br/>
   <br/>
@@ -38,6 +59,12 @@ following command to download the latest stable version of this bundle:
 
 ```console
 $ composer require cjw-network/cjw-config-processor
+```
+
+**Since right now there is no 1.0 or above version:**
+
+```console
+$ composer require cjw-network/cjw-config-processor:dev-main
 ```
 
 ### Step 2: Enable the Bundle
