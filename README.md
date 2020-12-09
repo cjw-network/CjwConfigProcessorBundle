@@ -127,3 +127,10 @@ cjw_config_processor:
       - "parameter2.others"
 ```
 
+# COPYRIGHT
+
+Copyright (C) 2020 CJW-Network. All rights reserved.
+
+# LICENSE
+
+http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2

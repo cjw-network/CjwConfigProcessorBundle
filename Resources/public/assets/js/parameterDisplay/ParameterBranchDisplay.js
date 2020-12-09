@@ -54,6 +54,7 @@ class ParameterBranchDisplay {
       let childNodes = nodeToFocus.querySelectorAll(".param_list_items");
       childNodes = childNodes ? Array.from(childNodes) : [];
       childNodes.push(nodeToFocus);
+      // nodeToFocus.style.animation = "opening_subtree 2s ease infinite";
 
       this.asynchronouslyDisplayEntireBranch(childNodes);
     }
@@ -76,6 +77,9 @@ class ParameterBranchDisplay {
           this.asynchronouslyDisplayEntireBranch(nodeList);
         });
       }
+      // else {
+      //   concurrentNodes[concurrentNodes.length - 1].style.animation = "";
+      // }
     }
   }
 

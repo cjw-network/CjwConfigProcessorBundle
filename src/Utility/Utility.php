@@ -5,6 +5,8 @@ namespace CJW\CJWConfigProcessor\src\Utility;
 
 
 use Exception;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\Cache\CacheItem;
 
 class Utility
 {
@@ -166,5 +168,20 @@ class Utility
         }
 
         return $result;
+    }
+
+    public static function cacheContractGetOrSet (
+        string $cacheKey,
+        AdapterInterface $cachePool,
+        callable $executeWhenItemNotSetYet
+    ) {
+        if (!$cachePool->hasItem($cacheKey)) {
+            $item = $cachePool->getItem($cacheKey);
+            $item->set($executeWhenItemNotSetYet);
+
+            $cachePool->save($item);
+        }
+
+        return $cachePool->getItem($cacheKey);
     }
 }

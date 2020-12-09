@@ -16,8 +16,9 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder("cjw_config_processor");
+        $rootNode = $treeBuilder->root("cjw_config_processor");
 
-        $treeBuilder->getRootNode()
+        $rootNode
             ->children()
                 ->arrayNode("custom_site_access_parameters")
                     ->children()

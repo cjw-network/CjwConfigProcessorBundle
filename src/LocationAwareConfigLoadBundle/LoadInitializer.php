@@ -3,7 +3,6 @@
 
 namespace CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle;
 
-use App\Kernel;
 use Exception;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\Config\FileLocator;
@@ -25,7 +24,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
  *
  * @package CJW\CJWConfigProcessor\LocationAwareConfigLoadBundle\src
  */
-class LoadInitializer extends Kernel
+class LoadInitializer extends \AppKernel
 {
     private $kernel;
 

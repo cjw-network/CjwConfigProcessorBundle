@@ -4,6 +4,7 @@
 namespace CJW\CJWConfigProcessor\src\ConfigProcessorBundle;
 
 
+use CJW\CJWConfigProcessor\src\Utility\Utility;
 use DateTime;
 use Exception;
 use eZ\Publish\Core\MVC\ConfigResolverInterface;
@@ -118,16 +119,17 @@ class ConfigProcessCoordinator
 
             self::validateCachedItems();
 
-            self::$processedParameters = self::$cache->get("cjw_processed_params", function() {
-                return self::parseContainerParameters();
-            });
+            self::$processedParameters =
+                Utility::cacheContractGetOrSet("cjw_processed_params", self::$cache, function() {
+                    return self::parseContainerParameters();
+                });
 
             if ($request) {
 
-                self::$siteAccessParameters = self::$cache->get("cjw_site_access_parameters", function() {
-                    return self::getParametersForSiteAccess();
-                });
-
+                self::$siteAccessParameters =
+                    Utility::cacheContractGetOrSet("cjw_site_access_parameters", self::$cache, function() {
+                        return self::getParametersForSiteAccess();
+                    });
             }
 
             self::$lastUpdated = self::$cache->get("cjw_processing_timestamp", function() {
