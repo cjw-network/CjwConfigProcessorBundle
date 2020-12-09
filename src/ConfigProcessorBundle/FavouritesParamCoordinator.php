@@ -117,7 +117,7 @@ class FavouritesParamCoordinator
             $uncommonFavourites = Utility::removeCommonParameters($newFavourites, $previousFavourites);
 
             if (count($uncommonFavourites[0]) > 0) {
-                self::$cache->delete("cjw_custom_favourite_parameters");
+                self::$cache->deleteItem("cjw_custom_favourite_parameters");
                 Utility::cacheContractGetOrSet("cjw_custom_favourite_parameters", self::$cache,
                     function() use ($previousFavourites, $newFavourites) {
                        return array_replace_recursive($previousFavourites, $newFavourites);
@@ -156,8 +156,8 @@ class FavouritesParamCoordinator
         $uncommonFavourites = Utility::removeCommonParameters($currentFavourites,$previousFavourites);
 
         if (count($uncommonFavourites[1]) > 0) {
-            self::$cache->delete("cjw_custom_favourite_parameters");
-            
+            self::$cache->deleteItem("cjw_custom_favourite_parameters");
+
             Utility::cacheContractGetOrSet("cjw_custom_favourite_parameters", self::$cache,
                 function () use ($currentFavourites) {
                     return $currentFavourites;

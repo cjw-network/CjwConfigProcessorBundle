@@ -338,12 +338,12 @@ class ConfigProcessCoordinator
             self::$cache->prune();
 
             if (!self::$cache->hasItem("cjw_processed_param_objects")) {
-                self::$cache->delete("cjw_processed_params");
-                self::$cache->delete("cjw_site_access_parameters");
-                self::$cache->delete("cjw_processing_timestamp");
+                self::$cache->deleteItem("cjw_processed_params");
+                self::$cache->deleteItem("cjw_site_access_parameters");
+                self::$cache->deleteItem("cjw_processing_timestamp");
             } else if (!self::$cache->hasItem("cjw_processed_params")) {
-                self::$cache->delete("cjw_processed_param_objects");
-                self::$cache->delete("cjw_processing_timestamp");
+                self::$cache->deleteItem("cjw_processed_param_objects");
+                self::$cache->deleteItem("cjw_processing_timestamp");
             }
 
         } catch (InvalidArgumentException $e) {

@@ -1,50 +1,64 @@
 cjw_config_processing.index:
   path: /cjw/config-processing
-  controller: cjw_config_processor.controller::getStartPage
-  methods: [GET]
+  defaults:
+    _controller: cjw_config_processor.controller:getStartPage
+    _methods: [GET]
 
 cjw_config_processing.param_list:
   path: /cjw/config-processing/parameter_list
-  controller: cjw_config_processor.controller::getParameterList
-  methods: [GET]
+  defaults:
+    _controller: cjw_config_processor.controller:getParameterList
+    _methods: [GET]
 
 cjw_config_processing.site_access_param_list:
-  path: /cjw/config-processing/parameter_list/siteaccess/{siteAccess?}
-  controller: cjw_config_processor.controller::getSpecificSAParameters
-  methods: [GET]
+  path: /cjw/config-processing/parameter_list/siteaccess/{siteAccess}
+  defaults:
+    _controller: cjw_config_processor.controller:getSpecificSAParameters
+    _methods: [GET]
+    siteAccess: null
 
 cjw_config_processing.compare_site_accesses:
-  path: /cjw/config-processing/parameter_list/compare/{firstSiteAccess}/{secondSiteAccess}/{limiter?}
-  controller: cjw_config_processor.controller::compareSiteAccesses
-  methods: [GET]
+  path: /cjw/config-processing/parameter_list/compare/{firstSiteAccess}/{secondSiteAccess}/{limiter}
+  defaults:
+    _controller: cjw_config_processor.controller:compareSiteAccesses
+    _methods: [GET]
+    limiter: null;
 
 cjw_config_processing.param_list_favourites:
-  path: /cjw/config-processing/parameter_list/favourites/{siteAccess?}
-  controller: cjw_config_processor.controller::getFavourites
-  methods: [GET]
+  path: /cjw/config-processing/parameter_list/favourites/{siteAccess}
+  defaults:
+    _controller: cjw_config_processor.controller:getFavourites
+    _methods: [GET]
+    siteAccess: null
 
 cjw_config_processing.get_favourite_keys:
   path: /cjw/config-processing/parameter_list/keylist/favourites
-  controller: cjw_config_processor.controller::getFavouriteKeyList
-  methods: [GET]
+  defaults:
+    _controller: cjw_config_processor.controller:getFavouriteKeyList
+    _methods: [GET]
 
 cjw_config_processing.save_favourites:
   path: /cjw/config-processing/parameter_list/save/favourites
-  controller: cjw_config_processor.controller::saveFavourites
-  methods: [POST]
+  defaults:
+    _controller: cjw_config_processor.controller:saveFavourites
+    _methods: [POST]
 
 cjw_config_processing.remove_favourites:
   path: /cjw/config-processing/parameter_list/remove/favourites
-  controller: cjw_config_processor.controller::removeFavourites
-  methods: [POST]
+  defaults:
+    _controller: cjw_config_processor.controller:removeFavourites
+    _methods: [POST]
 
 cjw_config_processing.download_parameters:
   path: /cjw/config-processing/parameter_list/download/{downloadDenominator}
-  controller: cjw_config_processor.controller::downloadParameterListAsTextFile
-  methods: [GET]
+  defaults:
+    _controller: cjw_config_processor.controller:downloadParameterListAsTextFile
+    _methods: [GET]
 
 # Location Retrieval from different controller:
 cjw_config_processing.location_retrieval:
-  path: /cjw/config-processing/parameter_locations/{parameter}/{withSiteAccess?}
-  controller: cjw_config_processor.location_controller::retrieveLocationsForParameter
-  methods: [GET]
+  path: /cjw/config-processing/parameter_locations/{parameter}/{withSiteAccess}
+  defaults:
+    _controller: cjw_config_processor.location_controller:retrieveLocationsForParameter
+    _methods: [GET]
+    withSiteAccess: "false"

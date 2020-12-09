@@ -144,7 +144,7 @@ class ConfigPathUtility
     public static function storePaths(): void {
         if (self::$cacheInitialized && self::$pathsChanged) {
             try {
-                self::$configPathCache->delete("cjw_config_paths");
+                self::$configPathCache->deleteItem("cjw_config_paths");
                 Utility::cacheContractGetOrSet("cjw_config_paths", self::$configPathCache,
                     function () {
                         return self::$configPaths;

@@ -1,4 +1,4 @@
-{% extends "@ezdesign/ui/layout.html.twig" %}
+{% extends '@ezdesign/layout.html.twig' %}
 
 {% trans_default_domain "cjw_processed_parameters_view" %}
 
@@ -13,6 +13,10 @@
 {% endblock %}
 
 {% block content %}
+    <!--
+    @ezdesign/layout.html.twig:
+    Can be found under vendor/ezsystems/ezplatform-admin-ui/src/bundle/Resources/views and then layout.html.twig and more specific /admin/base.html.twig
+    -->
     <div class="cjw_config_processing_content">
         {% block help_text %}
             <div class="cjw_help_container dont_display">
@@ -32,7 +36,7 @@
             {% block left_sidebar %}
                 <div class="bg-dark pt-4 px-0 ez-side-menu">
                     <div class="ez-sticky-container">
-                        {{ knp_menu_render('cjw_config_processing.menu.sidebar_left', {'template': '@ezdesign/ui/menu/sidebar_left.html.twig'}) }}
+                        {{ knp_menu_render('cjw_config_processing.menu.sidebar_left', {'template': '@ezdesign/parts/menu/sidebar_left.html.twig'}) }}
                     </div>
                 </div>
             {% endblock %}

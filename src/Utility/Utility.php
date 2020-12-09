@@ -182,6 +182,6 @@ class Utility
             $cachePool->save($item);
         }
 
-        return $cachePool->getItem($cacheKey);
+        return $cachePool->getItem($cacheKey)->get();
     }
 }

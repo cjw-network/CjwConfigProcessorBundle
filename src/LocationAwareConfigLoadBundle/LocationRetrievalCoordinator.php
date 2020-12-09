@@ -31,7 +31,19 @@ class LocationRetrievalCoordinator
      */
     public static function initializeCoordinator(): void {
         if (!self::$customConfigLoader) {
-            self::$customConfigLoader = new LoadInitializer($_SERVER["APP_ENV"], (bool)$_SERVER["APP_DEBUG"]);
+            // Environment is taken from "SYMFONY_ENV" variable, if not set, defaults to "prod"
+            $environment = getenv('SYMFONY_ENV');
+            if ($environment === false) {
+                $environment = 'prod';
+            }
+
+            // Depending on the SYMFONY_DEBUG environment variable, tells whether Symfony should be loaded with debugging.
+            // If not set, or "", it is auto activated if in "dev" environment.
+            if (($useDebugging = getenv('SYMFONY_DEBUG')) === false || $useDebugging === '') {
+                $useDebugging = $environment === 'dev';
+            }
+
+            self::$customConfigLoader = new LoadInitializer($environment, (bool)$useDebugging);
         }
 
         $cacheDir = self::$customConfigLoader->getCacheDir()."/cjw/config-processor-bundle/";
@@ -56,18 +68,16 @@ class LocationRetrievalCoordinator
                 is_array(self::$parametersAndLocations) &&
                 count(self::$parametersAndLocations) > 0
             ) {
-                self::$cache->delete("cjw_parameters_and_locations");
-                self::$cache->delete("cjw_processed_param_objects");
-                self::$cache->delete("cjw_processed_params");
-                self::$cache->delete("cjw_processing_timestamp");
+                self::$cache->deleteItem("cjw_parameters_and_locations");
+                self::$cache->deleteItem("cjw_processed_param_objects");
+                self::$cache->deleteItem("cjw_processed_params");
+                self::$cache->deleteItem("cjw_processing_timestamp");
             }
 
             // Then store the presumably "new" parameters
             self::$parametersAndLocations =
                 Utility::cacheContractGetOrSet("cjw_parameters_and_locations", self::$cache,
-                    function (ItemInterface $item) {
-                        $item->set(self::$parametersAndLocations);
-
+                    function () {
                         return self::$parametersAndLocations;
                     }
                 );

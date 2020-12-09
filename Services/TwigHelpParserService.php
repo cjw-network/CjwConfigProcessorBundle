@@ -5,6 +5,7 @@ namespace CJW\CJWConfigProcessor\Services;
 
 
 use CJW\CJWConfigProcessor\src\Utility\Parsedown;
+use CJW\CJWConfigProcessor\src\Utility\Utility;
 use ReflectionClass;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Twig\Extension\AbstractExtension;
@@ -81,13 +82,15 @@ class TwigHelpParserService extends AbstractExtension implements GlobalsInterfac
 
     private function parseFileContents (string $fileName): string
     {
-        return $this->cache->get($fileName, function() use ($fileName) {
 
-            return $this->parsedown->text(
-                file_get_contents(
-                    $this->helpTextDirectory."/".$fileName
-                )
-            );
-        });
+        return Utility::cacheContractGetOrSet($fileName,$this->cache,
+            function() use ($fileName) {
+                return $this->parsedown->text(
+                    file_get_contents(
+                        $this->helpTextDirectory."/".$fileName
+                    )
+                );
+            }
+        );
     }
 }

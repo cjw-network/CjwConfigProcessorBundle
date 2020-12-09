@@ -63,7 +63,7 @@ class LoadInitializer extends \AppKernel
      *
      * @return string Returns the determined cache directory.
      */
-    public function getCacheDir()
+    public function getCacheDir(): string
     {
         if ($this->kernel) {
             return $this->kernel->getCacheDir();
