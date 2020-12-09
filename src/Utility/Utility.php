@@ -173,11 +173,11 @@ class Utility
     public static function cacheContractGetOrSet (
         string $cacheKey,
         AdapterInterface $cachePool,
-        callable $executeWhenItemNotSetYet
+        callable $executeWhenItemNotSet
     ) {
         if (!$cachePool->hasItem($cacheKey)) {
             $item = $cachePool->getItem($cacheKey);
-            $item->set($executeWhenItemNotSetYet);
+            $item->set($executeWhenItemNotSet());
 
             $cachePool->save($item);
         }

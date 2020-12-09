@@ -31,7 +31,7 @@ class LoadInitializer extends \AppKernel
     public function __construct(string $environment, bool $debug)
     {
         parent::__construct($environment, $debug);
-        $this->kernel = new Kernel($environment, $debug);
+        $this->kernel = new \AppKernel($environment, $debug);
 
         try {
             // First the extensions of the file formats that are being supported by Symfony with regards to configuration.

@@ -4,6 +4,7 @@
 namespace CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle;
 
 
+use CJW\CJWConfigProcessor\src\Utility\Utility;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Symfony\Component\Cache\Exception\CacheException;
@@ -63,11 +64,13 @@ class LocationRetrievalCoordinator
 
             // Then store the presumably "new" parameters
             self::$parametersAndLocations =
-                self::$cache->get("cjw_parameters_and_locations", function (ItemInterface $item) {
-                    $item->set(self::$parametersAndLocations);
+                Utility::cacheContractGetOrSet("cjw_parameters_and_locations", self::$cache,
+                    function (ItemInterface $item) {
+                        $item->set(self::$parametersAndLocations);
 
-                    return self::$parametersAndLocations;
-                });
+                        return self::$parametersAndLocations;
+                    }
+                );
         }catch (InvalidArgumentException $e) {
         }
 

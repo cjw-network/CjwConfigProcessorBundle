@@ -125,17 +125,17 @@ class ConfigProcessCoordinator
                 });
 
             if ($request) {
-
                 self::$siteAccessParameters =
                     Utility::cacheContractGetOrSet("cjw_site_access_parameters", self::$cache, function() {
                         return self::getParametersForSiteAccess();
                     });
             }
 
-            self::$lastUpdated = self::$cache->get("cjw_processing_timestamp", function() {
-                $currentDate = new DateTime();
-                return $currentDate->format("Y-m-d H:i");
-            });
+            self::$lastUpdated =
+                Utility::cacheContractGetOrSet("cjw_processing_timestamp", self::$cache, function() {
+                    $currentDate = new DateTime();
+                    return $currentDate->format("Y-m-d H:i");
+                });
         } catch (Exception $error) {
             print(`Something went wrong while trying to parse the parameters: ${$error}.`);
         } catch (InvalidArgumentException $e) {
@@ -156,12 +156,10 @@ class ConfigProcessCoordinator
             $siteAccess = strtolower($siteAccess);
         }
 
-        $processedParamObj = self::$cache->get(
-            "cjw_processed_param_objects",
-            function() {
+        $processedParamObj =
+            Utility::cacheContractGetOrSet("cjw_processed_param_objects", self::$cache,function() {
                 return self::$configProcessor->getProcessedParameters();
-            }
-        );
+            });
 
         $siteAccessList = self::getSiteAccesses($siteAccess);
 

@@ -47,15 +47,14 @@ class FavouritesParamCoordinator
                 $siteAccesses
             );
 
-            $favouriteParameters = self::$cache->get(
-                "cjw_custom_favourite_parameters",
-                function () use ($favouriteRetrievalProcessor, $processedParameters) {
+            $favouriteParameters =
+                Utility::cacheContractGetOrSet("cjw_custom_favourite_parameters", self::$cache,
+                    function () use ($favouriteRetrievalProcessor, $processedParameters) {
                     return self::getFavouritesThroughContainer(
                         $favouriteRetrievalProcessor,
                         $processedParameters
                     );
-                }
-            );
+                });
 
             if (count($siteAccesses) > 0) {
                 $favouriteParameters =
@@ -92,15 +91,15 @@ class FavouritesParamCoordinator
         ) {
             $favouriteRetrievalProcessor = new CustomParamProcessor(self::$symContainer);
 
-            $previousFavourites = self::$cache->get(
-                "cjw_custom_favourite_parameters",
-                function() use ($favouriteRetrievalProcessor, $processedParameters) {
-                    return self::getFavouritesThroughContainer(
-                        $favouriteRetrievalProcessor,
-                        $processedParameters
-                    );
-                }
-            );
+            $previousFavourites =
+                Utility::cacheContractGetOrSet("cjw_custom_favourite_parameters", self::$cache,
+                    function() use ($favouriteRetrievalProcessor, $processedParameters) {
+                        return self::getFavouritesThroughContainer(
+                             $favouriteRetrievalProcessor,
+                            $processedParameters
+                        );
+                    }
+                );
 
             if (
                 self::$symContainer->getParameter("cjw.favourite_parameters.scan_parameters") === true
@@ -119,10 +118,9 @@ class FavouritesParamCoordinator
 
             if (count($uncommonFavourites[0]) > 0) {
                 self::$cache->delete("cjw_custom_favourite_parameters");
-                self::$cache->get(
-                    "cjw_custom_favourite_parameters",
+                Utility::cacheContractGetOrSet("cjw_custom_favourite_parameters", self::$cache,
                     function() use ($previousFavourites, $newFavourites) {
-                        return array_replace_recursive($previousFavourites, $newFavourites);
+                       return array_replace_recursive($previousFavourites, $newFavourites);
                     }
                 );
             }
@@ -136,15 +134,15 @@ class FavouritesParamCoordinator
 
         $favouriteRetrievalProcessor = new CustomParamProcessor(self::$symContainer);
 
-        $previousFavourites = self::$cache->get(
-            "cjw_custom_favourite_parameters",
-            function() use ($favouriteRetrievalProcessor, $processedParameters) {
-                return self::getFavouritesThroughContainer(
-                    $favouriteRetrievalProcessor,
-                    $processedParameters
-                );
-            }
-        );
+        $previousFavourites =
+            Utility::cacheContractGetOrSet("cjw_custom_favourite_parameters", self::$cache,
+                function() use ($favouriteRetrievalProcessor, $processedParameters) {
+                    return self::getFavouritesThroughContainer(
+                        $favouriteRetrievalProcessor,
+                        $processedParameters
+                    );
+                }
+            );
 
         $currentFavourites = $previousFavourites;
 
@@ -159,8 +157,8 @@ class FavouritesParamCoordinator
 
         if (count($uncommonFavourites[1]) > 0) {
             self::$cache->delete("cjw_custom_favourite_parameters");
-            self::$cache->get(
-                "cjw_custom_favourite_parameters",
+            
+            Utility::cacheContractGetOrSet("cjw_custom_favourite_parameters", self::$cache,
                 function () use ($currentFavourites) {
                     return $currentFavourites;
                 }

@@ -4,6 +4,7 @@
 namespace CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle;
 
 
+use CJW\CJWConfigProcessor\src\Utility\Utility;
 use Exception;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
@@ -63,9 +64,12 @@ class ConfigPathUtility
 
             try {
                 // Retrieve the cached routes
-                self::$configPaths = self::$configPathCache->get("cjw_config_paths", function () {
-                    return [];
-                });
+                self::$configPaths =
+                    Utility::cacheContractGetOrSet("cjw_config_paths", self::$configPathCache,
+                        function () {
+                            return [];
+                        }
+                    );
 
                 self::$cacheInitialized = true;
 
@@ -141,9 +145,11 @@ class ConfigPathUtility
         if (self::$cacheInitialized && self::$pathsChanged) {
             try {
                 self::$configPathCache->delete("cjw_config_paths");
-                self::$configPathCache->get("cjw_config_paths", function () {
-                    return self::$configPaths;
-                });
+                Utility::cacheContractGetOrSet("cjw_config_paths", self::$configPathCache,
+                    function () {
+                        return self::$configPaths;
+                    }
+                );
                 self::$restartLoadProcess = true;
             } catch (InvalidArgumentException $e) {
             }
@@ -215,7 +221,9 @@ class ConfigPathUtility
         $userDefinedConfigPaths = $parser->parseFile($pathToConfigRoutes);
 
         // Are there even parameters set in the file? If not, then just initiate the variable as an empty array
-        $configPaths = (is_array($userDefinedConfigPaths) && key_exists("parameters",$userDefinedConfigPaths))? $userDefinedConfigPaths["parameters"] : [];
+        $configPaths =
+            (is_array($userDefinedConfigPaths) && key_exists("parameters",$userDefinedConfigPaths))?
+                $userDefinedConfigPaths["parameters"] : [];
 
         foreach ($configPaths as $pathName => $pathInfo) {
             // First check, whether some basic information is set for the defined routes (to see whether they can be worked with)
