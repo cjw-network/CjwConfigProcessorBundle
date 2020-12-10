@@ -36,7 +36,7 @@ class SynchronousScrollerUtility {
         this.syncScrollButton.style.animation =
           "opening_subtree 2s ease infinite";
 
-        // If the behaviour is already active, the behaviour is toggled off and the effects of the function are reverte
+        // If the behaviour is already active, the behaviour is toggled off and the effects of the function are reverted
         if (this.syncScrollButton.getAttribute("syncScroll") === "active") {
           this.syncScrollButton.setAttribute("syncScroll", "disabled");
           this.utility.removeStateFromUrl("syncScroll");
@@ -54,9 +54,13 @@ class SynchronousScrollerUtility {
       };
     }
 
-    if (this.utility.getStateFromUrl("syncScroll")) {
-      this.syncScrollButton.click();
-    }
+    window.addEventListener("load", () => {
+      if (this.utility.getStateFromUrl("syncScroll")) {
+        setTimeout(() => {
+          this.syncScrollButton.click();
+        });
+      }
+    });
   }
 
   /**
@@ -96,7 +100,7 @@ class SynchronousScrollerUtility {
 
   /**
    * Function to remove every artifact created by the behaviour. It basically serves as a cleanup
-   * function for when the mode is shut off.
+   * function for when the mode is turned off.
    */
   removeShadowNodes() {
     const shadowNodes = document.querySelectorAll(
@@ -104,17 +108,16 @@ class SynchronousScrollerUtility {
     );
 
     for (const shadowNode of shadowNodes) {
-      const parent = shadowNode.parentElement;
-      parent.removeChild(shadowNode);
+      shadowNode.parentElement.removeChild(shadowNode);
     }
   }
 
   /**
-   * This function takes two lists and goes through every key and subkey as well
+   * This function takes two lists and goes through every key and sub-key as well
    * as their values in order to determine, where nodes are missing and add the missing nodes in.
    *
-   * @param firstList A param_list_items-container which contains a value or a key or both.
-   * @param secondList A second param_list_items-container which contains a value or a key or both.
+   * @param {Array<HTMLElement>} firstList A param_list_items-container which contains a value or a key or both.
+   * @param {Array<HTMLElement>} secondList A second param_list_items-container which contains a value or a key or both.
    */
   goThroughChildrenOfContainer(firstList, secondList) {
     for (let i = 0; i < firstList.length; ++i) {
@@ -178,7 +181,12 @@ class SynchronousScrollerUtility {
             );
           } else {
             this.goThroughValuesOfNodeLists(firstValueList, secondValueList);
-            this.goThroughValuesOfNodeLists(secondValueList, firstValueList);
+            this.goThroughValuesOfNodeLists(
+              this.utility.getValueChildrenOfContainersDirectChildren(
+                secondList[i]
+              ),
+              firstValueList
+            );
           }
         }
       }
@@ -260,8 +268,8 @@ class SynchronousScrollerUtility {
    * The value version of goThroughKeyNodeLists. Where lists of values are gone through and missing ones are added to the
    * lists.
    *
-   * @param firstValueList The first list of values which is gone through primarily.
-   * @param secondValueList The second list of values which are checked against the ones from the first list.
+   * @param {Array<HTMLElement>} firstValueList The first list of values which is gone through primarily.
+   * @param {Array<HTMLElement>} secondValueList The second list of values which are checked against the ones from the first list.
    *
    * @see goThroughKeyNodeLists
    */
@@ -281,10 +289,7 @@ class SynchronousScrollerUtility {
           secondValue = secondValueList[i].getAttribute("value");
         } catch (error) {
           secondValueList.push(
-            this.addInNodeStructure(
-              firstValueList[i].parentElement,
-              secondValueList[i - 1].parentElement
-            )
+            this.addInNodeStructure(firstValueList[i], secondValueList[i - 1])
           );
 
           continue;
@@ -302,7 +307,7 @@ class SynchronousScrollerUtility {
             if (previousIndex < 0) {
               secondValueList.unshift(
                 this.addInNodeStructure(
-                  firstValueList[i].parentElement,
+                  firstValueList[i],
                   null,
                   secondValueList[0].parentElement
                 )
@@ -312,8 +317,8 @@ class SynchronousScrollerUtility {
                 i,
                 0,
                 this.addInNodeStructure(
-                  firstValueList[i].parentElement,
-                  secondValueList[i - 1].parentElement
+                  firstValueList[i],
+                  secondValueList[i - 1]
                 )
               );
             }
@@ -376,7 +381,7 @@ class SynchronousScrollerUtility {
    * The value counterpart of indexOfKeyInOtherList, which searches for a given value which matches the
    * "value"-value of the given node in the given list.
    *
-   * @param {HTMLElement} value The given value for which to search in the list.
+   * @param {string} value The given value for which to search in the list.
    * @param {array} compareList The list in which the value is to be searched for.
    * @returns {number} Returns the index of the found value in the array or "-1" if no value could be found.
    *
@@ -417,7 +422,7 @@ class SynchronousScrollerUtility {
     if (nodeAfterWhichToAdd && nodeAfterWhichToAdd.parentElement) {
       listToAddTo = nodeAfterWhichToAdd.parentElement;
     } else if (!listToAddTo) {
-      return;
+      return null;
     }
 
     const dupShadowNode = nodeToAdd.cloneNode(true);
@@ -444,6 +449,9 @@ class SynchronousScrollerUtility {
       }
     }
 
+    if (dupShadowNode.classList.contains("param_list_values")) {
+      return dupShadowNode;
+    }
     return dupShadowNode.children[0];
   }
 
@@ -467,9 +475,16 @@ class SynchronousScrollerUtility {
 
         if (keyParent) {
           if (nodeAfterWhichToAdd) {
-            this.addInNodeStructure(keyParent, nodeAfterWhichToAdd);
+            nodeAfterWhichToAdd = this.addInNodeStructure(
+              keyParent,
+              nodeAfterWhichToAdd
+            ).parentElement;
           } else {
-            this.addInNodeStructure(keyParent, null, listToBeAddedTo);
+            nodeAfterWhichToAdd = this.addInNodeStructure(
+              keyParent,
+              null,
+              listToBeAddedTo
+            ).parentElement;
           }
         }
       }
@@ -498,9 +513,16 @@ class SynchronousScrollerUtility {
           value.parentElement.children[0].classList.contains("param_list_keys")
         ) {
           if (nodeAfterWhichToAdd) {
-            this.addInNodeStructure(value, nodeAfterWhichToAdd);
+            nodeAfterWhichToAdd = this.addInNodeStructure(
+              value,
+              nodeAfterWhichToAdd
+            );
           } else {
-            this.addInNodeStructure(value, null, listToBeAddedTo);
+            nodeAfterWhichToAdd = this.addInNodeStructure(
+              value,
+              null,
+              listToBeAddedTo
+            );
           }
         }
       }
@@ -508,7 +530,7 @@ class SynchronousScrollerUtility {
   }
 
   /**
-   * Helper function which takes a node and clears the node and all of its children of the
+   * Helper function which takes a node and clears the node and all of its children from the
    * control elements of the original node-structure.
    *
    * @param {HTMLElement} duplicateNode The node which has been duplicated and is supposed to be cleared.
@@ -539,7 +561,7 @@ class SynchronousScrollerUtility {
   /**
    * Checks a given list and node for whether the given list actually resembles the counterpart parent element of the list
    * the node is going to be added in. If that is not the case, the function tries to find the fitting parent element in the
-   * direct hierarchie of the given list.
+   * direct hierarchy of the given list.
    *
    * @param {HTMLElement} nodeToAdd The node which is going to be added to the given list.
    * @param {HTMLElement} listToBeAddedTo The container node which serves as the list the given node is going to be added into.
