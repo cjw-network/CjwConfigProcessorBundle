@@ -5,7 +5,7 @@
 This Bundle has been created to serve the function of parsing / processing the existing
 parameter-/options array that exists within a standard symfony and especially
 eZ - / Ibexa - Platform app. **Similar to the eZPublish Ini settings viewer** of old, it
-is supposed to take hte existing configuration and provide a visual representation that
+is supposed to take the existing configuration and provide a visual representation that
 is easy to read, understand and work with for developers. Therefore, it provides various 
 functions, options and views to display site access context specific parameters, values
 and much more.
@@ -19,15 +19,18 @@ with the following functionality (excerpt):
 - **Display** of the entire configuration of your Symfony project
 - **Filter** for and display parameters in a specific site access context
 - **View** and compare parameters in up to two specific site access contexts at the same time
-- **Highlighting** of differences within the two site access contexts
-- **Synchronous** scrolling in the comparison view
+- **Automatic Highlighting** of differences within the two site access contexts
+- **Synchronous** scrolling mode in the comparison view for improved readability
 - **Limit** the comparison to common or uncommon parameters of the lists
 - **Search** for specific keys or values in the parameter list
 - **Mark** parameters as favourites and view them in a dedicated view
 - **Get** location info about the parameters (which files do they appear in and with what value)
 - **Download** a file representation of the parameter lists
-- **Many** more
+- **And** more
 
+# Help And More Info
+
+[Documentation Index](Resources/doc/index.md)
 
 # Authors
 
@@ -41,6 +44,12 @@ with the following functionality (excerpt):
 Make sure Composer is installed globally, as explained in the
 [installation chapter](https://getcomposer.org/doc/00-intro.md)
 of the Composer documentation.
+
+## Versions
+
+The bundle loosely follows the eZ / Ibexa platform version number to signify
+compatibility. This means, that version 3.x of the bundle is going to be compatible
+with version 3.x of the platform, version 2.x of the bundle with platform 2.x etc.
 
 ## Applications that use Symfony Flex
 
@@ -61,7 +70,7 @@ following command to download the latest stable version of this bundle:
 $ composer require cjw-network/cjw-config-processor
 ```
 
-**Since right now there is no 1.0 or above version:**
+**If you want the current (not necessarily stable) version between releases:**
 
 ```console
 $ composer require cjw-network/cjw-config-processor:dev-main
@@ -102,9 +111,10 @@ cjw_config_processor_bundle:
 ## Additional Bundle Config
 
 You can also customize a few bundle settings and adapt the bundle to your requirements.
-To do that, you need to create a yaml file in the `config/packages` directory of your
-installation. Name the file however you like, for example `cjw_config_processor.yaml`
-and then set the following (partially) optional options:
+To do that, you can create a yaml file in the `config/packages` directory of your
+installation (the config can also be added to any other existing yaml file in the config directory).
+If you did create a new file, name the file however you like, for example `cjw_config_processor.yaml`.
+Finally, set the following (partially) optional options:
 
 ```yaml
 # example settings

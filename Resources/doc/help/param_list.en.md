@@ -92,4 +92,4 @@ view throughout the frontend the bundle provides:
             but make sure, that the level you enter into the search, actually exist under the 
             keys you write.
             
-            ** This does not work with values!**
+            **This does not work with values!**
