@@ -1,5 +1,12 @@
 # Index of the Documentation
 
+## Bundle Installation:
+
+English versions:
+
+* [Bundle for Ibexa Platform 3.*](./installation/3.x-Installation.en.md)
+* [Bundle for Ibexa Platform 2.*](./installation/2.x-Installation.en.md)
+
 ## Bundle View - Overview Pages:
 
 English versions:
