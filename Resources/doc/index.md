@@ -11,7 +11,7 @@ English versions:
 
 English versions:
 
-* [Configure the ConfigProcessor](../help/bundle_configuration.en.md)
+* [Configure the ConfigProcessor](./help/bundle_configuration.en.md)
 
 ## Bundle View - Overview Pages:
 
