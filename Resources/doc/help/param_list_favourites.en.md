@@ -1,6 +1,6 @@
 # Help Pages: Favourites
 
-This display is supposed to provide an overview for the `Parameterlist: Favourites` - view.
+This display is supposed to provide a detailed look at the `Parameterlist: Favourites` - view.
 
 ## Purpose of the view
 
@@ -13,7 +13,7 @@ to employ that same view across multiple installations.
 ## Ways to set favourites
 
 There are two main ways to mark parameters as favourites and have them displayed in the dedicated view
-as such.
+as such, if the feature itself is turned on.
 
 ### 1. Provide a list of keys in the backend
 
@@ -31,49 +31,45 @@ cjw_config_processor:
       - "examples"
 ```
 
-#### Examining the configuration
+For information on how the config works and what it does, check [Configuration of the bundle](bundle_configuration.en.md)
 
-Let's take a look at the given options and determine the meaning behind those lines:
+If one employs this method of adding parameters to their favourites, then **this configuration
+can be copied and pasted to any project that employs this bundle**, and the same list of favourites
+will be available to you in the bundle frontend as well.
 
-**Configuration Key:**
+**This way the parameters only need to be set once and can be ported to any project.**
 
-```yaml
-cjw_config_processor:
-```
+### 2. Mark parameters in the views of the bundle
 
-This line is simply the key used to provide the configuration to the bundle itself.
+The second option to set and remove parameters as favourites is to simply click on the 
+star symbol next to the name of every parameter key directly before the value of the parameter
+starts.
 
-**Specific Config-Section:**
+The visual indicators:
 
-```yaml
-  favourite_parameters:
-```
+* **A full star** signals that the parameter is already set as a favourite, clicking it
+will aim to remove the parameter as a favourite
+  
+* **An empty star** signals that the parameter is not set as a favourite, clicking it
+will aim to add the parameter as a favourite
+  
+* **An orange star** will appear after the star has been clicked and signals that the 
+process of setting or removing the parameter as a favourite is ongoing
+  
+* **A green star** will appear after the process of marking or removing a parameter as favourite 
+has been completed successfully.
+  
+* **Click, and the star resets its visual indication**. This will take place, when
+the process of marking or removing a parameter as favourite did not complete successfully,
+and the change has not been committed.
 
-This line is the key which signals to the bundle that the following configuration will be aimed towards the favourites-
-functionality.
+### Using both methods:
 
-**Options:**
+The parameters given via the first method will always remain in the same state. Adding
+or removing parameters via the second method does not change the given parameters via method one.
 
-```
-    allow: true
-```
+The parameters of the first method are read and cached internally. From that point onward, only
+the internal favourite list is employed and edited, when adding or removing favourites via method two.
 
-This is arguably the most important option. This option determines whether the favourites-functionality will be active
-in the bundle in the first place. Providing the value `false` to that option will turn the entire feature off and will leave
-the favourites view entirely empty. Conversely, providing `true` will enable the feature.
-
-```yaml
-    scan_parameters: true
-```
-
-When `scan_parameters` is turned on, the entirety of the parameters marked as favourites will be searched for any possible
-site access dependency. If one is found, the parameter will then be marked as favourite for all site accesses and should
-a site access context be set in the favourites view, all the parameters will be displayed with their site access specific value.
-
-> **If a parameter is not site access dependent, then its value will be displayed unchanged even in a site access context!**
-
-```yaml
-    parameters:
-```
-
-The `parameters` key
+**Retrieving the parameters of the first method will only take place, when no other internal
+state of the favourite list is available (when the cache is empty)**.
