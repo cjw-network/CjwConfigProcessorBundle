@@ -17,7 +17,7 @@ class LocationRetrievalCoordinator
     /** @var array An array which not only stores the parameters, but also the paths they have been read from (including the values set there) */
     public static $parametersAndLocations;
 
-    /** @var PhpFilesAdapter A cache which is supposed to store the parameters that have been parsed. */
+    /** @var PhpFilesAdapter A cache which is supposed to store parameters that have been parsed. */
     private static $cache;
 
     /** @var bool */
