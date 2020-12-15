@@ -36,7 +36,7 @@ class CustomDelegatingLoader extends DelegatingLoader
      * @param string|null $type
      * @throws \Exception
      */
-    public function load($resource, string $type = null)
+    public function load($resource, $type = null)
     {
         // If the given resource is no glob pattern but instead something else and the resource is a string, the path will be given to the container.
         if ($type !== "glob" && !is_object($type) && is_string($resource)) {

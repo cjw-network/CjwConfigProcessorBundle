@@ -33,14 +33,4 @@ class TwigTestDisplayService extends AbstractExtension implements GlobalsInterfa
             "cjw_param_location" => $this->parametersAndLocations?? [],
         ];
     }
-
-//    /**
-//     * @inheritDoc
-//     */
-//    public function getFunctions()
-//    {
-//        return [
-//            new TwigFunction("getLocations",[LocationRetrievalCoordinator::class,"getParametersAndLocations"]),
-//        ];
-//    }
 }

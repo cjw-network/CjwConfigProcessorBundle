@@ -5,8 +5,8 @@ namespace CJW\CJWConfigProcessor\src\Utility;
 
 
 use Exception;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
-use Symfony\Component\Cache\CacheItem;
 
 class Utility
 {
@@ -15,7 +15,8 @@ class Utility
         array $firstParameterList,
         array $secondParameterList,
         int $level = 0
-    ) {
+    ): array
+    {
         $firstListKeys = array_keys($firstParameterList);
         $secondListKeys = array_keys($secondParameterList);
 
@@ -54,7 +55,8 @@ class Utility
         array $firstParameterList,
         array $secondParameterList,
         int $level = 0
-    ) {
+    ): array
+    {
         $firstListKeys = array_keys($firstParameterList);
         $secondListKeys = array_keys($secondParameterList);
 
@@ -94,7 +96,7 @@ class Utility
      * @param array $array
      * @return bool
      */
-    public static function has_string_keys(array $array)
+    public static function has_string_keys(array $array): bool
     {
         return count(
                 array_filter(
@@ -106,7 +108,8 @@ class Utility
 
     public static function determinePureSiteAccesses(
         array $processedParameterArray
-    ): array {
+    ): array
+    {
         try {
             $results =
                 $processedParameterArray["ezpublish"]["siteaccess"]["list"]["parameter_value"];
@@ -120,7 +123,8 @@ class Utility
 
     public static function determinePureSiteAccessGroups (
         array $processedParameterArray
-    ): array {
+    ): array
+    {
         try {
             return $processedParameterArray["ezpublish"]["siteaccess"]["groups"]["parameter_value"];
         } catch (Exception $error) {
@@ -131,7 +135,8 @@ class Utility
     public static function removeEntryThroughKeyList (
         array $parameters,
         array $keyList
-    ): array {
+    ): array
+    {
         $key = reset($keyList);
         array_splice($keyList,0,1);
 
@@ -155,7 +160,8 @@ class Utility
     public static function removeSpecificKeySegment (
         string $keySegment,
         array $parametersToRemoveFrom
-    ) {
+    ): array
+    {
         $result = $parametersToRemoveFrom;
 
         foreach ($parametersToRemoveFrom as $key => $value) {
@@ -170,12 +176,27 @@ class Utility
         return $result;
     }
 
+    /**
+     * Since Symfony 3.4 does not feature cache contracts, but instead only PSR-6-cache but the original
+     * functionality was built with cache contracts in mind, this is a replacement function for the cache
+     * contracts in Symfony 5 and above.
+     *
+     * @param string $cacheKey The key for the item that is supposed to be retrieved.
+     * @param AdapterInterface $cachePool The cache adapter used to store the item.
+     * @param callable $executeWhenItemNotSet A function to call, when the item could not be found in the cache.
+     * @param false $enforceSet Since the cache did not detect properly that some items had been deleted, here a boolean to enforce the item to be set to the given value.
+     *
+     * @return mixed Returns the cached value
+     *
+     * @throws InvalidArgumentException
+     */
     public static function cacheContractGetOrSet (
         string $cacheKey,
         AdapterInterface $cachePool,
-        callable $executeWhenItemNotSet
+        callable $executeWhenItemNotSet,
+        $enforceSet = false
     ) {
-        if (!$cachePool->hasItem($cacheKey)) {
+        if (!$cachePool->hasItem($cacheKey) || $enforceSet) {
             $item = $cachePool->getItem($cacheKey);
             $item->set($executeWhenItemNotSet());
 

@@ -42,7 +42,7 @@ class LocationAwareParameterBag extends EnvPlaceholderParameterBag
      * @param string $name The name of the parameter.
      * @param mixed $value The value being set to the parameter.
      */
-    public function set(string $name, $value)
+    public function set($name, $value)
     {
         // Give the parameter, the value and the current location
         CustomValueStorage::addParameterOrLocation($name,$value,$this->currentLocation);

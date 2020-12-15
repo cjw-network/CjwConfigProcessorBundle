@@ -92,7 +92,7 @@ class LoadInitializer extends \AppKernel
      *
      * @return string Returns the determined project directory.
      */
-    public function getProjectDir()
+    public function getProjectDir(): string
     {
         if ($this->kernel) {
             return $this->kernel->getProjectDir();
@@ -111,10 +111,24 @@ class LoadInitializer extends \AppKernel
     }
 
     /**
+     * Since Symfony 3.4 does not take the kernel calling the container builder into account when booting up,
+     * this function is overwritten, so the container which is created during the boot process is unique to
+     * this custom kernel (so that it does boot in the first place).
+     *
+     * @return string Returns the name of the container to save
+     */
+    protected function getContainerClass()
+    {
+        return "CJW_LoadInitializer_" . parent::getContainerClass();
+    }
+
+    /**
      * @override
      * Overrides the standard function of the kernel in order to ensure, that the right CustomContainerBuilder and CustomLoaders
      * are being used for the config loading process.
+     *
      * @param ContainerInterface $container
+     *
      * @return CustomDelegatingLoader
      */
     protected function getContainerLoader(ContainerInterface $container)
@@ -146,10 +160,20 @@ class LoadInitializer extends \AppKernel
         return $customContainerBuilder;
     }
 
+    /**
+     * @override
+     *
+     * Overrides the standard kernel function to configure the container in order to incorporate the custom paths
+     * that have been gathered during the custom load process.
+     *
+     * @param ContainerBuilder $container
+     * @param LoaderInterface $loader
+     */
     protected function configureContainer(
         ContainerBuilder $container,
         LoaderInterface $loader
-    ): void {
+    ): void
+    {
         parent::configureContainer($container, $loader);
 
         // After the original Symfony-Loading of specific routes, the custom routes, added in the configuration, are being parsed through

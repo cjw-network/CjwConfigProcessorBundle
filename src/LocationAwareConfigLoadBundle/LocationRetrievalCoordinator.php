@@ -1,6 +1,5 @@
 <?php
 
-
 namespace CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle;
 
 
@@ -8,7 +7,6 @@ use CJW\CJWConfigProcessor\src\Utility\Utility;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Component\Cache\Adapter\PhpFilesAdapter;
 use Symfony\Component\Cache\Exception\CacheException;
-use Symfony\Contracts\Cache\ItemInterface;
 
 class LocationRetrievalCoordinator
 {
@@ -62,6 +60,8 @@ class LocationRetrievalCoordinator
         }
 
         try {
+            $enforceCacheOverwrite = false;
+
             // If parameters are returned (meaning that the kernel has booted and thus new parameters could have entered), delete the parameters present
             // also delete the processed parameters based on the previous parameters
             if (
@@ -72,14 +72,19 @@ class LocationRetrievalCoordinator
                 self::$cache->deleteItem("cjw_processed_param_objects");
                 self::$cache->deleteItem("cjw_processed_params");
                 self::$cache->deleteItem("cjw_processing_timestamp");
+                self::$cache->prune();
+                $enforceCacheOverwrite = true;
             }
 
             // Then store the presumably "new" parameters
             self::$parametersAndLocations =
-                Utility::cacheContractGetOrSet("cjw_parameters_and_locations", self::$cache,
+                Utility::cacheContractGetOrSet(
+                    "cjw_parameters_and_locations",
+                    self::$cache,
                     function () {
                         return self::$parametersAndLocations;
-                    }
+                    },
+                    $enforceCacheOverwrite
                 );
         }catch (InvalidArgumentException $e) {
         }

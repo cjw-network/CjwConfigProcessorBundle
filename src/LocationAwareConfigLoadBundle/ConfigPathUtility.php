@@ -75,9 +75,7 @@ class ConfigPathUtility
 
                 // Parse the manual path_config-file
                 self::getUserDefinedPaths();
-            } catch (InvalidArgumentException $e) {
-                self::$configPaths = [];
-            } catch (Exception $error) {
+            } catch (Exception $e) {
                 self::$configPaths = [];
             }
         }

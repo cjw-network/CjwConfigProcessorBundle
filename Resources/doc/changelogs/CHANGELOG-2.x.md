@@ -1,5 +1,12 @@
 # CJW-Network ConfigProcessor Bundle 2.x changelog
 
+## 2.0.1 (xx.12.2020)
+
+* Adapted the custom kernel boot process to make the location retrieval functionality
+available in Symfony 3.4 and Ibexa Platform 2.5
+  
+* Improved some internal documentation
+
 ## 2.0 (11.12.2020)
 
 * This changelog has been created to ship with the first full version of the bundle
