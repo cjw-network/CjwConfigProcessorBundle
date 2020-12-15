@@ -15,11 +15,14 @@ class SiteAccessDifferencesHighlighter {
 
   setUpHighlighterButton() {
     this.flipListener(false);
-    const highlight = this.utility.getStateFromUrl("highlight");
 
-    if (highlight) {
-      this.differenceHighlightButton.click();
-    }
+    window.addEventListener("load", () => {
+      if (this.utility.getStateFromUrl("highlight")) {
+        setTimeout(() => {
+          this.differenceHighlightButton.click();
+        });
+      }
+    });
   }
 
   highlightDifferencesAndSimilarities() {

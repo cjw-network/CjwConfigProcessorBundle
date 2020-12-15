@@ -568,11 +568,8 @@ class SynchronousScrollerUtility {
    * @returns {null|HTMLElement} Returns the list the node can be added in or null, if no adequate container could be found.
    */
   confirmListToAddToOrDeliverNewOne(nodeToAdd, listToBeAddedTo) {
-    if (nodeToAdd && listToBeAddedTo) {
-      if (
-        nodeToAdd.parentElement &&
-        listToBeAddedTo.classList.contains("param_list_items")
-      ) {
+    if (nodeToAdd && listToBeAddedTo && nodeToAdd.parentElement) {
+      if (listToBeAddedTo.classList.contains("param_list_items")) {
         const nodeParent = nodeToAdd.parentElement;
         const keyOfParent = nodeParent.children[0];
 
@@ -594,6 +591,12 @@ class SynchronousScrollerUtility {
         } else {
           return listToBeAddedTo;
         }
+      } else if (
+        listToBeAddedTo.classList.contains("param_list") &&
+        nodeToAdd.parentElement.classList.contains("param_list") &&
+        listToBeAddedTo !== nodeToAdd.parentElement
+      ) {
+        return listToBeAddedTo;
       }
     }
 
