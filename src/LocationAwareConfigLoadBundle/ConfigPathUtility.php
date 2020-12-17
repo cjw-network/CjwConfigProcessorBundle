@@ -71,9 +71,7 @@ class ConfigPathUtility
 
                 // Parse the manual path_config-file
                 self::getUserDefinedPaths();
-            } catch (InvalidArgumentException $e) {
-                self::$configPaths = [];
-            } catch (Exception $error) {
+            } catch (InvalidArgumentException | Exception $e) {
                 self::$configPaths = [];
             }
         }
@@ -90,25 +88,27 @@ class ConfigPathUtility
      * @param string $extensionPath The path pointing to a bundle's ExtensionClass.
      * @return string|null Returns the converted string or null, if the path does not point to the DependencyInjection or a directory which does not exist.
      */
-    public static function convertExtensionPathToConfigDirectory(string $extensionPath) {
-        // Get the index in the string where "DependencyInjection" is present
-        $diPosition = strpos($extensionPath,"DependencyInjection");
+    public static function convertExtensionPathToConfigDirectory(string $extensionPath): ?string
+    {
+        $configDirPath = preg_match("/\.php$/",$extensionPath)? dirname($extensionPath) : $extensionPath;
 
-        if(!$diPosition) {
-            return null;
+        if (preg_match("/\/$/", $configDirPath)) {
+            $configDirPath = substr($configDirPath,0,strlen($configDirPath)-1);
         }
 
-        // Change it from DependencyInjection to the config directory
-        $configDirPath = substr($extensionPath,0,$diPosition)."Resources/config/";
+        while (!preg_match("/.*\/vendor\/?$/", $configDirPath)) {
+            if (file_exists($configDirPath.DIRECTORY_SEPARATOR."Resources".DIRECTORY_SEPARATOR."config")) {
+                $configDirPath = $configDirPath.DIRECTORY_SEPARATOR."Resources".DIRECTORY_SEPARATOR."config".DIRECTORY_SEPARATOR;
+                break;
+            } else if (file_exists($configDirPath.DIRECTORY_SEPARATOR."config")) {
+                $configDirPath = $configDirPath.DIRECTORY_SEPARATOR."config".DIRECTORY_SEPARATOR;
+                break;
+            }
 
-        if (!file_exists($configDirPath)) {
-            return null;
+            $configDirPath = dirname($configDirPath);
         }
 
-        // Since the entire directory is added as a glob resource, the "*" signals that all files within the directory are
-        // to be looked at (only one level deep) and the extensions signal that only files which end on one of the config
-        // extensions are considered.
-        return $configDirPath."*".self::$configExtensions;
+        return preg_match("/\/$/", $configDirPath)? $configDirPath."*".self::$configExtensions : null;
     }
 
     /**
@@ -118,7 +118,8 @@ class ConfigPathUtility
      * @param string $configPath The path to be added to the list.
      * @param bool $isGlobPattern A boolean stating whether the path is a glob-resource / pattern which will have to be loaded differently from non-glob-pattern.
      */
-    public static function addPathToPathlist(string $configPath, bool $isGlobPattern = true): void {
+    public static function addPathToPathlist(string $configPath, bool $isGlobPattern = true): void
+    {
         // If the cache has not been initialised, initialise it.
         if (!self::$cacheInitialized) {
             self::initializePathUtility();
@@ -137,7 +138,8 @@ class ConfigPathUtility
      *
      * <br> Also signals, that a restart of the load process is useful / necessary.
      */
-    public static function storePaths(): void {
+    public static function storePaths(): void
+    {
         if (self::$cacheInitialized && self::$pathsChanged) {
             try {
                 self::$configPathCache->delete("cjw_config_paths");
@@ -234,7 +236,8 @@ class ConfigPathUtility
      * @param array $path A path array (hopefully with 3 items under the keys of "path", "glob" and "addConfExt").
      * @return bool Boolean which states whether the path at least passes the most basic checks regarding their structure.
      */
-    private static function checkUserDefinedPath(array $path): bool {
+    private static function checkUserDefinedPath(array $path): bool
+    {
         if (is_array($path) && count($path) === 3) {
             if (!(key_exists("path",$path) && is_string($path["path"]) && !empty($path["path"]))) {
                  return false;

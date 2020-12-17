@@ -38,8 +38,10 @@ class CustomGlobLoader extends GlobFileLoader
      * This override is basically a copy of the {@see GlobLoader} load function just with one key difference:
      * It tracks the paths gathered by GlobResources and always relays that path before the loading process
      * of the parameters and services begins.
+     *
      * @param $resource
      * @param string|null $type
+     *
      * @throws FileLoaderImportCircularReferenceException
      * @throws LoaderLoadException
      */

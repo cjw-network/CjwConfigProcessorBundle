@@ -5,12 +5,20 @@ namespace CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle;
 
 
 use Symfony\Component\DependencyInjection\ParameterBag\EnvPlaceholderParameterBag;
-//use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
+/**
+ * Class LocationAwareParameterBag is a custom parameter bag which is designed to keep track of the resources being
+ * loaded into the container and this bag. It is reliant on information it receives from other classes of the load
+ * process higher up in the chain to keep its path information up to date.
+ *
+ * @package CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle
+ */
 class LocationAwareParameterBag extends EnvPlaceholderParameterBag
 {
 
-    /** @var string Stores the current location that is being loaded */
+    /**
+     * @var string Stores the current location that is being loaded.
+     */
     private $currentLocation;
 
     public function __construct(array $parameters = [])
@@ -29,7 +37,8 @@ class LocationAwareParameterBag extends EnvPlaceholderParameterBag
      *
      * @param string $location The path / file that is being loaded.
      */
-    public function setCurrentLocation(string $location) {
+    public function setCurrentLocation(string $location): void
+    {
         $this->currentLocation = $location;
     }
 
@@ -42,7 +51,7 @@ class LocationAwareParameterBag extends EnvPlaceholderParameterBag
      * @param string $name The name of the parameter.
      * @param mixed $value The value being set to the parameter.
      */
-    public function set(string $name, $value)
+    public function set(string $name, $value): void
     {
         // Give the parameter, the value and the current location
         CustomValueStorage::addParameterOrLocation($name,$value,$this->currentLocation);

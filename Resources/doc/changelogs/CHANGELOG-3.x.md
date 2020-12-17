@@ -10,6 +10,10 @@
 * Fixed an issue with synchronous scrolling, where when the first node of a list was unique 
   to said list, the synchronous scrolling would throw an error and never complete
 
+* Improved config path retrieval: Now the process is able to find configuration files more effectively
+  and easily and should be aware of every used file for configuration except for the custom bundle config
+  which is conducted by the bundles themselves.
+
 ## 3.0 (11.12.2020)
 
 * This changelog has been created to ship with the first full version of the bundle

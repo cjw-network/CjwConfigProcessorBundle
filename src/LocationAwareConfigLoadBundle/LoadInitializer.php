@@ -27,6 +27,9 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
  */
 class LoadInitializer extends Kernel
 {
+    /**
+     * @var Kernel An instance of the actual Symfony kernel handling all the requests (to ensure the correct paths are used).
+     */
     private $kernel;
 
     public function __construct(string $environment, bool $debug)
@@ -64,7 +67,7 @@ class LoadInitializer extends Kernel
      *
      * @return string Returns the determined cache directory.
      */
-    public function getCacheDir()
+    public function getCacheDir(): string
     {
         if ($this->kernel) {
             return $this->kernel->getCacheDir();
@@ -93,7 +96,7 @@ class LoadInitializer extends Kernel
      *
      * @return string Returns the determined project directory.
      */
-    public function getProjectDir()
+    public function getProjectDir(): string
     {
         if ($this->kernel) {
             return $this->kernel->getProjectDir();
@@ -115,10 +118,12 @@ class LoadInitializer extends Kernel
      * @override
      * Overrides the standard function of the kernel in order to ensure, that the right CustomContainerBuilder and CustomLoaders
      * are being used for the config loading process.
+     *
      * @param ContainerInterface $container
+     *
      * @return CustomDelegatingLoader
      */
-    protected function getContainerLoader(ContainerInterface $container)
+    protected function getContainerLoader(ContainerInterface $container): CustomDelegatingLoader
     {
         $locator = new FileLocator($this);
         /** @var CustomContainerBuilder $container */
@@ -139,7 +144,7 @@ class LoadInitializer extends Kernel
      * @override
      * Overrides the standard function of the kernel in order to ensure, that the kernel works with the CustomContainerBuilder.
      */
-    protected function getContainerBuilder()
+    protected function getContainerBuilder(): CustomContainerBuilder
     {
         $originalContainerBuilder = parent::getContainerBuilder();
         $customContainerBuilder = new CustomContainerBuilder();
@@ -147,10 +152,16 @@ class LoadInitializer extends Kernel
         return $customContainerBuilder;
     }
 
-    protected function configureContainer(
-        ContainerBuilder $container,
-        LoaderInterface $loader
-    ): void {
+    /**
+     * @override
+     * Overrides the standard kernel functionality to ensure that the paths retrieved in the previous boot attempt
+     * of this custom kernel are used too, to retrieve the desired parameter paths.
+     *
+     * @param ContainerBuilder $container
+     * @param LoaderInterface $loader
+     */
+    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
+    {
         parent::configureContainer($container, $loader);
 
         // After the original Symfony-Loading of specific routes, the custom routes, added in the configuration, are being parsed through
@@ -176,7 +187,8 @@ class LoadInitializer extends Kernel
      * <br>
      * It is employed to allow a reboot to occur during the loading process (in order to take newly found config-paths into account).
      */
-    private function cleanUpCache() {
+    private function cleanUpCache(): void
+    {
         $glob = glob($this->getCacheDir()."/*");
 
         foreach ($glob as $file) {

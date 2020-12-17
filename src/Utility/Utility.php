@@ -6,14 +6,30 @@ namespace CJW\CJWConfigProcessor\src\Utility;
 
 use Exception;
 
+/**
+ * Class Utility is, as the name implies, a class which is responsible for delivering utility functionality that can
+ * be employed (mostly without any conditions) in other classes.
+ *
+ * @package CJW\CJWConfigProcessor\src\Utility
+ */
 class Utility
 {
 
-    public static function removeUncommonParameters (
-        array $firstParameterList,
-        array $secondParameterList,
-        int $level = 0
-    ) {
+    /**
+     * Responsible for removing uncommon parameters between two given hierarchical, associative arrays of parameters.
+     * It is designed to work with site access versions of the parameters, which means that the parameters typically
+     * don't go deeper then two levels.
+     *
+     * @param array $firstParameterList The first list of parameters to check against the second.
+     * @param array $secondParameterList The second list of parameters to check against the first.
+     * @param int $level The (optional) amount of levels the comparison has gone to in the two arrays.
+     *
+     * @return array[] A multi dimensional array, which contains the first and second parameter lists with only the common parameters.
+     *
+     * @see removeCommonParameters For a similar function which does the opposite.
+     */
+    public static function removeUncommonParameters (array $firstParameterList, array $secondParameterList, int $level = 0): array
+    {
         $firstListKeys = array_keys($firstParameterList);
         $secondListKeys = array_keys($secondParameterList);
 
@@ -48,11 +64,21 @@ class Utility
         return [$firstParameterList,$secondParameterList];
     }
 
-    public static function removeCommonParameters (
-        array $firstParameterList,
-        array $secondParameterList,
-        int $level = 0
-    ) {
+    /**
+     * Responsible for removing common parameters between two given hierarchical, associative arrays of parameters.
+     * It is designed to work with site access versions of the parameters, which means that the parameters typically
+     * don't go deeper then two levels.
+     *
+     * @param array $firstParameterList The first list of parameters to check against the second.
+     * @param array $secondParameterList The second list of parameters to check against the first.
+     * @param int $level The (optional) amount of levels the comparison has gone to in the two arrays.
+     *
+     * @return array[] A multi dimensional array, which contains the first and second parameter lists with only the uncommon parameters.
+     *
+     * @see removeUncommonParameters For a similar function which does the opposite.
+     */
+    public static function removeCommonParameters (array $firstParameterList, array $secondParameterList, int $level = 0): array
+    {
         $firstListKeys = array_keys($firstParameterList);
         $secondListKeys = array_keys($secondParameterList);
 
@@ -87,12 +113,15 @@ class Utility
 
     /**
      * Taken off StackOverflow from
+     *
      * @author Captain kurO
      * @url https://stackoverflow.com/questions/173400/how-to-check-if-php-array-is-associative-or-sequential/4254008#4254008
+     *
      * @param array $array
+     *
      * @return bool
      */
-    public static function has_string_keys(array $array)
+    public static function has_string_keys(array $array): bool
     {
         return count(
                 array_filter(
@@ -102,9 +131,16 @@ class Utility
             ) > 0;
     }
 
-    public static function determinePureSiteAccesses(
-        array $processedParameterArray
-    ): array {
+    /**
+     * Determines and then returns the defined "pure" site accesses of your installation through a given list of the
+     * application configuration. Pure in this case means, that site access groups are not included in that list.
+     *
+     * @param array $processedParameterArray An associative, hierarchical array of parameters to search for the site accesses.
+     *
+     * @return string[] Returns an array of site accesses in the form of strings.
+     */
+    public static function determinePureSiteAccesses(array $processedParameterArray): array
+    {
         try {
             $results =
                 $processedParameterArray["ezpublish"]["siteaccess"]["list"]["parameter_value"];
@@ -116,9 +152,16 @@ class Utility
         }
     }
 
-    public static function determinePureSiteAccessGroups (
-        array $processedParameterArray
-    ): array {
+    /**
+     * Determines and then returns the defined site access groups of your installation through a given list of the
+     * application configuration. Pure in this case means, that the site accesses are not included in that list.
+     *
+     * @param array $processedParameterArray An associative, hierarchical array of parameters to search for the site accesses.
+     *
+     * @return array Returns an array of the found site access groups (empty if non are found).
+     */
+    public static function determinePureSiteAccessGroups (array $processedParameterArray): array
+    {
         try {
             return $processedParameterArray["ezpublish"]["siteaccess"]["groups"]["parameter_value"];
         } catch (Exception $error) {
@@ -126,10 +169,20 @@ class Utility
         }
     }
 
-    public static function removeEntryThroughKeyList (
-        array $parameters,
-        array $keyList
-    ): array {
+    /**
+     * Takes a given list of hierarchical key segments and also an associative array of parameters and aims to delete
+     * the key at the very bottom of the key list from the parameters array.
+     *
+     * <br>For example: Giving only one key segment / key in the list will remove that key from the very first level of
+     * the associative parameters array.
+     *
+     * @param array $parameters An associative array of parameters from which to delete the given key.
+     * @param array $keyList A list of keys that will be gone through to the very last given segment, which is then going to be deleted from the given parameters array.
+     *
+     * @return array Returns the remaining array of parameters, after the key segment has been deleted.
+     */
+    public static function removeEntryThroughKeyList (array $parameters, array $keyList): array
+    {
         $key = reset($keyList);
         array_splice($keyList,0,1);
 
@@ -150,10 +203,19 @@ class Utility
         return $parameters;
     }
 
-    public static function removeSpecificKeySegment (
-        string $keySegment,
-        array $parametersToRemoveFrom
-    ) {
+    /**
+     * Similar to {@see removeEntryThroughKeyList}, aims to remove a specific key from an associative array of parameters.
+     * In contrast to the above mentioned function, this one takes only one specific key and goes through the entire
+     * array until the key is found, while the other function goes through the given list of segments and only these
+     * segments and then deletes the key if it exists.
+     *
+     * @param string $keySegment The specific key to be removed from the given array.
+     * @param array $parametersToRemoveFrom An associative array of parameters from which to remove the given key, if it exists.
+     *
+     * @return array Returns the resulting array of parameters, after the key segment has been deleted (unchanged from the given array, if the key could not be found).
+     */
+    public static function removeSpecificKeySegment (string $keySegment, array $parametersToRemoveFrom): array
+    {
         $result = $parametersToRemoveFrom;
 
         foreach ($parametersToRemoveFrom as $key => $value) {
