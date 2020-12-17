@@ -2,10 +2,22 @@
 
 ## 2.0.1 (xx.12.2020)
 
-* Adapted the custom kernel boot process to make the location retrieval functionality
-available in Symfony 3.4 and Ibexa Platform 2.5
+* Adapted the custom kernel boot process to make the location retrieval functionality 
+  available in Symfony 3.4 and Ibexa Platform 2.5
   
+* Fixed that changes to the favourite parameter list via the frontend would be ignored
+
+* Fixed error in synchronous scrolling, where unique nodes would not be added to the other list (when they were
+  the first node of the list)
+
+* Changed differences highlighting via the url, to only start highlighting, when the entire page is already loaded and done 
+  with the other javascripts
+ 
 * Improved some internal documentation
+
+* Improved config path retrieval: Now the process is able to find configuration files more effectively
+  and easily and should be aware of every used file for configuration except for the custom bundle config
+  which is conducted by the bundles themselves. 
 
 ## 2.0 (11.12.2020)
 

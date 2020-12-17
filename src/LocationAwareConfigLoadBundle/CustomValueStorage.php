@@ -14,16 +14,24 @@ namespace CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle;
 class CustomValueStorage
 {
 
-    /** @var array This is an array of all locations that have been encountered during the loading process. */
+    /**
+     * @var array This is an array of all locations that have been encountered during the loading process.
+     */
     private static $encounteredLocations = [];
 
-    /** @var array An array of all parameters being loaded by the config loading process and the values accompanied by the paths they stem from. */
+    /**
+     * @var array An array of all parameters being loaded by the config loading process and the values accompanied by the paths they stem from.
+     */
     private static $parameterAndTheirLocations = [];
 
-    /** @var bool States whether new parameter values or paths can be added to the internal arrays or not. */
+    /**
+     * @var bool States whether new parameter values or paths can be added to the internal arrays or not.
+     */
     private static $allowWrite = true;
 
-    /** @var bool States whether the bundle config loading process has begun. */
+    /**
+     * @var bool States whether the bundle config loading process has begun.
+     */
     private static $bundleConfig = false;
 
     /**
@@ -41,7 +49,8 @@ class CustomValueStorage
      * @param mixed $value The value attached to both the parametername and then the given path as well. It is going to be added under path-key as an entry of the array.
      * @param string $path The path (the origin) of the parameter value that is being set. It serves as a key under the parameter-key of the array.
      */
-    public static function addParameterOrLocation(string $parameterName, $value, string $path) {
+    public static function addParameterOrLocation(string $parameterName, $value, string $path)
+    {
         // Only if it is currently allowed to write, will the process even begin
         if (self::$allowWrite) {
             if (!in_array($path, self::$encounteredLocations)) {
@@ -66,7 +75,8 @@ class CustomValueStorage
      * It simply sets an internal boolean which then prohibits any parameters or paths / values to be set.
      * In order to unlock the writing process, use {@see unlockParameters()}.
      */
-    public static function lockParameters() {
+    public static function lockParameters()
+    {
         self::$allowWrite = false;
     }
 
@@ -75,7 +85,8 @@ class CustomValueStorage
      * to the internal parameter-and-path storage. It sets the internal boolean to a different value
      * than {@see lockParameters()}.
      */
-    public static function unlockParameters() {
+    public static function unlockParameters()
+    {
         self::$allowWrite = true;
     }
 
@@ -91,7 +102,8 @@ class CustomValueStorage
      *
      * @param bool $activate A boolean stating that the mode is either to be active (true) or not (false).
      */
-    public static function activateBundleConfigMode(bool $activate) {
+    public static function activateBundleConfigMode(bool $activate)
+    {
         self::$bundleConfig = $activate;
     }
 
@@ -100,7 +112,8 @@ class CustomValueStorage
      * bundleConfigMode and the lock-status of the class internally. This serves to allow a "fresh" start with the internal
      * storage.
      */
-    public static function reset(): void {
+    public static function reset(): void
+    {
         self::$parameterAndTheirLocations = [];
         self::$bundleConfig = false;
         self::$allowWrite = true;
@@ -112,7 +125,8 @@ class CustomValueStorage
      *
      * @return array Returns an array of parameters as super-keys, the locations as sub-keys and the values found at the paths as entries.
      */
-    public static function getParametersAndTheirLocations() {
+    public static function getParametersAndTheirLocations()
+    {
         ksort(self::$parameterAndTheirLocations,SORT_STRING);
         return self::$parameterAndTheirLocations;
     }
@@ -123,7 +137,8 @@ class CustomValueStorage
      *
      * @return array Returns an array which is filled with all encountered locations during the configuration-loading-process.
      */
-    public static function getEncounteredLocations() {
+    public static function getEncounteredLocations()
+    {
         return self::$encounteredLocations;
     }
 
@@ -131,9 +146,11 @@ class CustomValueStorage
      * Allows a specific parameter to be retrieved from the internal storage of the class.
      *
      * @param string $parameterName The name of the parameter as string.
+     *
      * @return array|null Returns the internal array with `$path => $value` pairs or null if the parameter is not present in the internal array.
      */
-    public static function getLocationsForSpecificParameter(string $parameterName) {
+    public static function getLocationsForSpecificParameter(string $parameterName)
+    {
         // Only if that parameter exists as a key in the array, will that parameters paths and values be returned, otherwise null
         return isset(self::$parameterAndTheirLocations[$parameterName]) ?
             self::$parameterAndTheirLocations[$parameterName] : null;

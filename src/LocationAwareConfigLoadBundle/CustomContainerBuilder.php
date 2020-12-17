@@ -6,6 +6,7 @@ namespace CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle;
 
 use Exception;
 use ReflectionClass;
+use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 
@@ -19,6 +20,9 @@ use Symfony\Component\DependencyInjection\Definition;
  */
 class CustomContainerBuilder extends ContainerBuilder
 {
+    /**
+     * @var bool Boolean which determines whether the bundle configuration mode is active or not.
+     */
     private $isBundleConfigMode;
 
     public function __construct()
@@ -33,7 +37,8 @@ class CustomContainerBuilder extends ContainerBuilder
      *
      * @param string $location The location to be set.
      */
-    public function setCurrentLocation(string $location) {
+    public function setCurrentLocation(string $location)
+    {
 
         /** The parameterBag is the custom one created to feature such a function */
         $this->parameterBag->setCurrentLocation($location);
@@ -41,6 +46,14 @@ class CustomContainerBuilder extends ContainerBuilder
 
     /**
      * @override
+     * In order to be able to actively influence the way locations are read for parameters during the bundle configuration
+     * process, the compilation of the container is caught through this function and then, after the measures for the
+     * bundle configuration are set in place, the normal compilation process of the container takes place.
+     *
+     * <br>This was done in order to prevent the bundles from constantly adding the same parameters unchanged back into
+     * the container, which led to dozens of useless entries into the location lists for every parameter.
+     *
+     * @param bool $resolveEnvPlaceholders
      */
     public function compile($resolveEnvPlaceholders = false)
     {
@@ -61,6 +74,7 @@ class CustomContainerBuilder extends ContainerBuilder
      * config directories to be tracked.
      *
      * @param string $name The name of the bundle who's extension config to retrieve.
+     *
      * @return array Returns the found configuration.
      */
     public function getExtensionConfig($name)
@@ -90,6 +104,8 @@ class CustomContainerBuilder extends ContainerBuilder
      * @override
      * This override ensures, that no definition of a service will be added while loading the config files of the bundles
      * outside of the bundle configuration phase.
+     *
+     * @param array $definitions
      */
     public function addDefinitions(array $definitions)
     {
@@ -102,6 +118,11 @@ class CustomContainerBuilder extends ContainerBuilder
      * @override
      * This override ensures, that no service will be registered while loading the config files of the bundles
      * outside of the bundle configuration phase.
+     *
+     * @param string $id
+     * @param string|null $class
+     *
+     * @return Definition|null
      */
     public function register($id, $class = null)
     {
@@ -116,6 +137,11 @@ class CustomContainerBuilder extends ContainerBuilder
      * @override
      * This override ensures, that no service definition will be added while loading the config files of the bundles
      * outside of the bundle configuration phase.
+     *
+     * @param string $id
+     * @param Definition $definition
+     *
+     * @return Definition|null
      */
     public function setDefinition($id, Definition $definition)
     {
@@ -130,6 +156,11 @@ class CustomContainerBuilder extends ContainerBuilder
      * @override
      * This override ensures, that no service alias will be set while loading the config files of the bundles
      * outside of the bundle configuration phase.
+     *
+     * @param string $alias
+     * @param $id
+     *
+     * @return string|Alias|null
      */
     public function setAlias($alias, $id)
     {
@@ -139,11 +170,13 @@ class CustomContainerBuilder extends ContainerBuilder
 
         return null;
     }
-
+    
     /**
      * @override
      * This override ensures, that no service definition will be registered while loading the config files of the bundles
      * outside of the bundle configuration phase.
+     *
+     * @param array $definitions
      */
     public function setDefinitions(array $definitions)
     {

@@ -4,6 +4,7 @@
 namespace CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle;
 
 
+use Exception;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderResolverInterface;
 
@@ -16,7 +17,9 @@ use Symfony\Component\Config\Loader\LoaderResolverInterface;
 class CustomDelegatingLoader extends DelegatingLoader
 {
 
-    /** @var CustomContainerBuilder A container builder which serves to build the container while keeping track of the files used to do so. */
+    /**
+     * @var CustomContainerBuilder A container builder which serves to build the container while keeping track of the files used to do so.
+     */
     private $container;
 
     public function __construct(LoaderResolverInterface $resolver, CustomContainerBuilder $containerBuilder)
@@ -32,9 +35,11 @@ class CustomDelegatingLoader extends DelegatingLoader
      * @override
      * This override ensures that everytime a resource is loaded (which is not a global pattern) the path to said resource is set
      * in and known by the container.
+     *
      * @param $resource
      * @param string|null $type
-     * @throws \Exception
+     *
+     * @throws Exception
      */
     public function load($resource, $type = null)
     {

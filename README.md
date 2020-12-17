@@ -24,6 +24,7 @@ with the following functionality (excerpt):
 - **Limit** the comparison to common or uncommon parameters of the lists
 - **Search** for specific keys or values in the parameter list
 - **Mark** parameters as favourites and view them in a dedicated view
+- **Get** location info about the parameters (which files do they appear in and with what value)
 - **Download** a file representation of the parameter lists
 - **And** more
 

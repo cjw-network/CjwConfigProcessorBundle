@@ -21,25 +21,39 @@ use Symfony\Component\Yaml\Parser;
 class ConfigPathUtility
 {
 
-    /** @var string The assortment of file extensions which can be used to configure symfony. */
+    /**
+     * @var string The assortment of file extensions which can be used to configure symfony.
+     */
     private static $configExtensions = "";
 
-    /** @var array Stores all added configuration paths */
+    /**
+     * @var array Stores all added configuration paths
+     */
     private static $configPaths = [];
 
-    /** @var PhpFilesAdapter A cache for the routes that have been determined throughout the previous loading processes. */
+    /**
+     * @var PhpFilesAdapter A cache for the routes that have been determined throughout the previous loading processes.
+     */
     private static $configPathCache;
 
-    /** @var bool States whether it has been tried to retrieve the existing paths from the cache already / the cache has been initialised. */
+    /**
+     * @var bool States whether it has been tried to retrieve the existing paths from the cache already / the cache has been initialised.
+     */
     private static $cacheInitialized = false;
 
-    /** @var bool States whether there has been a change in paths (this only occurs through adding a path (for now)). */
+    /**
+     * @var bool States whether there has been a change in paths (this only occurs through adding a path (for now)).
+     */
     private static $pathsChanged = false;
 
-    /** @var bool This boolean states whether there has been a change to the paths that warrants the kernel and thereby load process to be restarted to include the newly found paths. */
+    /**
+     * @var bool This boolean states whether there has been a change to the paths that warrants the kernel and thereby load process to be restarted to include the newly found paths.
+     */
     private static $restartLoadProcess = false;
 
-    /** @var string The directory in which to cache all the routes (in order to prevent the cache from being stored only temporarily) */
+    /**
+     * @var string The directory in which to cache all the routes (in order to prevent the cache from being stored only temporarily)
+     */
     private static $cacheDir = null;
 
     /**
@@ -47,7 +61,7 @@ class ConfigPathUtility
      * It initiates the cache (if it hasn't already), retrieves the routes from the cache, parses the manually defined routes
      * and sets the internal boolean attributes to their initial value.
      */
-    public static function initializePathUtility(): void
+    public static function initializePathUtility()
     {
         if (!self::$cacheInitialized) {
             // If the cache has not yet been instantiated
@@ -75,7 +89,7 @@ class ConfigPathUtility
 
                 // Parse the manual path_config-file
                 self::getUserDefinedPaths();
-            } catch (Exception $e) {
+            } catch (InvalidArgumentException | Exception $e) {
                 self::$configPaths = [];
             }
         }
@@ -90,27 +104,30 @@ class ConfigPathUtility
      * <br> But, paths which point to a file / directory which does not exist, are not added to the paths list.
      *
      * @param string $extensionPath The path pointing to a bundle's ExtensionClass.
+     *
      * @return string|null Returns the converted string or null, if the path does not point to the DependencyInjection or a directory which does not exist.
      */
-    public static function convertExtensionPathToConfigDirectory(string $extensionPath) {
-        // Get the index in the string where "DependencyInjection" is present
-        $diPosition = strpos($extensionPath,"DependencyInjection");
+    public static function convertExtensionPathToConfigDirectory(string $extensionPath)
+    {
+        $configDirPath = preg_match("/\.php$/",$extensionPath)? dirname($extensionPath) : $extensionPath;
 
-        if(!$diPosition) {
-            return null;
+        if (preg_match("/\/$/", $configDirPath)) {
+            $configDirPath = substr($configDirPath,0,strlen($configDirPath)-1);
         }
 
-        // Change it from DependencyInjection to the config directory
-        $configDirPath = substr($extensionPath,0,$diPosition)."Resources/config/";
+        while (!preg_match("/.*\/vendor\/?$/", $configDirPath)) {
+            if (file_exists($configDirPath.DIRECTORY_SEPARATOR."Resources".DIRECTORY_SEPARATOR."config")) {
+                $configDirPath = $configDirPath.DIRECTORY_SEPARATOR."Resources".DIRECTORY_SEPARATOR."config".DIRECTORY_SEPARATOR;
+                break;
+            } else if (file_exists($configDirPath.DIRECTORY_SEPARATOR."config")) {
+                $configDirPath = $configDirPath.DIRECTORY_SEPARATOR."config".DIRECTORY_SEPARATOR;
+                break;
+            }
 
-        if (!file_exists($configDirPath)) {
-            return null;
+            $configDirPath = dirname($configDirPath);
         }
 
-        // Since the entire directory is added as a glob resource, the "*" signals that all files within the directory are
-        // to be looked at (only one level deep) and the extensions signal that only files which end on one of the config
-        // extensions are considered.
-        return $configDirPath."*".self::$configExtensions;
+        return preg_match("/\/$/", $configDirPath)? $configDirPath."*".self::$configExtensions : null;
     }
 
     /**
@@ -120,7 +137,8 @@ class ConfigPathUtility
      * @param string $configPath The path to be added to the list.
      * @param bool $isGlobPattern A boolean stating whether the path is a glob-resource / pattern which will have to be loaded differently from non-glob-pattern.
      */
-    public static function addPathToPathlist(string $configPath, bool $isGlobPattern = true): void {
+    public static function addPathToPathlist(string $configPath, bool $isGlobPattern = true): void
+    {
         // If the cache has not been initialised, initialise it.
         if (!self::$cacheInitialized) {
             self::initializePathUtility();
@@ -139,7 +157,8 @@ class ConfigPathUtility
      *
      * <br> Also signals, that a restart of the load process is useful / necessary.
      */
-    public static function storePaths(): void {
+    public static function storePaths(): void
+    {
         if (self::$cacheInitialized && self::$pathsChanged) {
             try {
                 self::$configPathCache->deleteItem("cjw_config_paths");
@@ -197,7 +216,9 @@ class ConfigPathUtility
     }
 
     /**
-     * @param string $cacheDir
+     * Sets the cache directory for this class of the bundle, based on the general cache path of the installation.
+     *
+     * @param string $cacheDir The blank, standard cache path of the project.
      */
     public static function setCacheDir(string $cacheDir): void
     {
@@ -238,9 +259,11 @@ class ConfigPathUtility
      * Checks the user defined paths for any kind of errors with regards to the definition of said paths.
      *
      * @param array $path A path array (hopefully with 3 items under the keys of "path", "glob" and "addConfExt").
+     *
      * @return bool Boolean which states whether the path at least passes the most basic checks regarding their structure.
      */
-    private static function checkUserDefinedPath(array $path): bool {
+    private static function checkUserDefinedPath(array $path): bool
+    {
         if (is_array($path) && count($path) === 3) {
             if (!(key_exists("path",$path) && is_string($path["path"]) && !empty($path["path"]))) {
                  return false;

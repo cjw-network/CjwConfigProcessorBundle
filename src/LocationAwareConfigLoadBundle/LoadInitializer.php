@@ -26,6 +26,9 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
  */
 class LoadInitializer extends \AppKernel
 {
+    /**
+     * @var Kernel An instance of the actual Symfony kernel handling all the requests (to ensure the correct paths are used).
+     */
     private $kernel;
 
     public function __construct(string $environment, bool $debug)
@@ -169,10 +172,7 @@ class LoadInitializer extends \AppKernel
      * @param ContainerBuilder $container
      * @param LoaderInterface $loader
      */
-    protected function configureContainer(
-        ContainerBuilder $container,
-        LoaderInterface $loader
-    ): void
+    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
     {
         parent::configureContainer($container, $loader);
 
@@ -199,7 +199,8 @@ class LoadInitializer extends \AppKernel
      * <br>
      * It is employed to allow a reboot to occur during the loading process (in order to take newly found config-paths into account).
      */
-    private function cleanUpCache() {
+    private function cleanUpCache()
+    {
         $glob = glob($this->getCacheDir()."/*");
 
         foreach ($glob as $file) {
