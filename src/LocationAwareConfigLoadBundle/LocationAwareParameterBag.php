@@ -37,7 +37,7 @@ class LocationAwareParameterBag extends EnvPlaceholderParameterBag
      *
      * @param string $location The path / file that is being loaded.
      */
-    public function setCurrentLocation(string $location)
+    public function setCurrentLocation($location)
     {
         $this->currentLocation = $location;
     }

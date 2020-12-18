@@ -37,9 +37,8 @@ class CustomContainerBuilder extends ContainerBuilder
      *
      * @param string $location The location to be set.
      */
-    public function setCurrentLocation(string $location)
+    public function setCurrentLocation($location)
     {
-
         /** The parameterBag is the custom one created to feature such a function */
         $this->parameterBag->setCurrentLocation($location);
     }
@@ -170,7 +169,7 @@ class CustomContainerBuilder extends ContainerBuilder
 
         return null;
     }
-    
+
     /**
      * @override
      * This override ensures, that no service definition will be registered while loading the config files of the bundles
@@ -191,7 +190,7 @@ class CustomContainerBuilder extends ContainerBuilder
      *
      * @param bool $isBundleConfigMode A boolean which sets the bundleConfigMode either to true or false (if set to true, no services will be registered to the container).
      */
-    public function setIsBundleConfigMode(bool $isBundleConfigMode): void
+    public function setIsBundleConfigMode($isBundleConfigMode)
     {
         $this->isBundleConfigMode = $isBundleConfigMode;
     }

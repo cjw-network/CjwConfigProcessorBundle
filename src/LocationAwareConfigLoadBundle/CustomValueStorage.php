@@ -49,7 +49,7 @@ class CustomValueStorage
      * @param mixed $value The value attached to both the parametername and then the given path as well. It is going to be added under path-key as an entry of the array.
      * @param string $path The path (the origin) of the parameter value that is being set. It serves as a key under the parameter-key of the array.
      */
-    public static function addParameterOrLocation(string $parameterName, $value, string $path)
+    public static function addParameterOrLocation($parameterName, $value, $path)
     {
         // Only if it is currently allowed to write, will the process even begin
         if (self::$allowWrite) {
@@ -102,7 +102,7 @@ class CustomValueStorage
      *
      * @param bool $activate A boolean stating that the mode is either to be active (true) or not (false).
      */
-    public static function activateBundleConfigMode(bool $activate)
+    public static function activateBundleConfigMode($activate)
     {
         self::$bundleConfig = $activate;
     }
@@ -112,7 +112,7 @@ class CustomValueStorage
      * bundleConfigMode and the lock-status of the class internally. This serves to allow a "fresh" start with the internal
      * storage.
      */
-    public static function reset(): void
+    public static function reset()
     {
         self::$parameterAndTheirLocations = [];
         self::$bundleConfig = false;
@@ -149,7 +149,7 @@ class CustomValueStorage
      *
      * @return array|null Returns the internal array with `$path => $value` pairs or null if the parameter is not present in the internal array.
      */
-    public static function getLocationsForSpecificParameter(string $parameterName)
+    public static function getLocationsForSpecificParameter($parameterName)
     {
         // Only if that parameter exists as a key in the array, will that parameters paths and values be returned, otherwise null
         return isset(self::$parameterAndTheirLocations[$parameterName]) ?

@@ -30,7 +30,7 @@ class Utility
      *
      * @see removeCommonParameters For a similar function which does the opposite.
      */
-    public static function removeUncommonParameters (array $firstParameterList, array $secondParameterList, int $level = 0): array
+    public static function removeUncommonParameters (array $firstParameterList, array $secondParameterList, $level = 0)
     {
         $firstListKeys = array_keys($firstParameterList);
         $secondListKeys = array_keys($secondParameterList);
@@ -79,7 +79,7 @@ class Utility
      *
      * @see removeUncommonParameters For a similar function which does the opposite.
      */
-    public static function removeCommonParameters (array $firstParameterList, array $secondParameterList, int $level = 0): array
+    public static function removeCommonParameters (array $firstParameterList, array $secondParameterList, $level = 0)
     {
         $firstListKeys = array_keys($firstParameterList);
         $secondListKeys = array_keys($secondParameterList);
@@ -123,7 +123,7 @@ class Utility
      *
      * @return bool
      */
-    public static function has_string_keys(array $array): bool
+    public static function has_string_keys(array $array)
     {
         return count(
                 array_filter(
@@ -141,7 +141,7 @@ class Utility
      *
      * @return string[] Returns an array of site accesses in the form of strings.
      */
-    public static function determinePureSiteAccesses(array $processedParameterArray): array
+    public static function determinePureSiteAccesses(array $processedParameterArray)
     {
         try {
             $results =
@@ -162,7 +162,7 @@ class Utility
      *
      * @return array Returns an array of the found site access groups (empty if non are found).
      */
-    public static function determinePureSiteAccessGroups (array $processedParameterArray): array
+    public static function determinePureSiteAccessGroups (array $processedParameterArray)
     {
         try {
             return $processedParameterArray["ezpublish"]["siteaccess"]["groups"]["parameter_value"];
@@ -183,7 +183,7 @@ class Utility
      *
      * @return array Returns the remaining array of parameters, after the key segment has been deleted.
      */
-    public static function removeEntryThroughKeyList (array $parameters, array $keyList): array
+    public static function removeEntryThroughKeyList (array $parameters, array $keyList)
     {
         $key = reset($keyList);
         array_splice($keyList,0,1);
@@ -216,7 +216,7 @@ class Utility
      *
      * @return array Returns the resulting array of parameters, after the key segment has been deleted (unchanged from the given array, if the key could not be found).
      */
-    public static function removeSpecificKeySegment (string $keySegment, array $parametersToRemoveFrom): array
+    public static function removeSpecificKeySegment ($keySegment, array $parametersToRemoveFrom)
     {
         $result = $parametersToRemoveFrom;
 
@@ -246,12 +246,8 @@ class Utility
      *
      * @throws InvalidArgumentException
      */
-    public static function cacheContractGetOrSet (
-        string $cacheKey,
-        AdapterInterface $cachePool,
-        callable $executeWhenItemNotSet,
-        $enforceSet = false
-    ) {
+    public static function cacheContractGetOrSet ($cacheKey, AdapterInterface $cachePool, callable $executeWhenItemNotSet, $enforceSet = false)
+    {
         if (!$cachePool->hasItem($cacheKey) || $enforceSet) {
             $item = $cachePool->getItem($cacheKey);
             $item->set($executeWhenItemNotSet());

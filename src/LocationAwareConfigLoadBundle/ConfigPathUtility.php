@@ -107,7 +107,7 @@ class ConfigPathUtility
      *
      * @return string|null Returns the converted string or null, if the path does not point to the DependencyInjection or a directory which does not exist.
      */
-    public static function convertExtensionPathToConfigDirectory(string $extensionPath)
+    public static function convertExtensionPathToConfigDirectory($extensionPath)
     {
         $configDirPath = preg_match("/\.php$/",$extensionPath)? dirname($extensionPath) : $extensionPath;
 
@@ -135,9 +135,9 @@ class ConfigPathUtility
      * that the path list has been changed.
      *
      * @param string $configPath The path to be added to the list.
-     * @param bool $isGlobPattern A boolean stating whether the path is a glob-resource / pattern which will have to be loaded differently from non-glob-pattern.
+     * @param bool $isGlobPattern An (optional) boolean stating whether the path is a glob-resource / pattern which will have to be loaded differently from non-glob-pattern.
      */
-    public static function addPathToPathlist(string $configPath, bool $isGlobPattern = true): void
+    public static function addPathToPathlist($configPath, $isGlobPattern = true)
     {
         // If the cache has not been initialised, initialise it.
         if (!self::$cacheInitialized) {
@@ -157,7 +157,7 @@ class ConfigPathUtility
      *
      * <br> Also signals, that a restart of the load process is useful / necessary.
      */
-    public static function storePaths(): void
+    public static function storePaths()
     {
         if (self::$cacheInitialized && self::$pathsChanged) {
             try {
@@ -176,7 +176,7 @@ class ConfigPathUtility
     /**
      * @return array Returns the paths that have been found and set internally.
      */
-    public static function getConfigPaths(): array
+    public static function getConfigPaths()
     {
         return self::$configPaths;
     }
@@ -184,7 +184,7 @@ class ConfigPathUtility
     /**
      * @return string Returns the config extensions.
      */
-    public static function getConfigExtensions(): string
+    public static function getConfigExtensions()
     {
         return self::$configExtensions;
     }
@@ -192,7 +192,7 @@ class ConfigPathUtility
     /**
      * @return bool Returns a boolean, which states, whether the paths have changed internally.
      */
-    public static function pathsChanged(): bool
+    public static function pathsChanged()
     {
         return self::$pathsChanged;
     }
@@ -200,7 +200,7 @@ class ConfigPathUtility
     /**
      * @return bool Returns a boolean value that states whether the loading process is supposed to be restarted (due to newly added paths).
      */
-    public static function isSupposedToRestart(): bool
+    public static function isSupposedToRestart()
     {
         return self::$restartLoadProcess;
     }
@@ -210,7 +210,7 @@ class ConfigPathUtility
      *
      * @param string $configExtensions A string (glob-pattern) of extensions that are valid for symfony configuration.
      */
-    public static function setConfigExtensions(string $configExtensions): void
+    public static function setConfigExtensions($configExtensions)
     {
         self::$configExtensions = $configExtensions;
     }
@@ -220,7 +220,7 @@ class ConfigPathUtility
      *
      * @param string $cacheDir The blank, standard cache path of the project.
      */
-    public static function setCacheDir(string $cacheDir): void
+    public static function setCacheDir($cacheDir)
     {
         if (is_dir($cacheDir)) {
             self::$cacheDir = $cacheDir."/cjw/config-processor-bundle/";
@@ -231,7 +231,7 @@ class ConfigPathUtility
      * This function parses the paths defined by users of the bundle in the config_paths.yaml and adds them to the path
      * array.
      */
-    private static function getUserDefinedPaths(): void
+    private static function getUserDefinedPaths()
     {
         $parser = new Parser();
 
@@ -262,7 +262,7 @@ class ConfigPathUtility
      *
      * @return bool Boolean which states whether the path at least passes the most basic checks regarding their structure.
      */
-    private static function checkUserDefinedPath(array $path): bool
+    private static function checkUserDefinedPath(array $path)
     {
         if (is_array($path) && count($path) === 3) {
             if (!(key_exists("path",$path) && is_string($path["path"]) && !empty($path["path"]))) {

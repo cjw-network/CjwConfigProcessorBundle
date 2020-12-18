@@ -114,7 +114,7 @@ class LocationRetrievalCoordinator
      *
      * @return array An associative array, which contains the parameters as first keys, then the different paths and the values that have been set in those files.
      */
-    public static function getParametersAndLocations(): array
+    public static function getParametersAndLocations()
     {
         if (!self::$initialized) {
             self::initializeCoordinator();
@@ -134,7 +134,7 @@ class LocationRetrievalCoordinator
      *
      * @return array|null An array of locations for the parameter of null if nothing could be found.
      */
-    public static function getParameterLocations (string $parameterName, array $siteAccessGroups = null, bool $withSiteAccess = false)
+    public static function getParameterLocations ($parameterName, array $siteAccessGroups = null, $withSiteAccess = false)
     {
         if (!self::$initialized) {
             self::initializeCoordinator();
@@ -153,7 +153,7 @@ class LocationRetrievalCoordinator
      *
      * @return array Returns an array which is filled with all encountered locations during the configuration-loading-process.
      */
-    private static function getLocationsForSpecificParameter(string $parameterName, array $siteAccessGroups = null, bool $withSiteAccess = false)
+    private static function getLocationsForSpecificParameter($parameterName, array $siteAccessGroups = null, $withSiteAccess = false)
     {
         $parameterKeySegments = explode(".", $parameterName);
 
@@ -241,7 +241,7 @@ class LocationRetrievalCoordinator
      *
      * @return array Returns an array which includes the found locations for the new parameter or an empty one if nothing could be found.
      */
-    private static function getLocationsFromRewrittenSiteAccessParameter(string $newSiteAccess, array $originalParameterKeySegments)
+    private static function getLocationsFromRewrittenSiteAccessParameter($newSiteAccess, array $originalParameterKeySegments)
     {
         if ($originalParameterKeySegments[1] !== $newSiteAccess) {
             $originalParameterKeySegments[1] = $newSiteAccess;

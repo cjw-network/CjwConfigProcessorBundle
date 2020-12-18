@@ -66,14 +66,9 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
                 array("is_safe" => array("html")),
             ),
             new TwigFunction(
-              "cjw_process_for_current_siteaccess",
-              array($this, "getParametersForCurrentSiteAccess"),
+              "cjw_process_for_siteaccess",
+              array($this, "getParametersForSiteAccess"),
               array("is_safe" => array("html")),
-            ),
-            new TwigFunction(
-                "cjw_process_for_siteaccess",
-                array($this, "getParametersForSpecificSiteAccess"),
-                array("is_safe" => array("html")),
             ),
             new TwigFunction(
                 "is_numeric",
@@ -98,7 +93,7 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
      *
      * @return array
      */
-    public function getGlobals(): array
+    public function getGlobals()
     {
         return array(
             "cjw_formatted_parameters" => $this->processedParameters,
@@ -123,7 +118,11 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         return 'cjw_config_processor.twig.display';
     }
 
-    public function getProcessedParameters(): array {
+    /**
+     * @return array Returns the processed parameters (Symfony configuration) into a twig template.
+     */
+    public function getProcessedParameters()
+    {
         try {
             return ConfigProcessCoordinator::getProcessedParameters();
         } catch (Exception $e) {
@@ -132,15 +131,13 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         }
     }
 
-    public function getParametersForCurrentSiteAccess(): array {
-        try {
-            return ConfigProcessCoordinator::getSiteAccessParameters();
-        } catch (Exception $error) {
-            return [];
-        }
-    }
-
-    public function getParametersForSpecificSiteAccess(string $siteAccess): array {
+    /**
+     * @param string $siteAccess An optional parameter which determines what site access context to use for the retrieval (will use the current one of the request, when none is set)
+     *
+     * @return array Returns the site access parameters for the site access the current request uses to a twig template.
+     */
+    public function getParametersForSiteAccess($siteAccess = null)
+    {
         try {
             return ConfigProcessCoordinator::getParametersForSiteAccess($siteAccess);
         } catch (Exception $error) {
@@ -150,7 +147,15 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
 
     //Helper functions in twig templates
 
-    public function isNumeric(...$value): bool {
+    /**
+     * Determines whether given values are all numeric or not.
+     *
+     * @param mixed ...$value The values being put into the function.
+     *
+     * @return bool Returns true if every value is numeric and false if there is at least one that isn't.
+     */
+    public function isNumeric(...$value)
+    {
         if (count($value) === 1 && isset($value[0]) && is_array($value[0])) {
             $value = $value[0];
         }
@@ -164,11 +169,27 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         return true;
     }
 
-    public function isString($value): bool {
+    /**
+     * Determines whether a given value is of type string or not.
+     *
+     * @param $value Value to be checked.
+     *
+     * @return bool Returns true is the value is of type string or false if it is not.
+     */
+    public function isString($value)
+    {
         return is_string($value);
     }
 
-    public function isContentIterable(...$value) {
+    /**
+     * Determines whether the given values are of type array or not.
+     *
+     * @param mixed ...$value The values to be checked.
+     *
+     * @return bool Returns true if the values are all of type array  and false if at least one is not.
+     */
+    public function isContentIterable(...$value)
+    {
         if (count($value) === 1 && isset($value[0]) && is_array($value[0])) {
             $value = $value[0];
         }
@@ -182,7 +203,15 @@ class TwigConfigDisplayService extends AbstractExtension implements GlobalsInter
         return false;
     }
 
-    public function booleanFilter ($value) {
+    /**
+     * Turns a given boolean value into a string representation of its value.
+     *
+     * @param mixed $value The value to be filtered.
+     *
+     * @return string Returns a string representation of the boolean value.
+     */
+    public function booleanFilter ($value)
+    {
         if (is_bool($value)) {
             return $value? "true" : "false";
         } else {

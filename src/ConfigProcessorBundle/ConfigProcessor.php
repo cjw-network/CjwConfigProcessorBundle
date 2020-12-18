@@ -13,8 +13,7 @@ namespace CJW\CJWConfigProcessor\src\ConfigProcessorBundle;
 class ConfigProcessor
 {
     /**
-     * Stores all the processed parameters with their namespaces as keys in the array.
-     * @var array
+     * @var array Stores all the processed parameters with their namespaces as keys in the array.
      */
     private $processedParameters;
 
@@ -26,7 +25,7 @@ class ConfigProcessor
     /**
      * @return array Returns the internal Object-based Parameterlist
      */
-    public function getProcessedParameters(): array
+    public function getProcessedParameters()
     {
         return $this->processedParameters;
     }
@@ -36,7 +35,7 @@ class ConfigProcessor
      * readable structure.
      *
      * @param array $parameters A list of given parameters to be processed and reformatted.
-     * @returns array Returns an array of the processed and formatted parameters.
+     *
      * @return array Returns the processed parameters in the form of an associative array.
      */
     public function processParameters(array $parameters)
@@ -63,12 +62,14 @@ class ConfigProcessor
 
     /**
      * Takes a given key and splits it into the different segments that are present in it
-     * (namespace, (with eZ) siteaccess, actual parameter etc).
+     * (namespace, (with eZ) siteaccess, actual parameter, etc).
      *
-     * @param string $key
-     * @return array | false
+     * @param string $key The parameter key to be split into key segments.
+     *
+     * @return array | false Returns an array of key segments or false, if it the given key could not be split.
      */
-    private function parseIntoParts (string $key) {
+    private function parseIntoParts ($key)
+    {
         if ($key && strlen($key) > 0) {
             $splitStringCarrier = explode(".",$key);
 
@@ -86,16 +87,25 @@ class ConfigProcessor
      * Turns the array of ProcessedParamModel-Objects into an associative array with the keys and the values attached to them.
      * Also sorts the keys of the array alphabetically so they are more easily searchable.
      */
-    private function reformatParametersForOutput() {
+    private function reformatParametersForOutput()
+    {
         $formattedOutput = [];
         foreach($this->processedParameters as $parameter) {
             $formattedOutput[$parameter->getKey()] = $parameter->reformatForOutput();
         }
-//        ksort($formattedOutput,SORT_STRING);
+
         return $this->sortParameterKeys($formattedOutput);
     }
 
-    private function sortParameterKeys (array $parameters) {
+    /**
+     * Function to sort the keys of a given, associative array alphabetically.
+     *
+     * @param array $parameters The associative array of parameters to be sorted.
+     *
+     * @return array Returns the sorted array.
+     */
+    private function sortParameterKeys (array $parameters)
+    {
         ksort($parameters, SORT_STRING);
 
         foreach ($parameters as $key => $value) {

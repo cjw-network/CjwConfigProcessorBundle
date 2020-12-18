@@ -31,7 +31,7 @@ class LoadInitializer extends \AppKernel
      */
     private $kernel;
 
-    public function __construct(string $environment, bool $debug)
+    public function __construct($environment, $debug)
     {
         parent::__construct($environment, $debug);
         $this->kernel = new \AppKernel($environment, $debug);
@@ -120,7 +120,7 @@ class LoadInitializer extends \AppKernel
      *
      * @return string Returns the name of the container to save
      */
-    protected function getContainerClass()
+    protected function getContainerClass(): string
     {
         return "CJW_LoadInitializer_" . parent::getContainerClass();
     }
@@ -134,7 +134,7 @@ class LoadInitializer extends \AppKernel
      *
      * @return CustomDelegatingLoader
      */
-    protected function getContainerLoader(ContainerInterface $container)
+    protected function getContainerLoader(ContainerInterface $container): CustomDelegatingLoader
     {
         $locator = new FileLocator($this);
         /** @var CustomContainerBuilder $container */
@@ -155,7 +155,7 @@ class LoadInitializer extends \AppKernel
      * @override
      * Overrides the standard function of the kernel in order to ensure, that the kernel works with the CustomContainerBuilder.
      */
-    protected function getContainerBuilder()
+    protected function getContainerBuilder(): CustomContainerBuilder
     {
         $originalContainerBuilder = parent::getContainerBuilder();
         $customContainerBuilder = new CustomContainerBuilder();
@@ -172,7 +172,7 @@ class LoadInitializer extends \AppKernel
      * @param ContainerBuilder $container
      * @param LoaderInterface $loader
      */
-    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader): void
+    protected function configureContainer(ContainerBuilder $container, LoaderInterface $loader)
     {
         parent::configureContainer($container, $loader);
 

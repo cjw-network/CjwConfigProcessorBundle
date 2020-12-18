@@ -10,6 +10,12 @@ use EzSystems\EzPlatformAdminUi\Menu\MenuItemFactory;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * Class RightSideBarSiteAccessComparisonMenuBuilder is responsible for building the right sidebar menu for the
+ * bundle frontend.
+ *
+ * @package CJW\CJWConfigProcessor\EventSubscriber
+ */
 class RightSideBarSiteAccessComparisonMenuBuilder extends AbstractBuilder
 {
 
@@ -43,18 +49,18 @@ class RightSideBarSiteAccessComparisonMenuBuilder extends AbstractBuilder
                         'attributes' => [
                             'class' => 'ez-btn--reveal',
                             'data-actions' => 'change view',
-                            "cjw_id" => "cjw_single_sa_view"
+                            "cjw_id" => "cjw_single_sa_view",
                         ],
                     ]
                 ),
                 $this->createMenuItem(
                     self::ITEM__NORMAL_COMPARISON_VIEW,
                     [
-                        'extras' => ['icon' => 'go-to-root', 'orderNumber' => 59],
+                        'extras' => ['icon' => 'back', 'orderNumber' => 59],
                         'attributes' => [
                             'class' => 'ez-btn--reveal',
                             'data-actions' => 'change view',
-                            "cjw_id" => "cjw_show_normal_comparison"
+                            "cjw_id" => "cjw_show_normal_comparison",
                         ],
                     ]
                 ),
