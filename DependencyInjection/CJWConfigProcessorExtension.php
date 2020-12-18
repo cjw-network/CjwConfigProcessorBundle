@@ -4,6 +4,7 @@
 namespace CJW\CJWConfigProcessor\DependencyInjection;
 
 
+use Exception;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
@@ -20,7 +21,7 @@ class CJWConfigProcessorExtension extends Extension
      * @param array $configs
      * @param ContainerBuilder $container
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -39,7 +40,8 @@ class CJWConfigProcessorExtension extends Extension
      * @param array $config The configuration array to be parsed into actual container parameters.
      * @param ContainerBuilder $container The container to add the parameters to.
      */
-    private function handleCustomParamConfig (array $config, ContainerBuilder $container) {
+    private function handleCustomParamConfig (array $config, ContainerBuilder $container)
+    {
         if (!isset($config["custom_site_access_parameters"])) {
             $allowParameters = false;
             $scanParameters = false;
@@ -59,7 +61,8 @@ class CJWConfigProcessorExtension extends Extension
      * @param array $config The configuration array to be parsed into actual container parameters.
      * @param ContainerBuilder $container The container to add the parameters to.
      */
-    private function handleFavouriteParamConfig (array $config, ContainerBuilder $container) {
+    private function handleFavouriteParamConfig (array $config, ContainerBuilder $container)
+    {
         if (!isset($config["favourite_parameters"])) {
             $allowParameters = false;
             $scanParameters = false;

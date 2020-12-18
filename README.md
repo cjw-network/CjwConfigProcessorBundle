@@ -38,22 +38,22 @@ Make sure Composer is installed globally, as explained in the
 [installation chapter](https://getcomposer.org/doc/00-intro.md)
 of the Composer documentation.
 
-* **Installing the newest (stable) build of the bundle:**
+* **Installing the newest (stable) build of the bundle for the highest supported eZ / Ibexa Platform version:**
   ```shell
-  $ composer require cjw-network/cjw-config-processor  
+  $ composer require cjw-network/cjw-config-processor
   ```
 
 * **Installing the bundle for eZ / Ibexa platform version 3.***:
   ```shell
   $ composer require cjw-network/cjw-config-processor:3.*
   ```
-  * [**More info and details**](Resources/doc/installation/3.x-Installation.en.md)
+  * [**Next Steps and Details**](Resources/doc/installation/3.x-Installation.en.md)
 
 * **Installing the bundle for eZ / Ibexa platform version 2.***:
   ```shell
   $ composer require cjw-network/cjw-config-processor:2.*
   ```
-  * [**More info and details**](Resources/doc/installation/2.x-Installation.en.md)
+  * [**Next Steps and Details**](Resources/doc/installation/2.x-Installation.en.md)
 
 
 # Authors
