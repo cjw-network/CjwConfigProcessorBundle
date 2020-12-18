@@ -6,14 +6,14 @@ This Bundle has been created to serve the function of parsing / processing the e
 parameter-/options array that exists within a standard symfony and especially
 eZ - / Ibexa - Platform app. **Similar to the eZPublish Ini settings viewer** of old, it
 is supposed to take the existing configuration and provide a visual representation that
-is easy to read, understand and work with for developers. Therefore, it provides various 
+is easy to read, understand and work with for developers. Therefore, it provides various
 functions, options and views to display site access context specific parameters, values
 and much more.
 
 # Provided Functionality
 
-Installing the bundle (refer to `Installation` further down the page), will add a `Config Processing View` tab under the 
-`Admin` tab of the  standard eZ / Ibexa Backoffice. Clicking that tab will bring you to the frontend this bundle provides 
+Installing the bundle (refer to `Installation` further down the page), will add a `Config Processing View` tab under the
+`Admin` tab of the  standard eZ / Ibexa Backoffice. Clicking that tab will bring you to the frontend this bundle provides
 with the following functionality (excerpt):
 
 - **Display** of the entire configuration of your Symfony project
@@ -38,22 +38,22 @@ Make sure Composer is installed globally, as explained in the
 [installation chapter](https://getcomposer.org/doc/00-intro.md)
 of the Composer documentation.
 
-* **Installing the newest (stable) build of the bundle:**
+* **Installing the newest (stable) build of the bundle for the highest supported eZ / Ibexa Platform version:**
   ```shell
-  $ composer require cjw-network/cjw-config-processor  
+  $ composer require cjw-network/cjw-config-processor
   ```
 
 * **Installing the bundle for eZ / Ibexa platform version 3.***:
   ```shell
   $ composer require cjw-network/cjw-config-processor:3.*
   ```
-  * [**More info and details**](Resources/doc/installation/3.x-Installation.en.md)
+    * [**Next Steps and Details**](Resources/doc/installation/3.x-Installation.en.md)
 
 * **Installing the bundle for eZ / Ibexa platform version 2.***:
   ```shell
   $ composer require cjw-network/cjw-config-processor:2.*
   ```
-  * [**More info and details**](Resources/doc/installation/2.x-Installation.en.md)
+    * [**Next Steps and Details**](Resources/doc/installation/2.x-Installation.en.md)
 
 
 # Authors
