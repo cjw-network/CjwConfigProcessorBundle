@@ -19,7 +19,6 @@ use Symfony\Component\DependencyInjection\Loader\GlobFileLoader;
  */
 class CustomGlobLoader extends GlobFileLoader
 {
-
     /**
      * CustomGlobLoader constructor. Its only difference is, that instead of taking a "normal" ContainerBuilder or -Interface,
      * this constructor takes a CustomContainerBuilder in order to ensure compatibility with the rest of the location-aware

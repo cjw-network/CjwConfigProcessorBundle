@@ -12,6 +12,11 @@ use JMS\TranslationBundle\Translation\TranslationContainerInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * Class LeftSideBarMenuBuilder is used to build the left sidebar menu one can see in the bundle frontend.
+ *
+ * @package CJW\CJWConfigProcessor\EventSubscriber
+ */
 class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationContainerInterface
 {
 
@@ -20,19 +25,32 @@ class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationConta
     const ITEM__PARAMETER_LIST_SITE_ACCESS = 'Site Access Parameters';
     const ITEM__PARAMETER_LIST_FAVOURITES = 'Favourite Parameters';
 
-    public function __construct(
-        MenuItemFactory $factory,
-        EventDispatcherInterface $eventDispatcher
-    )
+    /**
+     * LeftSideBarMenuBuilder constructor.
+     *
+     * @param MenuItemFactory $factory
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(MenuItemFactory $factory, EventDispatcherInterface $eventDispatcher)
     {
         parent::__construct($factory, $eventDispatcher);
     }
 
+    /**
+     * @override
+     * @return string
+     */
     protected function getConfigureEventName(): string
     {
         return ConfigureMenuEvent::CONTENT_SIDEBAR_LEFT;
     }
 
+    /**
+     * @override
+     * @param array $options
+     *
+     * @return ItemInterface
+     */
     protected function createStructure(array $options): ItemInterface
     {
         $menu = $this->factory->createItem("root");
@@ -66,6 +84,10 @@ class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationConta
         return $menu;
     }
 
+    /**
+     * @override
+     * @return array
+     */
     public static function getTranslationMessages(): array
     {
         return [

@@ -154,8 +154,9 @@ class LoadInitializer extends Kernel
 
     /**
      * @override
-     * Overrides the standard kernel functionality to ensure that the paths retrieved in the previous boot attempt
-     * of this custom kernel are used too, to retrieve the desired parameter paths.
+     *
+     * Overrides the standard kernel function to configure the container in order to incorporate the custom paths
+     * that have been gathered during the custom load process.
      *
      * @param ContainerBuilder $container
      * @param LoaderInterface $loader

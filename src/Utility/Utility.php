@@ -177,7 +177,8 @@ class Utility
      * the associative parameters array.
      *
      * @param array $parameters An associative array of parameters from which to delete the given key.
-     * @param array $keyList A list of keys that will be gone through to the very last given segment, which is then going to be deleted from the given parameters array.
+     * @param array $keyList A list of keys that will be gone through to the very last given segment, which is then
+     *                       going to be deleted from the given parameters array.
      *
      * @return array Returns the remaining array of parameters, after the key segment has been deleted.
      */
@@ -212,7 +213,8 @@ class Utility
      * @param string $keySegment The specific key to be removed from the given array.
      * @param array $parametersToRemoveFrom An associative array of parameters from which to remove the given key, if it exists.
      *
-     * @return array Returns the resulting array of parameters, after the key segment has been deleted (unchanged from the given array, if the key could not be found).
+     * @return array Returns the resulting array of parameters, after the key segment has been deleted
+     *               (unchanged from the given array, if the key could not be found).
      */
     public static function removeSpecificKeySegment (string $keySegment, array $parametersToRemoveFrom): array
     {

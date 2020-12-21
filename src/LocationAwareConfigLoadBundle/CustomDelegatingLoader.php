@@ -17,7 +17,9 @@ use Symfony\Component\Config\Loader\LoaderResolverInterface;
 class CustomDelegatingLoader extends DelegatingLoader
 {
 
-    /** @var CustomContainerBuilder A container builder which serves to build the container while keeping track of the files used to do so. */
+    /**
+     * @var CustomContainerBuilder A container builder which serves to build the container while keeping track of the files used to do so.
+     */
     private $container;
 
     public function __construct(LoaderResolverInterface $resolver, CustomContainerBuilder $containerBuilder)

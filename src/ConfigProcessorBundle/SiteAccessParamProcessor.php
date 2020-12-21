@@ -9,7 +9,7 @@ use eZ\Publish\Core\MVC\ConfigResolverInterface;
 
 /**
  * Class SiteAccessParamProcessor serves to take the processed parameters and determine not only which parameters are
- * active within that siteaccess, but also what value that parameter holds under these circumstances and reformat them
+ * active within that site access, but also what value that parameter holds under these circumstances and reformat them
  * for output.
  *
  * @package CJW\CJWConfigProcessor\ConfigProcessorBundle\src
@@ -17,9 +17,7 @@ use eZ\Publish\Core\MVC\ConfigResolverInterface;
 class SiteAccessParamProcessor
 {
     /**
-     * Holds the ezplatform / -systems config resolver with which to work out the values for the parameters.
-     *
-     * @var ConfigResolverInterface
+     * @var ConfigResolverInterface Holds the ezPlatform / -systems config resolver with which to work out the values for the parameters.
      */
     private $ezConfigResolver;
 
@@ -29,7 +27,7 @@ class SiteAccessParamProcessor
     }
 
     /**
-     * @param ConfigResolverInterface $ezConfigResolver
+     * @param ConfigResolverInterface $ezConfigResolver Set the config resolver to be used by the class.
      */
     public function setEzConfigResolver(ConfigResolverInterface $ezConfigResolver): void
     {
@@ -37,16 +35,18 @@ class SiteAccessParamProcessor
     }
 
     /**
-     * Function to filter and resolve all parameters given to the function via a list of siteaccesses.
-     * That means that only values belonging to siteaccesses will be kept in the array and processed
+     * Function to filter and resolve all parameters given to the function via a list of site accesses.
+     * That means that only values belonging to site accesses will be kept in the array and processed
      * further and their values will be resolved.
      *
-     * @param array $siteAccesses The list of siteaccesses to filter for in the parameters.
+     * @param array $siteAccesses The list of site accesses to filter for in the parameters.
      * @param array $parameters The parameters to be filtered and processed.
-     * @param string|null $scope Optional parameter which determines whether a specific scope should be used for determining the parameter values or simply the current one.
+     * @param string|null $scope Optional parameter which determines whether a specific scope should be used for
+     *                           determining the parameter values or simply the current one.
+     *
      * @return array Returns an array that possesses only unique parameters and their current value.
      */
-    public function processSiteAccessBased(array $siteAccesses, array $parameters, string $scope = null)
+    public function processSiteAccessBased(array $siteAccesses, array $parameters, string $scope = null): array
     {
         $siteAccessParameters = $this->filterForSiteAccess($siteAccesses, $parameters);
         $uniqueSiteAccessParameters =  $this->provideUniqueParameters($siteAccessParameters);
@@ -66,15 +66,16 @@ class SiteAccessParamProcessor
     }
 
     /**
-     * Takes a given list of siteaccesses and searches in the given parameters array for every
+     * Takes a given list of site accesses and searches in the given parameters array for every
      * parameter that features at least one of the accesses. If one or more are found, than these
      * parts of the parameter are being pushed onto the result.
      *
-     * @param array $siteAccesses The list of siteaccesses to search for.
+     * @param array $siteAccesses The list of site accesses to search for.
      * @param array $parameters The array of parameters in which to search.
+     *
      * @return array Returns the resulting array which consists of all found parameter parts.
      */
-    private function filterForSiteAccess(array $siteAccesses, array $parameters)
+    private function filterForSiteAccess(array $siteAccesses, array $parameters): array
     {
         $resultArray = [];
 
@@ -97,9 +98,10 @@ class SiteAccessParamProcessor
      * access. As a result, the array only contains unique parameters for further processing.
      *
      * @param array $siteAccessParameters The parameters to be processed.
+     *
      * @return array Returns an array that includes only unique parameters.
      */
-    private function provideUniqueParameters(array $siteAccessParameters)
+    private function provideUniqueParameters(array $siteAccessParameters): array
     {
         $uniqueParameters = $siteAccessParameters;
         $encounteredParamNames = [];
@@ -137,7 +139,7 @@ class SiteAccessParamProcessor
      *
      * @throws Exception Throws an exception if there hasn't been a valid configResolver set for the object.
      */
-    private function resolveParameters(array $filteredParameters)
+    private function resolveParameters(array $filteredParameters): array
     {
         if (!$this->ezConfigResolver) {
             throw new Exception("No configResolver has been set for this object.");
@@ -168,12 +170,14 @@ class SiteAccessParamProcessor
      *
      * might be reworked to better fit the bundle's coding standard.
      *
-     * @param array $filteredParameters
-     * @param string $scope
-     * @return array
-     * @throws Exception
+     * @param array $filteredParameters The filtered parameter list which is being resolved to the actual currently set parameters.
+     * @param string $scope The specific site access for which to retrieve the parameter value.
+     *
+     * @return array Returns the resolved Parameters.
+     *
+     * @throws Exception Throws an exception if there hasn't been a valid configResolver set for the object.
      */
-    private function resolveParametersWithScope(array $filteredParameters, string $scope)
+    private function resolveParametersWithScope(array $filteredParameters, string $scope): array
     {
         if (!$this->ezConfigResolver) {
             throw new Exception("No configResolver has been set for this object.");
@@ -196,9 +200,10 @@ class SiteAccessParamProcessor
      * Rearranges the array's keys in alphabetical order for easier navigation.
      *
      * @param array $processedSiteAccessParameters Parameters to be sorted.
+     *
      * @return array Returns the reformatted array.
      */
-    private function reformatForOutput(array $processedSiteAccessParameters)
+    private function reformatForOutput(array $processedSiteAccessParameters): array
     {
         ksort($processedSiteAccessParameters, SORT_STRING);
 

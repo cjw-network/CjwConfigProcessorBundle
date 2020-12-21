@@ -25,17 +25,17 @@ class LocationRetrievalCoordinator
     private static $customConfigLoader;
 
     /**
-     * @var array An array which not only stores the parameters, but also the paths they have been read from (including the values set there)
+     * @var array An array which not only stores the parameters, but also the paths they have been read from (including the values set there).
      */
     public static $parametersAndLocations;
 
     /**
-     * @var PhpFilesAdapter A cache which is supposed to store the parameters that have been parsed.
+     * @var PhpFilesAdapter A cache which is supposed to store parameters that have been parsed.
      */
     private static $cache;
 
     /**
-     * @var bool
+     * @var bool Boolean which describes whether the class has been instantiated and all important attributes of it have been initialized.
      */
     private static $initialized = false;
 
@@ -91,7 +91,8 @@ class LocationRetrievalCoordinator
     /**
      * Retrieves all parameters and the associated locations which have been retrieved by the class.
      *
-     * @return array An associative array, which contains the parameters as first keys, then the different paths and the values that have been set in those files.
+     * @return array An associative array, which contains the parameters as first keys, then the different
+     *               paths and the values that have been set in those files.
      */
     public static function getParametersAndLocations(): array
     {
@@ -108,8 +109,10 @@ class LocationRetrievalCoordinator
      * as well.
      *
      * @param string $parameterName The name of the parameter who's locations should be retrieved.
-     * @param array|null $siteAccessGroups An array of the site access groups that exist in the current installation (required to determine site access groups versions of the parameter).
-     * @param bool $withSiteAccess A boolean which states whether the parameter should be viewed in a site access context. Set to true, all site access versions of the given parameter are looked at.
+     * @param array|null $siteAccessGroups An array of the site access groups that exist in the current installation
+     *                                     (required to determine site access groups versions of the parameter).
+     * @param bool $withSiteAccess A boolean which states whether the parameter should be viewed in a site access
+     *                             context. Set to true, all site access versions of the given parameter are looked at.
      *
      * @return array|null An array of locations for the parameter of null if nothing could be found.
      */
@@ -127,8 +130,10 @@ class LocationRetrievalCoordinator
      * the parameters, values or other information. It resembles a plain "stack" of locations.
      *
      * @param string $parameterName The name of the parameter who's locations should be retrieved.
-     * @param array|null $siteAccessGroups An array of the site access groups that exist in the current installation (required to determine site access groups versions of the parameter).
-     * @param bool $withSiteAccess A boolean which states whether the parameter should be viewed in a site access context. Set to true, all site access versions of the given parameter are looked at.
+     * @param array|null $siteAccessGroups An array of the site access groups that exist in the current installation
+     *                                     (required to determine site access groups versions of the parameter).
+     * @param bool $withSiteAccess A boolean which states whether the parameter should be viewed in a site access
+     *                             context. Set to true, all site access versions of the given parameter are looked at.
      *
      * @return array Returns an array which is filled with all encountered locations during the configuration-loading-process.
      */

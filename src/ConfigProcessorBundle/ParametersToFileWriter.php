@@ -7,15 +7,28 @@ namespace CJW\CJWConfigProcessor\src\ConfigProcessorBundle;
 use DateTime;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * Class ParametersToFileWriter is used to create a file representation of the parameter lists given to it.
+ *
+ * @package CJW\CJWConfigProcessor\src\ConfigProcessorBundle
+ */
 class ParametersToFileWriter
 {
-    /** @var bool  */
+    /**
+     * @var bool Stating whether the Writer has been initialized already.
+     */
     private static $initialized = false;
 
-    /** @var Filesystem  */
+    /**
+     * @var Filesystem Used to create the file itself and write the content to file.
+     */
     private static $filesystem;
 
-    public static function initializeFileWriter () {
+    /**
+     * Function to initialize the writer and set up the most important class attributes to function properly.
+     */
+    public static function initializeFileWriter(): void
+    {
         if (!self::$initialized) {
 
             if (!self::$filesystem) {
@@ -24,26 +37,38 @@ class ParametersToFileWriter
         }
     }
 
-    public static function writeParametersToFile (
-        array $parametersToWrite,
-        string $downloadDescriptor = null
-    ): string {
-
+    /**
+     * Writes a given associative array of parameters to a file in a yaml format.
+     *
+     * @param array $parametersToWrite An associative, hierarchical array of parameters.
+     * @param string|null $downloadDescriptor A string which determines whether or not the file should be limited to
+     *                                        or viewed in a specific context (favourites, site access, etc.).
+     *
+     * @return string Returns the name of / the path to the file that has been created.
+     */
+    public static function writeParametersToFile(array $parametersToWrite, string $downloadDescriptor = null): string
+    {
         if (!self::$initialized) {
             self::initializeFileWriter();
         }
 
         $temporaryFile = self::$filesystem->tempnam(sys_get_temp_dir(),"parameter_list_", ".yaml");
 
+        // Assemble a new and more readable name for the temporary file that is offered to be downloaded.
         $tmpDir = pathinfo($temporaryFile,PATHINFO_DIRNAME);
         $currentDate = new DateTime();
         $currentDate = $currentDate->format("Y-m-d_H.i");
         $downloadDescriptor = $downloadDescriptor?? "all_parameters";
         $targetName = $tmpDir."/parameter_list_".$downloadDescriptor."_".$currentDate.".yaml";
 
+        // Start the file writing process only when the file does not already exist.
         if (!file_exists($targetName)) {
             if ($temporaryFile) {
-                $siteAccess = $downloadDescriptor === "favourites"? null : $downloadDescriptor;
+                $siteAccess = null;
+                if (!($downloadDescriptor === "favourites" || $downloadDescriptor === "all_parameters")) {
+                    $siteAccess = $downloadDescriptor;
+                }
+
                 self::appendDataPerKey($temporaryFile,$parametersToWrite, $siteAccess);
             }
 
@@ -53,14 +78,21 @@ class ParametersToFileWriter
         return $targetName;
     }
 
-    private static function appendDataPerKey (
-        string $pathToFileToWriteTo,
-        array $parametersToWrite,
-        string $siteAccess = null
-    ) {
+    /**
+     * For every top level key of the given array, the data is collected and written out to the file.
+     * It will employ the top level key to write out the entirety of all sub-arrays / -keys.
+     *
+     * @param string $pathToFileToWriteTo The path to the file that is supposed to be written to.
+     * @param array $parametersToWrite An associative array of parameters to be written out.
+     * @param string|null $siteAccess The site access context in which to print out the parameter keys.
+     */
+    private static function appendDataPerKey (string $pathToFileToWriteTo, array $parametersToWrite, string $siteAccess = null): void
+    {
+        // On the first line, make sure the "parameters"-key is written once.
         self::$filesystem->appendToFile($pathToFileToWriteTo,"parameters:\n");
 
         foreach (array_keys($parametersToWrite) as $key) {
+            // Write out the top level key.
             self::$filesystem->appendToFile($pathToFileToWriteTo,"\n");
             $keyDisplay = $key;
 
@@ -68,17 +100,24 @@ class ParametersToFileWriter
                 $keyDisplay .= ".".$siteAccess;
             }
 
+            // Write out the remaining keys under that top level.
             self::writeSubTree($pathToFileToWriteTo, $parametersToWrite[$key],$keyDisplay);
         }
     }
 
-    private static function writeSubTree (
-        string $pathToFileToWriteTo,
-        array $subTreeToWrite,
-        string $previousKey,
-        bool $valueReached = false,
-        int $numberOfIndents = 0
-    ) {
+    /**
+     * Handles the output to file for the entirety of a multi dimensional associative array structure.
+     * It determines the type of output based on whether the value of a parameter has started and
+     * whether those values include "yaml objects" or simply "yaml lists".
+     *
+     * @param string $pathToFileToWriteTo The path to the file to which to write the output.
+     * @param array $subTreeToWrite The array to be written into the file in a yaml format.
+     * @param string $previousKey The key of the array which came the level above the current.
+     * @param bool $valueReached Whether or not the value of the parameter has been reached.
+     * @param int $numberOfIndents The number of indents to add to the line before writing it out.
+     */
+    private static function writeSubTree (string $pathToFileToWriteTo, array $subTreeToWrite, string $previousKey, bool $valueReached = false, int $numberOfIndents = 0): void
+    {
         foreach ($subTreeToWrite as $parameterKey => $parameterFollowUp) {
             $parameterFollowUpIsArray = is_array($parameterFollowUp);
 
@@ -86,8 +125,20 @@ class ParametersToFileWriter
                 if (is_bool($parameterFollowUp)) {
                     $parameterFollowUp = $parameterFollowUp? "true" : "false";
                 } else {
+                    if ($parameterFollowUp && str_contains($parameterFollowUp,"\"")) {
+                        $parameterFollowUp = str_replace("\"","\\\"",$parameterFollowUp);
+                    }
+
                     $parameterFollowUp = '"'.$parameterFollowUp.'"';
                 }
+            }
+
+            if (preg_match('/^[\'"^£$%&*()}{@#~?><>,|=_+¬-]/', $parameterKey)) {
+                if (str_contains($parameterKey,"\"")) {
+                    $parameterKey = str_replace("\"","\\\"",$parameterKey);
+                }
+
+                $parameterKey = '"'.$parameterKey.'"';
             }
 
             if (!$valueReached) {
@@ -130,21 +181,24 @@ class ParametersToFileWriter
         }
     }
 
-    private static function writeSingleLineKeys (
-        string $parameterKey,
-        string $previousKey,
-        string $output,
-        string $pathToWriteTo
-    ): void
+    /**
+     * Writes a key with or without a value attached to it into a single line in a yaml format.
+     *
+     * @param string $parameterKey The key that is supposed to be added to the file.
+     * @param string $previousKey The key that came before it in the key hierarchy.
+     * @param string $paramValue The value attached to the key to be written out to the file.
+     * @param string $pathToWriteTo The path to the file to write to.
+     */
+    private static function writeSingleLineKeys (string $parameterKey, string $previousKey, string $paramValue, string $pathToWriteTo): void
     {
-        $fileInput = $previousKey . ": " . $output . "\n";
+        $fileInput = $previousKey . ": " . $paramValue . "\n";
 
         if (!$parameterKey === "parameter_value") {
             $parameterKey = $previousKey . "." . $parameterKey;
             $fileInput = $parameterKey. ":\n";
         }
 
-        if ($output) {
+        if ($paramValue) {
             self::$filesystem->appendToFile(
                 $pathToWriteTo,
                 self::buildOutputString(
@@ -155,12 +209,16 @@ class ParametersToFileWriter
         }
     }
 
-    private static function writeMultiLineKeys (
-        string $parameterKey,
-        string $previousKey,
-        array $output,
-        string $pathToWriteTo
-    ): void
+    /**
+     * Writes out a key structure in its entirety to a file. That key structure then does not contain
+     * a value as it rather is responsible for handling hierarchical key structures for the yaml.
+     *
+     * @param string $parameterKey The key that is supposed to be added to the file.
+     * @param string $previousKey The key that came before it in the key hierarchy.
+     * @param array $output The rest of the subtree structure beneath the parameter key.
+     * @param string $pathToWriteTo The path to the file to write to.
+     */
+    private static function writeMultiLineKeys (string $parameterKey, string $previousKey, array $output, string $pathToWriteTo): void
     {
         $valueReached = false;
         $numberOfIndents = 0;
@@ -190,12 +248,15 @@ class ParametersToFileWriter
         );
     }
 
-    private static function writeInlineValues (
-        string $parameterFollowUp,
-        string $pathToFile,
-        int $numberOfIndents,
-        string $parameterKey = ""
-    ): void
+    /**
+     * Write a value that spans only a single line out to the file.
+     *
+     * @param string $parameterFollowUp The parameter value to write out to the file.
+     * @param string $pathToFile The path leading to the file to write out to.
+     * @param int $numberOfIndents The number of indents to be added to the file before it is written out to the yaml file.
+     * @param string $parameterKey The key attached to the value (in the case it is a "yaml object").
+     */
+    private static function writeInlineValues (string $parameterFollowUp, string $pathToFile, int $numberOfIndents, string $parameterKey = ""): void
     {
         $outputString = "{ " . $parameterKey . ": " . $parameterFollowUp . " }\n";
 
@@ -209,12 +270,15 @@ class ParametersToFileWriter
         );
     }
 
-    private static function writeMultiLineValues(
-        array $parameterFollowUp,
-        string $pathToFile,
-        int $numberOfIndents,
-        string $parameterKey = ""
-    ): void
+    /**
+     * Write out values that span multiple lines to the file (lists or multiple objects).
+     *
+     * @param array $parameterFollowUp The value to be written out to the file.
+     * @param string $pathToFile The path to the file to be written to.
+     * @param int $numberOfIndents The number of indents to be added to every written line of the file.
+     * @param string $parameterKey The key attached to the value (is optional and can be empty, which signals a list).
+     */
+    private static function writeMultiLineValues(array $parameterFollowUp, string $pathToFile, int $numberOfIndents, string $parameterKey = ""): void
     {
         if (strlen($parameterKey) > 0) {
             self::$filesystem->appendToFile(
@@ -232,11 +296,17 @@ class ParametersToFileWriter
         );
     }
 
-    private static function buildOutputString (
-        string $input,
-        int $numberOfIndents,
-        bool $isKey = false
-    ): string {
+    /**
+     * Adds various markings and elements of a typical yaml string to the given input in order to create a valid yaml string.
+     *
+     * @param string $input The string to be edited.
+     * @param int $numberOfIndents The number of indents to be placed in front of the given line.
+     * @param bool $isKey An optional boolean stating whether the given string is a key (and only a key).
+     *
+     * @return string Returns the formatted string.
+     */
+    private static function buildOutputString (string $input, int $numberOfIndents, bool $isKey = false): string
+    {
         if (!(strlen(trim($input)) > 0)) {
             return "";
         }

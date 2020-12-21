@@ -20,25 +20,40 @@ use Symfony\Component\Yaml\Parser;
 class ConfigPathUtility
 {
 
-    /** @var string The assortment of file extensions which can be used to configure symfony. */
+    /**
+     * @var string The assortment of file extensions which can be used to configure symfony.
+     */
     private static $configExtensions = "";
 
-    /** @var array Stores all added configuration paths */
+    /**
+     * @var array Stores all added configuration paths
+     */
     private static $configPaths = [];
 
-    /** @var PhpFilesAdapter A cache for the routes that have been determined throughout the previous loading processes. */
+    /**
+     * @var PhpFilesAdapter A cache for the routes that have been determined throughout the previous loading processes.
+     */
     private static $configPathCache;
 
-    /** @var bool States whether it has been tried to retrieve the existing paths from the cache already / the cache has been initialised. */
+    /**
+     * @var bool States whether it has been tried to retrieve the existing paths from the cache already / the cache has been initialised.
+     */
     private static $cacheInitialized = false;
 
-    /** @var bool States whether there has been a change in paths (this only occurs through adding a path (for now)). */
+    /**
+     * @var bool States whether there has been a change in paths (this only occurs through adding a path (for now)).
+     */
     private static $pathsChanged = false;
 
-    /** @var bool This boolean states whether there has been a change to the paths that warrants the kernel and thereby load process to be restarted to include the newly found paths. */
+    /**
+     * @var bool This boolean states whether there has been a change to the paths that warrants the kernel and
+     *           thereby load process to be restarted to include the newly found paths.
+     */
     private static $restartLoadProcess = false;
 
-    /** @var string The directory in which to cache all the routes (in order to prevent the cache from being stored only temporarily) */
+    /**
+     * @var string The directory in which to cache all the routes (in order to prevent the cache from being stored only temporarily)
+     */
     private static $cacheDir = null;
 
     /**
@@ -86,6 +101,7 @@ class ConfigPathUtility
      * <br> But, paths which point to a file / directory which does not exist, are not added to the paths list.
      *
      * @param string $extensionPath The path pointing to a bundle's ExtensionClass.
+     *
      * @return string|null Returns the converted string or null, if the path does not point to the DependencyInjection or a directory which does not exist.
      */
     public static function convertExtensionPathToConfigDirectory(string $extensionPath): ?string
@@ -116,7 +132,7 @@ class ConfigPathUtility
      * that the path list has been changed.
      *
      * @param string $configPath The path to be added to the list.
-     * @param bool $isGlobPattern A boolean stating whether the path is a glob-resource / pattern which will have to be loaded differently from non-glob-pattern.
+     * @param bool $isGlobPattern An (optional) boolean stating whether the path is a glob-resource / pattern which will have to be loaded differently from non-glob-pattern.
      */
     public static function addPathToPathlist(string $configPath, bool $isGlobPattern = true): void
     {
@@ -195,7 +211,9 @@ class ConfigPathUtility
     }
 
     /**
-     * @param string $cacheDir
+     * Sets the cache directory for this class of the bundle, based on the general cache path of the installation.
+     *
+     * @param string $cacheDir The blank, standard cache path of the project.
      */
     public static function setCacheDir(string $cacheDir): void
     {
@@ -217,7 +235,9 @@ class ConfigPathUtility
         $userDefinedConfigPaths = $parser->parseFile($pathToConfigRoutes);
 
         // Are there even parameters set in the file? If not, then just initiate the variable as an empty array
-        $configPaths = (is_array($userDefinedConfigPaths) && key_exists("parameters",$userDefinedConfigPaths))? $userDefinedConfigPaths["parameters"] : [];
+        $configPaths =
+            (is_array($userDefinedConfigPaths) && key_exists("parameters",$userDefinedConfigPaths)) ?
+                $userDefinedConfigPaths["parameters"] : [];
 
         foreach ($configPaths as $pathName => $pathInfo) {
             // First check, whether some basic information is set for the defined routes (to see whether they can be worked with)
@@ -234,6 +254,7 @@ class ConfigPathUtility
      * Checks the user defined paths for any kind of errors with regards to the definition of said paths.
      *
      * @param array $path A path array (hopefully with 3 items under the keys of "path", "glob" and "addConfExt").
+     *
      * @return bool Boolean which states whether the path at least passes the most basic checks regarding their structure.
      */
     private static function checkUserDefinedPath(array $path): bool

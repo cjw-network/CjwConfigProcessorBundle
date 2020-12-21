@@ -7,12 +7,28 @@ namespace CJW\CJWConfigProcessor\Controller;
 use CJW\CJWConfigProcessor\src\LocationAwareConfigLoadBundle\LocationRetrievalCoordinator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * Class ConfigProcessLocationInfoController is a controller designed to enable frontend integration with the retrieving
+ * locations for specific parameters feature.
+ *
+ * @package CJW\CJWConfigProcessor\Controller
+ */
 class ConfigProcessLocationInfoController extends AbstractController
 {
 
+    /**
+     * @var string The directory root of the project.
+     */
     private $projectDir;
 
+    /**
+     * ConfigProcessLocationInfoController constructor.
+     *
+     * @param ContainerInterface $symContainer
+     * @param string $projectDir
+     */
     public function __construct(ContainerInterface $symContainer, string $projectDir)
     {
         $this->projectDir = $projectDir;
@@ -20,7 +36,18 @@ class ConfigProcessLocationInfoController extends AbstractController
         LocationRetrievalCoordinator::initializeCoordinator();
     }
 
-    public function retrieveLocationsForParameter (string $parameter, string $withSiteAccess) {
+    /**
+     * Responsible for determining the location info for a given parameter.
+     *
+     * @param string $parameter The key to the parameter to retrieve locations for.
+     * @param string $withSiteAccess String representation of a boolean to determine, whether to view the parameter key
+     *                               in a site access context.
+     *
+     * @return JsonResponse A json response which includes the paths where the parameter has been found and the values
+     *                      attached to these paths (also site access if set to true).
+     */
+    public function retrieveLocationsForParameter (string $parameter, string $withSiteAccess): JsonResponse
+    {
         $saPresent = ($withSiteAccess && $withSiteAccess !== "false")?? false;
         $group = null;
 

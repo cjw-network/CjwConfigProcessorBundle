@@ -7,17 +7,21 @@ use EzSystems\EzPlatformAdminUi\Menu\MainMenuBuilder;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * If the autoconfigure option is set to false in the service.yaml, then this Menu-Subscriber would have to be registered separately
- * in the yaml as: (under services) (Path to my class): CJW\EventListener\<My Class Name I Gave>: then tags: then - { name: kernel.event.subscriber }
+ * Class ConfigProcessingMenuSubscriber is responsible for adding the config processing view as a tab under the
+ * eZ / Ibexa Platform Backoffice main admin tab list.
+ *
+ * @package CJW\CJWConfigProcessor\EventSubscriber
  */
 class ConfigProcessingMenuSubscriber implements EventSubscriberInterface {
 
     /**
-     * Through this function it is possible for me to get the main menu and perform an action as the menu is being build / as it
-     * has finished building. Thus I am able to inject other menu items.
-     * @return array|array[]
+     * @override
+     * Through this function it is possible to get the main menu and perform an action as the menu is being built / as it
+     * has finished building.
+     *
+     * @return array|array[] Returns an array that states on what event the the menu functionality should be triggered.
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             ConfigureMenuEvent::MAIN_MENU => ["onMenuConfigure",0],
@@ -25,29 +29,14 @@ class ConfigProcessingMenuSubscriber implements EventSubscriberInterface {
     }
 
     /**
+     * @override
      * This function is being called as soon as the ConfigureMenuEvent regarding the Main Menu has fired / the
-     * Subscriber has noticed it firing. In this function I am able to not only get the main menu as an object but also to
-     * influence and actively change the menu.
+     * Subscriber has noticed it firing.
+     *
      * @param ConfigureMenuEvent $event
      */
     public function onMenuConfigure(ConfigureMenuEvent $event) {
         $menu = $event->getMenu();
-
-//        $menu->addChild(
-//            "menu_item1",
-//            [
-//                "label" => "CJWConfigProcessor-Bundle-Functions", "extras" => ["icon" => "file"]
-//            ]
-//        );
-
-//        $menu["menu_item1"]->addChild(
-//            "2nd_level_menu_item",
-//            [
-//                "label" => "Config Processing View",
-//                "uri" => "/admin/cjw/config-processing",
-//                "extras" => ["icon" => "article"],
-//            ]
-//        );
 
         if (!isset($menu[MainMenuBuilder::ITEM_ADMIN])) {
             return;
@@ -61,18 +50,5 @@ class ConfigProcessingMenuSubscriber implements EventSubscriberInterface {
                 "extras" => ["icon" => "list"],
             ]
         );
-
-//        $menu["menu_item1"]->addChild(
-//            "template_test_menu_item",
-//            [
-//                "label" => "Template Test Item",
-//                "extras" => [
-//                    "template" => "admin_ui/menu_item_template.html.twig",
-//                    "template_parameters" => [
-//                        "custom_parameter" => "value",
-//                    ],
-//                ],
-//            ],
-//        );
     }
 }

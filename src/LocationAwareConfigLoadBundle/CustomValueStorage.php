@@ -46,7 +46,7 @@ class CustomValueStorage
      * overwritten and the first value is **not** stored separately in the array.
      *
      * @param string $parameterName The name of the parameter to add. This serves as a key for the then following entries into the array.
-     * @param mixed $value The value attached to both the parametername and then the given path as well. It is going to be added under path-key as an entry of the array.
+     * @param mixed $value The value attached to both the parameter name and then the given path as well. It is going to be added under path-key as an entry of the array.
      * @param string $path The path (the origin) of the parameter value that is being set. It serves as a key under the parameter-key of the array.
      */
     public static function addParameterOrLocation(string $parameterName, $value, string $path): void

@@ -10,9 +10,15 @@ use EzSystems\EzPlatformAdminUi\Menu\MenuItemFactory;
 use Knp\Menu\ItemInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * Class RightSideBarSiteAccessComparisonMenuBuilder is responsible for building the right sidebar menu for the
+ * bundle frontend.
+ *
+ * @package CJW\CJWConfigProcessor\EventSubscriber
+ */
 class RightSideBarSiteAccessComparisonMenuBuilder extends AbstractBuilder
 {
-
+    /* Menu Item */
     const ITEM__SINGLE_SITEACCESS_VIEW = 'Single Site Access View';
     const ITEM__NORMAL_COMPARISON_VIEW = 'Default Comparison';
     const ITEM__COMMON_PARAMETERS_VIEW = 'Commons Comparison';
@@ -20,16 +26,33 @@ class RightSideBarSiteAccessComparisonMenuBuilder extends AbstractBuilder
     const ITEM__HIGHLIGHT_DIFFERENCES = 'Highlight Differences';
     const ITEM__SYNCHRONOUS_SCROLLING = 'Synchronous Scrolling';
 
+    /**
+     * RightSideBarSiteAccessComparisonMenuBuilder constructor.
+     *
+     * @param MenuItemFactory $factory
+     * @param EventDispatcherInterface $eventDispatcher
+     */
     public function __construct(MenuItemFactory $factory, EventDispatcherInterface $eventDispatcher)
     {
         parent::__construct($factory, $eventDispatcher);
     }
 
+    /**
+     * @override
+     * @return string
+     */
     protected function getConfigureEventName(): string
     {
         return ConfigureMenuEvent::CONTENT_SIDEBAR_RIGHT;
     }
 
+    /**
+     * @override
+     *
+     * @param array $options
+     *
+     * @return ItemInterface
+     */
     protected function createStructure(array $options): ItemInterface
     {
         $menu = $this->factory->createItem('root');
@@ -43,7 +66,7 @@ class RightSideBarSiteAccessComparisonMenuBuilder extends AbstractBuilder
                         'attributes' => [
                             'class' => 'ez-btn--reveal',
                             'data-actions' => 'change view',
-                            "cjw_id" => "cjw_single_sa_view"
+                            "cjw_id" => "cjw_single_sa_view",
                         ],
                     ]
                 ),
@@ -54,7 +77,7 @@ class RightSideBarSiteAccessComparisonMenuBuilder extends AbstractBuilder
                         'attributes' => [
                             'class' => 'ez-btn--reveal',
                             'data-actions' => 'change view',
-                            "cjw_id" => "cjw_show_normal_comparison"
+                            "cjw_id" => "cjw_show_normal_comparison",
                         ],
                     ]
                 ),

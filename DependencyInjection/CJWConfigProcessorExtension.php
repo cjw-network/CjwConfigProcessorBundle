@@ -4,6 +4,7 @@
 namespace CJW\CJWConfigProcessor\DependencyInjection;
 
 
+use Exception;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
@@ -13,6 +14,15 @@ use Symfony\Component\Config\FileLocator;
 class CJWConfigProcessorExtension extends Extension
 {
 
+    /**
+     * @override
+     * Standard Symfony extension loading function.
+     *
+     * @param array $configs
+     * @param ContainerBuilder $container
+     *
+     * @throws Exception
+     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new Loader\YamlFileLoader( $container, new FileLocator(__DIR__ . '/../Resources/config') );
@@ -24,7 +34,14 @@ class CJWConfigProcessorExtension extends Extension
         $this->handleFavouriteParamConfig($config, $container);
     }
 
-    private function handleCustomParamConfig (array $config, ContainerBuilder $container) {
+    /**
+     * Responsible for handling the configuration specifically for the custom parameters feature.
+     *
+     * @param array $config The configuration array to be parsed into actual container parameters.
+     * @param ContainerBuilder $container The container to add the parameters to.
+     */
+    private function handleCustomParamConfig (array $config, ContainerBuilder $container)
+    {
         if (!isset($config["custom_site_access_parameters"])) {
             $allowParameters = false;
             $scanParameters = false;
@@ -38,7 +55,14 @@ class CJWConfigProcessorExtension extends Extension
         $container->setParameter("cjw.custom_site_access_parameters.scan_parameters", $scanParameters);
     }
 
-    private function handleFavouriteParamConfig (array $config, ContainerBuilder $container) {
+    /**
+     * Responsible for handling the configuration specifically for the favourite parameters feature.
+     *
+     * @param array $config The configuration array to be parsed into actual container parameters.
+     * @param ContainerBuilder $container The container to add the parameters to.
+     */
+    private function handleFavouriteParamConfig (array $config, ContainerBuilder $container)
+    {
         if (!isset($config["favourite_parameters"])) {
             $allowParameters = false;
             $scanParameters = false;
