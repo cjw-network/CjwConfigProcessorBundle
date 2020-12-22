@@ -326,33 +326,32 @@ class ConfigProcessController extends AbstractController
      * Allows to determine a specific list of parameters to be brought into a file representation and
      * made available for download by the user.
      *
-     * @param string $downloadDenominator A string which determines which parameters are supposed to be written to
+     * @param string $downloadDescriptor A string which determines which parameters are supposed to be written to
      *                                    a file ("all_parameters" = all parameters, "favourites" = only favourites,
      *                                    "[site access]" all parameters for that site access).
      *
      * @return BinaryFileResponse Returns the file which has been created through the selected parameters.
      */
-    public function downloadParameterListAsTextFile($downloadDenominator): BinaryFileResponse
+    public function downloadParameterListAsTextFile($downloadDescriptor): BinaryFileResponse
     {
         try {
-            if ($downloadDenominator === "all_parameters") {
+            if ($downloadDescriptor === "all_parameters") {
                 $resultingFile = ParametersToFileWriter::writeParametersToFile(
                     ConfigProcessCoordinator::getProcessedParameters(),
-                    $downloadDenominator
                 );
-            } else if ($downloadDenominator === "favourites") {
+            } else if ($downloadDescriptor === "favourites") {
                 $resultingFile = ParametersToFileWriter::writeParametersToFile(
                     FavouritesParamCoordinator::getFavourites(
                         ConfigProcessCoordinator::getProcessedParameters()
                     ),
-                    $downloadDenominator
+                    $downloadDescriptor
                 );
             } else {
                 $resultingFile = ParametersToFileWriter::writeParametersToFile(
                     ConfigProcessCoordinator::getParametersForSiteAccess(
-                        $downloadDenominator
+                        $downloadDescriptor
                     ),
-                    $downloadDenominator
+                    $downloadDescriptor
                 );
             }
         } catch (InvalidArgumentException | Exception $error) {

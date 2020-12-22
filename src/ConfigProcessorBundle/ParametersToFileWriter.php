@@ -41,7 +41,8 @@ class ParametersToFileWriter
      * Writes a given associative array of parameters to a file in a yaml format.
      *
      * @param array $parametersToWrite An associative, hierarchical array of parameters.
-     * @param string $downloadDescriptor A string which determines whether or not the file should be limited or viewed in a specific context (favourites, site access, etc.).
+     * @param string $downloadDescriptor A string which determines whether or not the file should be limited to
+     *                                   or viewed in a specific context (favourites, site access, etc.).
      *
      * @return string Returns the name of / the path to the file that has been created.
      */
@@ -63,7 +64,11 @@ class ParametersToFileWriter
         // Start the file writing process only when the file does not already exist.
         if (!file_exists($targetName)) {
             if ($temporaryFile) {
-                $siteAccess = $downloadDescriptor === "favourites"? null : $downloadDescriptor;
+                $siteAccess = null;
+                if (!($downloadDescriptor === "favourites" || $downloadDescriptor === "all_parameters")) {
+                    $siteAccess = $downloadDescriptor;
+                }
+
                 self::appendDataPerKey($temporaryFile,$parametersToWrite, $siteAccess);
             }
 
@@ -117,12 +122,30 @@ class ParametersToFileWriter
             $parameterFollowUpIsArray = is_array($parameterFollowUp);
 
             if (!$parameterFollowUpIsArray) {
+                // Is the value a boolean, then create a string representation in order to allow it to be written out to yaml without issue.
                 if (is_bool($parameterFollowUp)) {
                     $parameterFollowUp = $parameterFollowUp? "true" : "false";
                 } else {
+                    // If the special character '"' is included (which cannot be used as is in yaml) escape the character.
+                    if ($parameterFollowUp && str_contains($parameterFollowUp,"\"")) {
+                        $parameterFollowUp = str_replace("\"","\\\"",$parameterFollowUp);
+                    }
+
+                    // To ensure that most characters and longer lines are properly escaped and wrapped from the start, enclose the string in quotes.
                     $parameterFollowUp = '"'.$parameterFollowUp.'"';
                 }
             }
+
+            // Ensure that no special characters are used as parameter keys and if they are, properly escape them.
+            if (preg_match('/^[\'"^£$%&*()}{@#~?><,|=_+¬-]/', $parameterKey)) {
+                // The quote needs to be additionally escaped to be usable as a key.
+                if (str_contains($parameterKey,"\"")) {
+                    $parameterKey = str_replace("\"","\\\"",$parameterKey);
+                }
+
+                $parameterKey = '"'.$parameterKey.'"';
+            }
+
 
             if (!$valueReached) {
                 if ($parameterFollowUpIsArray) {
