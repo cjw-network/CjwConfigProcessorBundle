@@ -14,7 +14,11 @@
   and easily and should be aware of every used file for configuration except for the custom bundle config
   which is conducted by the bundles themselves.
 
-* More and more detailed documentation.
+* More (and more detailed) documentation.
+
+* Fixed an issue where for resources outside the project structure, the paths would be
+  cut badly (it was tried to cut the project directory out of the path which didn't feature
+  the directory), leading to false paths in the frontend.
 
 ## 3.0 (11.12.2020)
 

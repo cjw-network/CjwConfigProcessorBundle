@@ -122,18 +122,23 @@ class ParametersToFileWriter
             $parameterFollowUpIsArray = is_array($parameterFollowUp);
 
             if (!$parameterFollowUpIsArray) {
+                // Is the value a boolean, then create a string representation in order to allow it to be written out to yaml without issue.
                 if (is_bool($parameterFollowUp)) {
                     $parameterFollowUp = $parameterFollowUp? "true" : "false";
                 } else {
+                    // If the special character '"' is included (which cannot be used as is in yaml) escape the character.
                     if ($parameterFollowUp && str_contains($parameterFollowUp,"\"")) {
                         $parameterFollowUp = str_replace("\"","\\\"",$parameterFollowUp);
                     }
 
+                    // To ensure that most characters and longer lines are properly escaped and wrapped from the start, enclose the string in quotes.
                     $parameterFollowUp = '"'.$parameterFollowUp.'"';
                 }
             }
 
-            if (preg_match('/^[\'"^£$%&*()}{@#~?><>,|=_+¬-]/', $parameterKey)) {
+            // Ensure that no special characters are used as parameter keys and if they are, properly escape them.
+            if (preg_match('/^[\'"^£$%&*()}{@#~?><,|=_+¬-]/', $parameterKey)) {
+                // The quote needs to be additionally escaped to be usable as a key.
                 if (str_contains($parameterKey,"\"")) {
                     $parameterKey = str_replace("\"","\\\"",$parameterKey);
                 }
