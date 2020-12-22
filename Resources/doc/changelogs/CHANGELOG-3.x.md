@@ -14,6 +14,10 @@
   and easily and should be aware of every used file for configuration except for the custom bundle config
   which is conducted by the bundles themselves.
 
+* Fixed issues with the file representations of parameter lists, where special characters being
+  used in keys or values would cause issues and produce invalid yaml. These are now automatically
+  escaped and should result in valid yaml files.
+
 * More (and more detailed) documentation.
 
 * Fixed an issue where for resources outside the project structure, the paths would be
