@@ -119,8 +119,7 @@ class ConfigPathUtility
             if (file_exists($configDirPath.DIRECTORY_SEPARATOR."Resources".DIRECTORY_SEPARATOR."config")) {
                 $configDirPath = $configDirPath.DIRECTORY_SEPARATOR."Resources".DIRECTORY_SEPARATOR."config".DIRECTORY_SEPARATOR;
                 break;
-            } else if (file_exists($configDirPath.DIRECTORY_SEPARATOR."config")) {
-                $configDirPath = $configDirPath.DIRECTORY_SEPARATOR."config".DIRECTORY_SEPARATOR;
+            } else if (file_exists($configDirPath.DIRECTORY_SEPARATOR."composer.json")) {
                 break;
             }
 
