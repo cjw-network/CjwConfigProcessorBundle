@@ -50,7 +50,7 @@ cjw_config_processing.remove_favourites:
     _methods: [POST]
 
 cjw_config_processing.download_parameters:
-  path: /cjw/config-processing/parameter_list/download/{downloadDenominator}
+  path: /cjw/config-processing/parameter_list/download/{downloadDescriptor}
   defaults:
     _controller: cjw_config_processor.controller:downloadParameterListAsTextFile
     _methods: [GET]
