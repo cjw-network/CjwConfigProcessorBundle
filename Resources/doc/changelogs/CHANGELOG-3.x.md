@@ -1,6 +1,6 @@
 # CJW-Network ConfigProcessor Bundle 3.x changelog
 
-## 3.0.1 (xx.12.2020)
+## 3.0.1 (23.12.2020)
 
 * Fixed an issue with difference highlighting: When the state was saved in the url,
   the highlighting would trigger immediately before any other JS had loaded which caused
@@ -23,6 +23,12 @@
 * Fixed an issue where for resources outside the project structure, the paths would be
   cut badly (it was tried to cut the project directory out of the path which didn't feature
   the directory), leading to false paths in the frontend.
+
+* Fixed an issue with config path retrieval for bundles outside the vendor directory,
+  where the general config directory would be found and added to the list of custom paths,
+  leading to immense loading times and endless loops of configuration, which would often amount
+  to an error
+
 
 ## 3.0 (11.12.2020)
 
