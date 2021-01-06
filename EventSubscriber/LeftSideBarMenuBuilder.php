@@ -21,9 +21,10 @@ class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationConta
 {
 
     /* Menu items */
-    const ITEM__PARAMETERLIST = 'All Parameters';
+    const ITEM__PARAMETER_LIST = 'All Parameters';
     const ITEM__PARAMETER_LIST_SITE_ACCESS = 'Site Access Parameters';
     const ITEM__PARAMETER_LIST_FAVOURITES = 'Favourite Parameters';
+    const ITEM__PARAMETER_LIST_ENV = "Environmental Parameters";
 
     /**
      * LeftSideBarMenuBuilder constructor.
@@ -63,8 +64,8 @@ class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationConta
                     "extras" => ["icon" => "view-list"],
                 ]
             ),
-            self::ITEM__PARAMETERLIST => $this->createMenuItem(
-                self::ITEM__PARAMETERLIST,
+            self::ITEM__PARAMETER_LIST => $this->createMenuItem(
+                self::ITEM__PARAMETER_LIST,
                 [
                     "route" => "cjw_config_processing.param_list",
                     "extras" => ["icon" => "list"],
@@ -75,6 +76,13 @@ class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationConta
                 [
                     "route" => "cjw_config_processing.param_list_favourites",
                     "extras" => ["icon" => "bookmark-manager"],
+                ]
+            ),
+            self::ITEM__PARAMETER_LIST_ENV => $this->createMenuItem(
+                self::ITEM__PARAMETER_LIST_ENV,
+                [
+                    "route" => "cjw_config_processing.param_list_environmental",
+                    "extras" => ["icon" => "contentlist"],
                 ]
             ),
         ];
@@ -91,7 +99,7 @@ class LeftSideBarMenuBuilder extends AbstractBuilder implements TranslationConta
     public static function getTranslationMessages(): array
     {
         return [
-            (new Message(self::ITEM__PARAMETERLIST,"menu"))->setDesc("Parameter List"),
+            (new Message(self::ITEM__PARAMETER_LIST,"menu"))->setDesc("Parameter List"),
             (new Message(self::ITEM__PARAMETER_LIST_SITE_ACCESS, "menu"))->setDesc("Parameter List Site Access")
         ];
     }

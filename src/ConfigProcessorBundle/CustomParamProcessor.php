@@ -4,6 +4,7 @@
 namespace CJW\CJWConfigProcessor\src\ConfigProcessorBundle;
 
 
+use Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -12,6 +13,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * the parameters (also when it comes to site accesses).
  *
  * @package CJW\CJWConfigProcessor\src\ConfigProcessorBundle
+ *
+ * TODO: Replace the class wide list of site accesses to filter for with a list that can be given dynamically by someone
+ *       calling the class or the method.
  */
 class CustomParamProcessor
 {
@@ -35,6 +39,19 @@ class CustomParamProcessor
 
         if ($this->symContainer) {
             $this->constructListOfAllSiteAccesses();
+        }
+    }
+
+    /**
+     * Allows the site access list for which to potentially filter the parameters to be set after constructing the
+     * class.
+     *
+     * @param array $siteAccessList The list of site accesses to filter to be set as filters.
+     */
+    public function setSiteAccessList (array $siteAccessList): void
+    {
+        if (count($siteAccessList) > 0) {
+            $this->currentActiveSiteAccessList = $siteAccessList;
         }
     }
 
@@ -124,9 +141,15 @@ class CustomParamProcessor
      * @param array $parametersToBeProcessed Associative, hierarchical array of parameter keys for which to determine the values.
      *
      * @return array Returns the resulting parameter array after the separate site access processing operation.
+     *
+     * @throws Exception Throws an exception, when trying to filter without any site accesses to filter for.
      */
     public function scanAndEditForSiteAccessDependency (array $parametersToBeProcessed): array
     {
+        if (count($this->currentActiveSiteAccessList) === 0) {
+            throw new Exception("Cannot filter parameter list for site accesses, because no site accesses to filter for have been given.");
+        }
+
         // First determine which of the given parameters might be site access dependent and store them in a separate array.
         $possiblySiteAccessDependentParameters =
             $this->getAllPossiblySiteAccessDependentParameters($parametersToBeProcessed);
