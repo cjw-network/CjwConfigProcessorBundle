@@ -9,6 +9,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -60,9 +61,18 @@ class ProcessedConfigOutputCommand extends Command
 
    If the site access and the parameter name option are given at the same time, the filtered and narrowed list will be
    viewed under site access context (not the complete list).
+
+   To better read and format the output it is advised to pipe the output of this command to "LESS", if you are using an
+   ubuntu operating system.
+
+   Example: "php bin/console cjw:output-config | less"
+
+   Then you can scroll more easily through the output and the output is present in an other context that can be quitted
+   with "q", so that the console is not spammed with the command output. Then you can also search something by typing "/"
+   and then the search word + enter key.
   EOD
             )
-            // TODO: Turn paramname into an array, so that multiple branches can be fltered for.
+            // TODO: Turn paramname into an array, so that multiple branches can be filtered for.
             ->addOption(
                 "paramname",
                 "p",
@@ -80,9 +90,10 @@ class ProcessedConfigOutputCommand extends Command
     }
 
     /**
+     * @override
      * Controls the commands execution.
      *
-     * @param InputInterface $input The input the user can give to the command.
+     * @param InputInterface $input The input the user can provide to the command.
      * @param OutputInterface $output Controls the output that is supposed to be written out to the user.
      *
      * @return int Returns the execution status code.
@@ -91,6 +102,7 @@ class ProcessedConfigOutputCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $ioStyler = new SymfonyStyle($input, $output);
         $siteAccessContext = $input->getOption("siteaccess-context");
         $filterParameters = $input->getOption("paramname");
 
@@ -106,15 +118,25 @@ class ProcessedConfigOutputCommand extends Command
             if (!$filterParameters) {
                 $processedParameters = ConfigProcessCoordinator::getParametersForSiteAccess($siteAccess);
             } else  {
-                $this->customParameterProcessor->setSiteAccessList([$siteAccess]);
+                $siteAccess = ConfigProcessCoordinator::getSiteAccessListForController($siteAccess);
+                $this->customParameterProcessor->setSiteAccessList($siteAccess);
                 $processedParameters = $this->customParameterProcessor->scanAndEditForSiteAccessDependency($processedParameters);
             }
         }
 
-        $this->outputArray($output,$processedParameters);
+        $ioStyler->note([
+            "The command will run with the following options:",
+            "SiteAccess: ". $siteAccessContext?? "none",
+            "Parameter filter: ". $filterParameters?? "none",
+        ]);
+
+        if ($this->outputArray($output,$processedParameters)) {
+            $ioStyler->success("Command ran successfully.");
+        } else {
+            $ioStyler->error("No parameters could be found for these options.");
+        }
 
         return self::SUCCESS;
-
     }
 
     /**
@@ -123,12 +145,13 @@ class ProcessedConfigOutputCommand extends Command
      * @param OutputInterface $output The interface used to output the contents of the array.
      * @param array $parameters The array to be output.
      * @param int $indents The number of indents to be added in front of the output lines.
+     *
+     * @return bool Returns boolean stating whether parameters could successfully be found and output or not.
      */
-    private function outputArray(OutputInterface $output, array $parameters, int $indents = 0): void
+    private function outputArray(OutputInterface $output, array $parameters, int $indents = 0): bool
     {
         if (count($parameters) === 0) {
-            $output->writeln("No parameters could be found for these options.");
-            return;
+            return false;
         }
 
         foreach ($parameters as $key => $parameter) {
@@ -137,10 +160,8 @@ class ProcessedConfigOutputCommand extends Command
             $output->write($key.": ");
             if (is_array($parameter)) {
                 if ( count($parameter) > 0) {
-//                    $output->write("\n".str_repeat(" ", $indents)."["."\n");
                     $output->write(str_repeat(" ", $indents)."\n");
                     $this->outputArray($output,$parameter, $indents+4);
-//                    $output->write(str_repeat(" ", $indents)."]"."\n");
                     $output->write(str_repeat(" ", $indents)."\n");
                 } else {
                     $output->writeln(" ");
@@ -149,5 +170,7 @@ class ProcessedConfigOutputCommand extends Command
                 $output->writeln($parameter);
             }
         }
+
+        return true;
     }
 }

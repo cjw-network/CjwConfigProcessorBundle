@@ -45,13 +45,7 @@ class ConfigProcessController extends AbstractController
     {
         $this->container = $symContainer;
         ConfigProcessCoordinator::initializeCoordinator($symContainer,$ezConfigResolver,$symRequestStack);
-
-//        if (
-//            $this->container->getParameter("cjw.favourite_parameters.allow") === true ||
-//            $this->container->getParameter("cjw.custom_site_access_parameters.active") === true
-//        ) {
-            FavouritesParamCoordinator::initialize($this->container);
-//        }
+        FavouritesParamCoordinator::initialize($this->container);
 
         $this->showFavouritesOutsideDedicatedView =
             $this->container->getParameter("cjw.favourite_parameters.display_everywhere");

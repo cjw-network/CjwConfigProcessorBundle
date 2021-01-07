@@ -56,3 +56,8 @@ services:
       [ "@service_container", "@ezpublish.config.resolver", "@request_stack" ]
     tags:
       - { name: console.command }
+
+  cjw_config_processing.command.output_locations:
+    class: CJW\CJWConfigProcessor\Command\ConfigLocationOutputCommand
+    tags:
+      - { name: console.command }

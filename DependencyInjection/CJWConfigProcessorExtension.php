@@ -36,7 +36,7 @@ class CJWConfigProcessorExtension extends Extension
         if (isset($config["env_variables"]["allow"])) {
             $container->setParameter("cjw.env_variables.allow",$config["env_variables"]["allow"]);
         } else {
-            $container->setParameter("cjw.env_variables.allow", false);
+            $container->setParameter("cjw.env_variables.allow", true);
         }
     }
 
