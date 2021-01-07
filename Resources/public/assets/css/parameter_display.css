@@ -39,6 +39,7 @@
     margin-bottom: 4px;
     text-indent: 20px;
     color: green;
+    word-break: break-word;
 }
 
 .param_list_values:not(.inline_value):hover {

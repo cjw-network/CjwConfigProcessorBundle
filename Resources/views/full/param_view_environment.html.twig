@@ -1,0 +1,64 @@
+{% extends "@CJWConfigProcessor/pagelayout.html.twig" %}
+
+{% block line_template_stylesheets %}
+    <link rel="stylesheet" href={{ asset("bundles/cjwconfigprocessor/assets/css/parameter_display.css") }}>
+{% endblock %}
+
+{% block child_help_text %}
+    {% set locale = app.request.getLocale() %}
+    {% set context = "param_view_env_variables_overview" %}
+    {{ getHelpText(context, locale)|raw }}
+{% endblock %}
+
+{% block param_breadcrumbs %}
+    <li class="breadcrumb-item">Admin</li>
+    <li class="breadcrumb-item">CJW Config Processing</li>
+    <li class="breadcrumb-item active">Environmental Parameterlist</li>
+{% endblock %}
+
+{% block param_title_and_icon %}
+    <h1 class="ez-page-title__content-name">
+        Parameterlist: Environment Parameters
+    </h1>
+{% endblock %}
+
+{% block help_teaser %}
+    <span>
+        Shows env-variables of the server. Can be used in yaml with for example: %cache_pool%.
+        {{ parent() }}
+    </span>
+{% endblock %}
+
+{% block param_content %}
+    <div class="param_list env_params tab-content container mt-4 px-5">
+        <div class="ez-table-header ez-sticky-container cjw_table_head_with_searchbar">
+            <div class="ez-table-header__headline">
+                Environmental Parameters
+            </div>
+            {% block search_bar %}
+                {{ parent() }}
+            {% endblock %}
+            <div class="m-sub-items__actions">
+                <button id="global_open_subtree" class="c-action-btn c-action-btn--reveal" title="open key-tree">
+                    <svg class="ez-icon ez-icon--medium-large">
+                        <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#copy-subtree"></use>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <svg class="ez-icon ez-icon--large" id="loading_circle">
+            <use xlink:href="/bundles/ezplatformadminui/img/ez-icons.svg#spinner"></use>
+        </svg>
+        {% include '@CJWConfigProcessor/line/recursive_param_resolution/_recursive_param_resolver.html.twig' ignore missing with {"parameters" : parameterList} only %}
+    </div>
+{% endblock %}
+
+{% block line_template_javascripts %}
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/ParameterDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/ParameterBranchDisplay.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/ParameterLocationRetrieval.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/DownloadParametersUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/FavourButtonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/auxiliaryButtons/CopyButtonUtility.js") }}></script>
+    <script src={{ asset("bundles/cjwconfigprocessor/assets/js/parameterDisplay/FavouritesHandlingUtility.js") }}></script>
+{% endblock %}

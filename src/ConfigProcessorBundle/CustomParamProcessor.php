@@ -4,6 +4,7 @@
 namespace CJW\CJWConfigProcessor\src\ConfigProcessorBundle;
 
 
+use Exception;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -35,6 +36,19 @@ class CustomParamProcessor
 
         if ($this->symContainer) {
             $this->constructListOfAllSiteAccesses();
+        }
+    }
+
+    /**
+     * Allows the site access list for which to potentially filter the parameters to be set after constructing the
+     * class.
+     *
+     * @param array $siteAccessList The list of site accesses to filter to be set as filters.
+     */
+    public function setSiteAccessList (array $siteAccessList)
+    {
+        if (count($siteAccessList) > 0) {
+            $this->currentActiveSiteAccessList = $siteAccessList;
         }
     }
 
@@ -74,7 +88,7 @@ class CustomParamProcessor
 
     /**
      * Takes a list of parameter keys (as strings) and checks them for any potential site access segments within the
-     * keys. If such segments are found, then the parameter and that segment will be redone for every possible
+     * keys. If such segments are found, then the parameter and that segment will be recreated for every possible
      * site access of the installation and added to the original list of keys.
      *
      * @param array $keysToBeProcessed Array of (string) keys of parameters.
@@ -119,14 +133,20 @@ class CustomParamProcessor
      *
      * <br>Example: When searching for test.admin.parameter, there might not be a value for site access admin, then it could
      * be set under default, global, admin_group or any other site access from that hierarchy and so the value of
-     * the highest site access in that hierarchy is determined (global before any other, then the group and lasty default)
+     * the highest site access in that hierarchy is determined (global before any other, then the group and lastly default)
      *
      * @param array $parametersToBeProcessed Associative, hierarchical array of parameter keys for which to determine the values.
      *
      * @return array Returns the resulting parameter array after the separate site access processing operation.
+     *
+     * @throws Exception Throws an exception, when trying to filter without any site accesses to filter for.
      */
     public function scanAndEditForSiteAccessDependency (array $parametersToBeProcessed)
     {
+        if (count($this->currentActiveSiteAccessList) === 0) {
+            throw new Exception("Cannot filter parameter list for site accesses, because no site accesses to filter for have been given.");
+        }
+
         // First determine which of the given parameters might be site access dependent and store them in a separate array.
         $possiblySiteAccessDependentParameters =
             $this->getAllPossiblySiteAccessDependentParameters($parametersToBeProcessed);

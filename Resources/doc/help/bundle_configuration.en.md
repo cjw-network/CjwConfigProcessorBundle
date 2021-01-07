@@ -3,12 +3,14 @@
 This file is supposed to deliver a detailed look at how to configure the bundle via
 yaml settings.
 
+-----
 ## Purpose of the config
 
 As with many bundles for the Symfony framework, it is possible to configure a few
 behaviours of the bundle to your liking via specific configuration made in a yaml file
 in the config directory of your installation.
 
+-----
 ## Configuration Overview
 
 ```yaml
@@ -30,6 +32,9 @@ cjw_config_processor:
       - "parameter2.broader"
       - "parameter3"
       - "parameter2.others"
+
+  env_variables:
+    allow: true
 ```
 
 The above settings are the complete set of possible settings for the bundle. It is
@@ -43,6 +48,7 @@ cjw_config_processor:
 This first line however does not require more in depth discussion as it simply serves as
 the identifier for Symfony to signal that the following lines should be given to the bundle.
 
+-----
 ### The "Custom Site Access Parameters"
 
 The purpose of the custom site access parameters is to allow the potential user of the bundle
@@ -96,7 +102,7 @@ them in addition to the specific site access parameters.
      parameters:
       - "parameter1"
       - "parameter2.with.more.parts"
-      - "parameter3.parts"  
+      - "parameter3.parts"
     ```
 
   This option marks the actual heart of the feature: Everything listed under this key
@@ -113,7 +119,7 @@ them in addition to the specific site access parameters.
 
     ```yaml
       parameters:
-       - "ezdesign" 
+       - "ezdesign"
       # This is the top most level of the parameter tree, as a result the entire "ezdesign" tree will be added
     ```
 
@@ -143,6 +149,7 @@ them in addition to the specific site access parameters.
   **If the user adds paths or keys that don't exist in the configuration of your Symfony
   application, then they will be ignored. So make sure to provide valid and correct paths.**
 
+-----
 ### "Favourite Parameters"
 
 The purpose of this option is to allow the user of the bundle to **filter the list of parameters**
@@ -220,7 +227,7 @@ context.
 
     ```yaml
       parameters:
-       - "ezdesign" 
+       - "ezdesign"
       # This is the top most level of the parameter tree, as a result the entire "ezdesign" tree will be added
     ```
 
@@ -249,3 +256,36 @@ context.
 
   **If the user adds paths or keys that don't exist in the configuration of your Symfony
   application, then they will be ignored. So make sure to provide valid and correct paths.**
+
+-----
+### "Environmental Variables"
+
+The purpose of this view is to display the environmental parameters, which are typically "hidden" in
+a standard Symfony in a more convenient way, since they often feature configuration for the application.
+
+Since this configuration might contain sensitive information, or the user simply does not require it
+to be visible, the bundle offers a way to disable that information.
+
+* env variables:
+
+    ```yaml
+      env_variables:
+    ```
+
+  This line simply signals that the configuration following it, will concern the environment
+  variables display feature of the bundle. The rest of the following configuration must follow
+  that upper key.
+
+* allow:
+
+    ```yaml
+        allow: true
+    ```
+
+  This option is used to turn the feature on or off. As a result, it can be set to either `true`
+  or `false`.
+
+    * `True` - Setting the option to true will enable the feature, and the variables will be visible #
+      in their dedicated view. This is the standard value of the option.
+    * `False` - Setting the option to false will turn the feature off and although the dedicated view
+      will still be accessible, it will remain empty.

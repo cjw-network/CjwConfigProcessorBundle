@@ -55,6 +55,12 @@ cjw_config_processing.download_parameters:
     _controller: cjw_config_processor.controller:downloadParameterListAsTextFile
     _methods: [GET]
 
+cjw_config_processing.param_list_environmental:
+  path: /cjw/config-processing/parameter_list/environmental
+  defaults:
+    _controller: cjw_config_processor.controller:getEnvironmentalVariables
+    _methods: [GET]
+
 # Location Retrieval from different controller:
 cjw_config_processing.location_retrieval:
   path: /cjw/config-processing/parameter_locations/{parameter}/{withSiteAccess}

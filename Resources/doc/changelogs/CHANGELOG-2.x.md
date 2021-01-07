@@ -1,5 +1,22 @@
 # CJW-Network ConfigProcessor Bundle 2.x changelog
 
+## 2.1.0 (xx.01.2020)
+
+* Added Symfony console command to display the processed configuration in the console. This command
+  also allows the user to specify site access context and / or filter the parameters for specific
+  subtrees to customize the command execution and output.
+
+* Fixed error, where when turning off the favourite feature, an error would be thrown in the bundle.
+
+* Updated documentation.
+
+* Added display of environmental parameters, and their values in a dedicated view.
+
+* Added additional configuration for the new feature.
+
+* Updated CustomParamProcessor to allow more dynamic setting of the site access to filter for with the
+  custom parameters.
+
 ## 2.0.1 (xx.12.2020)
 
 * Adapted the custom kernel boot process to make the location retrieval functionality

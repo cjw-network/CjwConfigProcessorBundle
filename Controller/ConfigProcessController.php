@@ -45,13 +45,7 @@ class ConfigProcessController extends AbstractController
     {
         $this->container = $symContainer;
         ConfigProcessCoordinator::initializeCoordinator($symContainer,$ezConfigResolver,$symRequestStack);
-
-        if (
-            $this->container->getParameter("cjw.favourite_parameters.allow") === true ||
-            $this->container->getParameter("cjw.custom_site_access_parameters.active") === true
-        ) {
-            FavouritesParamCoordinator::initialize($this->container);
-        }
+        FavouritesParamCoordinator::initialize($this->container);
 
         $this->showFavouritesOutsideDedicatedView =
             $this->container->getParameter("cjw.favourite_parameters.display_everywhere");
@@ -370,6 +364,29 @@ class ConfigProcessController extends AbstractController
         );
 
         return $response;
+    }
+
+    public function getEnvironmentalVariables ()
+    {
+        try {
+            $lastUpdated = ConfigProcessCoordinator::getTimeOfLastUpdate();
+
+            $envVar = [];
+
+            if ($this->container->getParameter("cjw.env_variables.allow") === true) {
+                $envVar = $_ENV;
+            }
+
+            return $this->render(
+                "@CJWConfigProcessor/full/param_view_environment.html.twig",
+                [
+                    "parameterList" => $envVar,
+                    "lastUpdated" => $lastUpdated,
+                ]
+            );
+        } catch (Exception $error) {
+            throw new HttpException(500, "Something went wrong while trying to gather the required parameters.");
+        }
     }
 
     /**

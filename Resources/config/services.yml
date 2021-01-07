@@ -48,3 +48,16 @@ services:
     public: true
     tags:
       - { name: knp_menu.menu_builder, method: build, alias: cjw_config_processing.menu.site_access_comparison.sidebar_right }
+
+  # console commands
+  cjw_config_processing.command.output_config:
+    class: CJW\CJWConfigProcessor\Command\ProcessedConfigOutputCommand
+    arguments :
+      [ "@service_container", "@ezpublish.config.resolver", "@request_stack" ]
+    tags:
+      - { name: console.command }
+
+  cjw_config_processing.command.output_locations :
+    class : CJW\CJWConfigProcessor\Command\ConfigLocationOutputCommand
+    tags :
+      - { name : console.command }

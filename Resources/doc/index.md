@@ -13,7 +13,7 @@ English versions:
 
 * [Configure the ConfigProcessor](../help/bundle_configuration.en.md)
 
-## Bundle View - Overview Pages:
+## Bundle View – Overview Pages:
 
 English versions:
 
@@ -21,8 +21,9 @@ English versions:
 * [Favourite Parameters View](./help/param_view_favourites_overview.en.md)
 * [Site Access Parameters View](./help/param_view_siteaccess_overview.en.md)
 * [Site Access Comparison View](./help/param_view_siteaccess_compare_overview.en.md)
+* [Environmental Variables View](./help/param_view_env_variables_overview.en.md)
 
-## Bundle View - In Depth Pages:
+## Bundle View – In Depth Pages:
 
 English versions:
 
