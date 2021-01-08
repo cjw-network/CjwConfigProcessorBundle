@@ -1,6 +1,6 @@
 # CJW-Network ConfigProcessor Bundle 2.x changelog
 
-## 2.1.0 (xx.01.2020)
+## 2.1.0 (08.01.2020)
 
 * Added Symfony console command to display the processed configuration in the console. This command
   also allows the user to specify site access context and / or filter the parameters for specific
@@ -17,7 +17,11 @@
 * Updated CustomParamProcessor to allow more dynamic setting of the site access to filter for with the
   custom parameters.
 
-## 2.0.1 (xx.12.2020)
+* Added Symfony console command to display the locations determined for the processed configuration
+  by the bundle. It also allows specifying a parameter to filter for, to only display the locations
+  belonging to that specific parameter.
+
+## 2.0.1 (23.12.2020)
 
 * Adapted the custom kernel boot process to make the location retrieval functionality
   available in Symfony 3.4 and Ibexa Platform 2.5
