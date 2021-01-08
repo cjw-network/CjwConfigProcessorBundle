@@ -11,6 +11,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * Class ConfigLocationOutputCommand is a console command to display all recorded locations from which parameters of the
+ * configuration have been set.
+ *
+ * @package CJW\CJWConfigProcessor\Command
+ */
 class ConfigLocationOutputCommand extends Command
 {
     protected static $defaultName = "cjw:output-locations";
@@ -29,12 +35,16 @@ class ConfigLocationOutputCommand extends Command
 This console command allows a user to access the a list of all paths (leading to files where config parameters have
 either been set or overwritten) for the configuration of the Symfony application the bundle was able to determine.
 The following options can be set for the command, but these are purely optional:
+
 --paramname or -p:  If a specific parameter name is given (i.e. "ezsettings.default.api_keys"), only paths for that
                     specific parameter are displayed (excluding every other parametername). The name does have to be
                     exact and if the option is omitted, then every found path is displayed.
+
 To better read and format the output it is advised to pipe the output of this command to "LESS", if you are using an
 ubuntu operating system.
+
 Example: "php bin/console cjw:output-locations | less"
+
 Then you can scroll more easily through the output and the output is present in an other context that can be quitted
 with "q", so that the console is not spammed with the command output. Then you can also search something by typing "/"
 and then the search word + enter key.
@@ -59,7 +69,7 @@ EOD
      *
      * @return int Returns the execution status code.
      */
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $ioStyler = new SymfonyStyle($input, $output);
         $filterParameters = $input->getOption("paramname");
@@ -94,7 +104,7 @@ EOD
      *
      * @return bool Returns boolean stating whether parameters could successfully be found and output or not.
      */
-    private function outputArray(OutputInterface $output, array $parameters, int $indents = 0): bool
+    private function outputArray(OutputInterface $output, array $parameters, $indents = 0)
     {
         if (count($parameters) === 0) {
             return false;
