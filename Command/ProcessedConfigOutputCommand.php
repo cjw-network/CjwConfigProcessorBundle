@@ -130,7 +130,8 @@ class ProcessedConfigOutputCommand extends Command
             "Parameter filter: ". $filterParameters?? "none",
         ]);
 
-        if ($this->outputArray($output,$processedParameters)) {
+        if ($processedParameters && $this->outputArray($output,$processedParameters)) {
+            $ioStyler->newLine();
             $ioStyler->success("Command ran successfully.");
         } else {
             $ioStyler->error("No parameters could be found for these options.");
