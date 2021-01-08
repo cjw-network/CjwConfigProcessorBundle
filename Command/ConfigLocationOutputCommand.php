@@ -19,7 +19,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class ConfigLocationOutputCommand extends Command
 {
-    protected static $defaultName = "cjw:output-locations";
+    protected static $defaultName = "cjw:config:output-locations";
 
     /**
      * @override
