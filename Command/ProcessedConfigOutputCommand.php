@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class ProcessedConfigOutputCommand extends Command
 {
-    protected static $defaultName = "cjw:output-config";
+    protected static $defaultName = "cjw:config:output-config";
 
     /**
      * @var CustomParamProcessor Required to filter the configuration for specific, given parameters.
