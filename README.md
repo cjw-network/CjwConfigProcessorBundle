@@ -26,6 +26,7 @@ with the following functionality (excerpt):
 - **Mark** parameters as favourites and view them in a dedicated view
 - **Get** location info about the parameters (which files do they appear in and with what value)
 - **Download** a file representation of the parameter lists
+- **Do it all on the console**. You can also ditch the frontend and look at some features through Symfony console commands.
 - **And** more
 
 # Help And More Info
