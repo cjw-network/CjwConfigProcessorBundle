@@ -57,7 +57,7 @@ class SiteAccessParamProcessor
                 $uniqueSiteAccessParameters = $this->resolveParametersWithScope($uniqueSiteAccessParameters,$scope);
             }
         } catch (Exception $error) {
-            sprintf(`Something went wrong while trying to resolve the parameter values. ${$error}`);
+            sprintf("Something went wrong while trying to resolve the parameter values. %s", $error->getMessage());
         }
 
         $uniqueSiteAccessParameters = $this->reformatForOutput($uniqueSiteAccessParameters);

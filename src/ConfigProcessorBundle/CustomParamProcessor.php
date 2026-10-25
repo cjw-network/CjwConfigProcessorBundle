@@ -29,7 +29,7 @@ class CustomParamProcessor
      */
     private $allSiteAccesses;
 
-    public function __construct(ContainerInterface $symContainer = null, array $siteAccessList = [])
+    public function __construct(?ContainerInterface $symContainer = null, array $siteAccessList = [])
     {
         $this->symContainer = $symContainer;
         $this->currentActiveSiteAccessList = $siteAccessList;

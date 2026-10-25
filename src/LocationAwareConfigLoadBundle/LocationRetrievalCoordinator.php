@@ -134,7 +134,7 @@ class LocationRetrievalCoordinator
      *
      * @return array|null An array of locations for the parameter of null if nothing could be found.
      */
-    public static function getParameterLocations ($parameterName, array $siteAccessGroups = null, $withSiteAccess = false)
+    public static function getParameterLocations ($parameterName, ?array $siteAccessGroups = null, $withSiteAccess = false)
     {
         if (!self::$initialized) {
             self::initializeCoordinator();
@@ -153,7 +153,7 @@ class LocationRetrievalCoordinator
      *
      * @return array Returns an array which is filled with all encountered locations during the configuration-loading-process.
      */
-    private static function getLocationsForSpecificParameter($parameterName, array $siteAccessGroups = null, $withSiteAccess = false)
+    private static function getLocationsForSpecificParameter($parameterName, ?array $siteAccessGroups = null, $withSiteAccess = false)
     {
         $parameterKeySegments = explode(".", $parameterName);
 
