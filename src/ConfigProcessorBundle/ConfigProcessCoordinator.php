@@ -157,9 +157,9 @@ class ConfigProcessCoordinator
                     return $currentDate->format("Y-m-d H:i");
                 });
         } catch (Exception $error) {
-            print(`Something went wrong while trying to parse the parameters: ${$error}.`);
+            print("Something went wrong while trying to parse the parameters: " . $error->getMessage() . ".");
         } catch (InvalidArgumentException $e) {
-            print(`An error occured while trying to access caching for the parameters: ${$e}.`);
+            print("An error occured while trying to access caching for the parameters: " . $e->getMessage() . ".");
         }
     }
 
@@ -405,7 +405,7 @@ class ConfigProcessCoordinator
             }
 
         } catch (InvalidArgumentException $e) {
-            print(`Accessing the cache components of the service has led to errors: ${$e}`);
+            print("Accessing the cache components of the service has led to errors: " . $e->getMessage());
         }
     }
 }
